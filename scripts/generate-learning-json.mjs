@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, access, copyFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +8,12 @@ const projectRoot = resolve(__dirname, '..');
 
 const inputHtmlPath = resolve(projectRoot, 'public', 'aws-clf-c02-study-guide.html');
 const outputJsonPath = resolve(
+  projectRoot,
+  'public',
+  'data',
+  'aws-clf-c02-study-guide.json',
+);
+const legacySourceJsonPath = resolve(
   projectRoot,
   'src',
   'data',
@@ -99,9 +105,19 @@ async function main() {
       console.log(`✓ Learning JSON already present → ${outputJsonPath}`);
       return;
     } catch {
-      throw new Error(
-        `Missing learning source HTML (${inputHtmlPath}) and JSON output (${outputJsonPath}).`,
-      );
+      // If a legacy tracked JSON exists under src/data, copy it into public/data so
+      // Vite/Netlify can serve it as a static asset.
+      try {
+        await access(legacySourceJsonPath);
+        await mkdir(dirname(outputJsonPath), { recursive: true });
+        await copyFile(legacySourceJsonPath, outputJsonPath);
+        console.log(`✓ Copied learning JSON → ${outputJsonPath}`);
+        return;
+      } catch {
+        throw new Error(
+          `Missing learning source HTML (${inputHtmlPath}) and JSON output (${outputJsonPath}).`,
+        );
+      }
     }
   }
 
