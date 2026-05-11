@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -89,6 +89,22 @@ function sanitizeClusters(raw) {
 }
 
 async function main() {
+  // If the HTML source isn't available (e.g. CI/Netlify), but the JSON is already
+  // committed, we can skip generation and proceed with the build.
+  try {
+    await access(inputHtmlPath);
+  } catch {
+    try {
+      await access(outputJsonPath);
+      console.log(`✓ Learning JSON already present → ${outputJsonPath}`);
+      return;
+    } catch {
+      throw new Error(
+        `Missing learning source HTML (${inputHtmlPath}) and JSON output (${outputJsonPath}).`,
+      );
+    }
+  }
+
   const html = await readFile(inputHtmlPath, 'utf8');
   const arraySrc = extractClustersArraySource(html);
 
