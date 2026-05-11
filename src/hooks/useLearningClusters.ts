@@ -15,7 +15,7 @@ export function useLearningClusters() {
   useEffect(() => {
     let alive = true;
     setLoading(true);
-    fetch('/data/aws-clf-c02-study-guide.json', { cache: 'force-cache' })
+    fetch('src\data\aws-clf-c02-study-guide.json', { cache: 'force-cache' })
       .then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed to load learning data (${res.status}).`);

@@ -9,7 +9,7 @@ const projectRoot = resolve(__dirname, '..');
 const inputHtmlPath = resolve(projectRoot, 'public', 'aws-clf-c02-study-guide.html');
 const outputJsonPath = resolve(
   projectRoot,
-  'public',
+  'src',
   'data',
   'aws-clf-c02-study-guide.json',
 );
