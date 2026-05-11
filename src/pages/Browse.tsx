@@ -73,10 +73,10 @@ export function Browse() {
         <div>
           <button
             type="button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/practice')}
             className="text-xs text-slate-500 hover:text-aws-orange mb-2"
           >
-            ← Home
+            ← Practice
           </button>
           <h1 className="text-2xl md:text-3xl font-extrabold">Browse Questions</h1>
           <p className="text-sm text-slate-400">

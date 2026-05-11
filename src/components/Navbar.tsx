@@ -28,8 +28,14 @@ export function Navbar() {
           <NavLink to="/" end className={linkClass}>
             Home
           </NavLink>
-          <NavLink to="/browse" className={linkClass}>
-            Browse
+          <NavLink to="/practice" className={linkClass}>
+            Practice
+          </NavLink>
+          <NavLink to="/practice/browse" className={linkClass}>
+            Question Bank
+          </NavLink>
+          <NavLink to="/learning" className={linkClass}>
+            Learning
           </NavLink>
         </nav>
       </div>

@@ -17,6 +17,7 @@ const projectRoot = resolve(__dirname, '..');
 
 const tsc = resolve(projectRoot, 'node_modules', 'typescript', 'bin', 'tsc');
 const vite = resolve(projectRoot, 'node_modules', 'vite', 'bin', 'vite.js');
+const genLearning = resolve(projectRoot, 'scripts', 'generate-learning-json.mjs');
 
 function run(label, args) {
   console.log(`\n▶ ${label}`);
@@ -30,6 +31,7 @@ function run(label, args) {
   }
 }
 
+run('Generate learning JSON', [genLearning]);
 run('Type-check (tsc -b)', [tsc, '-b']);
 run('Vite build', [vite, 'build']);
 

@@ -8,6 +8,7 @@
     "dev": "node node_modules/vite/bin/vite.js",
     "build": "node scripts/build.js",
     "preview": "node node_modules/vite/bin/vite.js preview",
+    "generate:learning": "node scripts/generate-learning-json.mjs",
     "parse": "node scripts/parse-questions.js",
     "ingest:saa": "node scripts/ingest-saa-from-md.mjs",
     "ingest:saa:paired": "node scripts/ingest-saa-from-paired-files.mjs",

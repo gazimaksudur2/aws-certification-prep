@@ -27,7 +27,7 @@ export function Quiz() {
   }, [current, session?.answers]);
 
   useEffect(() => {
-    if (!session) navigate('/', { replace: true });
+    if (!session) navigate('/practice', { replace: true });
   }, [session, navigate]);
 
   const sessionRef = useRef(session);

@@ -151,7 +151,7 @@ export function Results() {
   }, [session, summary, add]);
 
   useEffect(() => {
-    if (!session) navigate('/', { replace: true });
+    if (!session) navigate('/practice', { replace: true });
   }, [session, navigate]);
 
   if (!session || !summary) return null;
@@ -209,7 +209,7 @@ export function Results() {
                 type="button"
                 onClick={() => {
                   reset();
-                  navigate('/');
+                  navigate('/practice');
                 }}
                 className="btn-primary"
               >

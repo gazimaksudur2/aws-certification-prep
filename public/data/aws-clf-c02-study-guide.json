@@ -1,0 +1,1106 @@
+{
+  "schemaVersion": 1,
+  "source": "aws-clf-c02-study-guide.html",
+  "clusters": [
+    {
+      "id": "compute",
+      "name": "Compute & Serverless",
+      "color": "#1d4ed8",
+      "icon": "⚡",
+      "services": [
+        {
+          "name": "Amazon EC2",
+          "desc": "Virtual servers (instances) in the cloud with full OS control, multiple instance types, and pricing models.",
+          "uses": [
+            "Host web apps, APIs, or any custom workload needing full server control",
+            "Run compute-intensive jobs like video rendering or data processing"
+          ],
+          "tip": "Know On-Demand vs Reserved vs Spot vs Savings Plans. EC2 is IaaS."
+        },
+        {
+          "name": "AWS Lambda",
+          "desc": "Run code without servers. You upload a function and AWS handles execution, scaling, and billing per ms.",
+          "uses": [
+            "Event-driven microservices triggered by S3 uploads or API calls",
+            "Real-time data transformation in serverless architectures"
+          ],
+          "tip": "Serverless = no server management. Max 15 min timeout. Pay per invocation."
+        },
+        {
+          "name": "Amazon ECS",
+          "desc": "Managed Docker container orchestration. Runs containers on EC2 or Fargate without managing Kubernetes.",
+          "uses": [
+            "Deploy containerized microservices at scale",
+            "Run CI/CD build agents as ephemeral containers"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Fargate",
+          "desc": "Serverless compute for containers — run ECS/EKS tasks without provisioning or managing EC2 instances.",
+          "uses": [
+            "Run containers without managing underlying servers",
+            "Auto-scale container workloads with zero infrastructure ops"
+          ],
+          "tip": "Fargate = serverless containers. ECS/EKS still used but Fargate manages the nodes."
+        },
+        {
+          "name": "AWS Elastic Beanstalk",
+          "desc": "PaaS — upload your app code and AWS auto-provisions the infra (EC2, ELB, Auto Scaling, RDS).",
+          "uses": [
+            "Quickly deploy web apps without knowing AWS infrastructure details",
+            "Prototype environments for startups and small teams"
+          ],
+          "tip": "PaaS service. Still uses EC2 under the hood. You keep control of resources."
+        },
+        {
+          "name": "Amazon Lightsail",
+          "desc": "Simple VPS with fixed monthly pricing. Includes VM, SSD, data transfer, DNS, and static IP in one bundle.",
+          "uses": [
+            "Simple WordPress or small web app hosting",
+            "Affordable dev/test environments with predictable billing"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Batch",
+          "desc": "Fully managed batch processing — queue, schedule, and run hundreds of thousands of jobs at scale.",
+          "uses": [
+            "Overnight financial risk model computations",
+            "Large-scale ML training data preprocessing"
+          ]
+        },
+        {
+          "name": "Amazon EKS",
+          "desc": "Managed Kubernetes service. AWS handles the control plane so you focus on your containerized workloads.",
+          "uses": [
+            "Run production Kubernetes clusters without managing the control plane",
+            "Migrate existing Kubernetes workloads to AWS"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Storage",
+      "color": "#b45309",
+      "icon": "🗂️",
+      "services": [
+        {
+          "name": "Amazon S3",
+          "desc": "Object storage with 11 nines durability. Stores any type of data — unlimited scale, pay per GB. The backbone of AWS data storage.",
+          "uses": [
+            "Host static websites and store media assets globally",
+            "Data lake for analytics workloads like Athena queries"
+          ],
+          "tip": "Know S3 storage classes: Standard, Intelligent-Tiering, Standard-IA, Glacier Instant, Glacier Flexible, Deep Archive. Also know versioning, bucket policies."
+        },
+        {
+          "name": "Amazon FSx",
+          "desc": "Managed file systems: FSx for Windows File Server (SMB/NTFS) and FSx for Lustre (high-performance HPC).",
+          "uses": [
+            "Lift Windows-based file shares to the cloud without re-architecting",
+            "HPC workloads (genomics, simulation) needing ultra-fast parallel storage"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon EFS",
+          "desc": "Serverless, elastic NFS file system that auto-scales. Shared access from multiple Linux EC2 instances simultaneously.",
+          "uses": [
+            "Shared storage for a fleet of web servers serving the same content",
+            "Content management systems (WordPress, Drupal) on multiple servers"
+          ],
+          "tip": "EFS = shared Linux NFS. FSx for Windows = SMB/Windows shares. S3 = object storage."
+        },
+        {
+          "name": "AWS Storage Gateway",
+          "desc": "Hybrid cloud storage bridge. Connects on-premises environments to S3 with File, Volume, or Tape gateway modes.",
+          "uses": [
+            "Transparently back up on-prem data to S3 without changing apps",
+            "Extend on-prem storage seamlessly to the cloud"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Snow Family",
+          "desc": "Physical devices for large-scale data migration and edge computing: Snowcone (8TB), Snowball Edge (80TB), Snowmobile (100PB).",
+          "uses": [
+            "Migrate 80+ TB data center to S3 when internet is too slow/costly",
+            "Edge computing in oil rigs, ships, or remote locations without internet"
+          ],
+          "tip": "Rule of thumb: if data transfer would take >1 week over internet → use Snowball."
+        },
+        {
+          "name": "AWS DataSync",
+          "desc": "Online data transfer service to automate moving large datasets between on-premises storage and AWS S3/EFS/FSx.",
+          "uses": [
+            "Weekly scheduled replication of on-prem NAS to EFS",
+            "One-time migration of file server content to FSx for Windows"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "name": "Database",
+      "color": "#0f766e",
+      "icon": "🗄️",
+      "services": [
+        {
+          "name": "Amazon RDS",
+          "desc": "Managed relational DB service. Supports MySQL, PostgreSQL, MariaDB, Oracle, SQL Server. Handles patching, backups, and failover.",
+          "uses": [
+            "E-commerce product catalog and order management systems",
+            "Enterprise apps needing ACID-compliant SQL databases"
+          ],
+          "tip": "RDS = managed but not serverless. Multi-AZ = high availability. Read Replicas = performance."
+        },
+        {
+          "name": "Amazon Aurora",
+          "desc": "MySQL/PostgreSQL-compatible DB built for the cloud. 5× faster than MySQL, 3× faster than PostgreSQL. Auto-scales storage to 128TB.",
+          "uses": [
+            "High-throughput SaaS apps needing MySQL/PostgreSQL compatibility",
+            "Replacing costly Oracle licenses with a cloud-native alternative"
+          ],
+          "tip": "Aurora Serverless v2 auto-scales capacity to zero. Great exam topic for cost optimization."
+        },
+        {
+          "name": "Amazon DynamoDB",
+          "desc": "Fully managed NoSQL key-value and document database. Single-digit millisecond latency at any scale, serverless.",
+          "uses": [
+            "Gaming leaderboards and session management needing millisecond reads",
+            "Shopping cart data that needs horizontal scaling with traffic spikes"
+          ],
+          "tip": "NoSQL = DynamoDB. Key exam topic: on-demand vs provisioned capacity, DAX for caching."
+        },
+        {
+          "name": "Amazon ElastiCache",
+          "desc": "Managed in-memory caching service with Redis or Memcached. Reduces DB load for read-heavy workloads.",
+          "uses": [
+            "Cache database query results to serve millions of API requests",
+            "Session storage for web apps needing sub-millisecond access"
+          ],
+          "tip": "Caching layer to improve performance. Redis = more features. Memcached = simpler."
+        },
+        {
+          "name": "AWS MemoryDB for Redis",
+          "desc": "Redis-compatible, fully managed, durable in-memory database. Unlike ElastiCache, it's a primary database — data persists across restarts.",
+          "uses": [
+            "Primary ultra-fast database for leaderboards and real-time analytics",
+            "Microservices requiring a persistent, low-latency data store"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Redshift",
+          "desc": "Fully managed petabyte-scale data warehouse. Columnar storage, MPP architecture for fast analytical queries on large datasets.",
+          "uses": [
+            "BI and ad-hoc SQL queries on years of historical sales data",
+            "Complex analytical queries joining TB of data for executive dashboards"
+          ],
+          "tip": "OLAP = Redshift (analytics). OLTP = RDS (transactional). Know this distinction for exam."
+        },
+        {
+          "name": "Amazon DocumentDB",
+          "desc": "MongoDB-compatible managed document database. Stores, queries, and indexes JSON data — fully managed by AWS.",
+          "uses": [
+            "Content management systems with complex nested data structures",
+            "User profiles and product catalogs with variable schemas"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Neptune",
+          "desc": "Fully managed graph database for highly connected datasets. Supports Gremlin and SPARQL.",
+          "uses": [
+            "Social network graphs (friend-of-friend queries)",
+            "Fraud detection by analyzing relationship patterns"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "name": "Networking & Content Delivery",
+      "color": "#7c3aed",
+      "icon": "🌐",
+      "services": [
+        {
+          "name": "Amazon VPC",
+          "desc": "Logically isolated virtual network in AWS. You control IP ranges, subnets, route tables, internet gateways, and security.",
+          "uses": [
+            "Isolate sensitive workloads in private subnets without internet access",
+            "Connect on-prem to AWS using VPN or Direct Connect through VPC"
+          ],
+          "tip": "Key concepts: Public vs Private subnets, Security Groups (stateful), NACLs (stateless), NAT Gateway."
+        },
+        {
+          "name": "Amazon CloudFront",
+          "desc": "Global CDN with 400+ edge locations. Caches content close to users, reducing latency and origin server load. Integrates with WAF and Shield.",
+          "uses": [
+            "Serve static website assets globally with low latency",
+            "Stream video content to global audiences with minimal buffering"
+          ],
+          "tip": "CDN = CloudFront. Know: origins (S3, EC2, ALB), OAI for private S3, Lambda@Edge."
+        },
+        {
+          "name": "Amazon Route 53",
+          "desc": "Scalable DNS, domain registration, and health checking. Supports multiple routing policies including latency-based, geolocation, and failover.",
+          "uses": [
+            "DNS with health check-based failover to a backup region",
+            "Latency-based routing directing users to the closest AWS region"
+          ],
+          "tip": "Route 53 = DNS + health checks. Routing policies: Simple, Weighted, Latency, Failover, Geolocation."
+        },
+        {
+          "name": "AWS Direct Connect",
+          "desc": "Dedicated private physical network connection from your data center to AWS — bypasses public internet for consistent, low-latency throughput.",
+          "uses": [
+            "Consistent sub-10ms latency for hybrid apps that need both cloud and on-prem",
+            "Transferring petabytes of data with reduced bandwidth costs vs internet"
+          ],
+          "tip": "Direct Connect = private dedicated line. VPN = encrypted over internet. Direct Connect is faster/more consistent."
+        },
+        {
+          "name": "AWS Transit Gateway",
+          "desc": "Network transit hub to connect thousands of VPCs and on-premises networks through a central gateway — replaces complex VPC peering.",
+          "uses": [
+            "Hub-and-spoke model connecting 100+ VPCs in a large enterprise",
+            "Simplifying mesh VPC peering topology to a star topology"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Global Accelerator",
+          "desc": "Uses AWS backbone to route traffic to optimal endpoints globally. Provides static anycast IPs for global applications.",
+          "uses": [
+            "Improve availability and performance for global gaming or fintech apps",
+            "Static IP addresses for multi-region applications behind load balancers"
+          ],
+          "tip": "CloudFront = cache content at edge. Global Accelerator = route TCP/UDP traffic via AWS backbone."
+        },
+        {
+          "name": "AWS WaveLength",
+          "desc": "Deploy AWS compute and storage at 5G network edges inside telecom carrier data centers for ultra-low (<5ms) latency.",
+          "uses": [
+            "AR/VR and live streaming apps on 5G networks requiring ultra-low latency",
+            "Connected vehicle and IoT applications on 5G networks"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS PrivateLink",
+          "desc": "Establish private connectivity from VPCs or on-premises to AWS services and third-party SaaS without traffic traversing the internet.",
+          "uses": [
+            "Securely access SaaS products without public internet exposure",
+            "Private inter-VPC service communication without VPC peering or IGW"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Elastic Load Balancing",
+          "desc": "Auto-distributes incoming traffic across multiple EC2, ECS, Lambda targets. Types: ALB (HTTP), NLB (TCP/UDP), GLB (appliances).",
+          "uses": [
+            "Distribute web traffic across EC2 instances in multiple AZs",
+            "Health check-based routing to automatically bypass unhealthy instances"
+          ],
+          "tip": "ALB = Layer 7 (HTTP/HTTPS). NLB = Layer 4 (TCP/UDP, static IP). Know with Auto Scaling."
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security, Identity & Compliance",
+      "color": "#b91c1c",
+      "icon": "🛡️",
+      "services": [
+        {
+          "name": "AWS IAM",
+          "desc": "Control who can do what in your AWS account. Create users, groups, roles, and policies. Foundation of AWS security.",
+          "uses": [
+            "Grant developers least-privilege access to only the services they need",
+            "Assign IAM roles to EC2 instances to access S3 without storing credentials"
+          ],
+          "tip": "IAM is global. Key concepts: Users, Groups, Roles, Policies (JSON), Least Privilege. MFA for root account!"
+        },
+        {
+          "name": "Amazon Cognito",
+          "desc": "Managed user identity for web and mobile apps. User Pools = authentication; Identity Pools = AWS credentials for authenticated users.",
+          "uses": [
+            "Social login (Google/Facebook/Apple) for a mobile app",
+            "Granting authenticated app users temporary AWS credentials"
+          ],
+          "tip": "Note: Often written 'Incognito' by mistake. It's Amazon Cognito. User Pools vs Identity Pools distinction is exam-tested."
+        },
+        {
+          "name": "AWS Key Management Service",
+          "desc": "Create, manage, and use encryption keys across 100+ AWS services. Supports symmetric and asymmetric keys with automatic rotation.",
+          "uses": [
+            "Encrypt S3 buckets, RDS databases, and EBS volumes with managed keys",
+            "Customer-managed key rotation for PCI-DSS and HIPAA compliance"
+          ],
+          "tip": "KMS = manage encryption keys. CloudHSM = dedicated hardware. SSE-S3 vs SSE-KMS vs SSE-C for S3 encryption."
+        },
+        {
+          "name": "AWS CloudHSM",
+          "desc": "Dedicated hardware security module in the AWS cloud. You control the keys — AWS has no access. Single-tenant.",
+          "uses": [
+            "PCI-DSS compliance requiring key storage in validated HSM hardware",
+            "Offloading SSL/TLS processing from web servers to HSM"
+          ],
+          "tip": "HSM = single-tenant dedicated hardware. KMS = multi-tenant managed service. CloudHSM gives YOU full key control."
+        },
+        {
+          "name": "Amazon Macie",
+          "desc": "ML-powered service that discovers, classifies and protects sensitive data (PII, PHI, financial data) in S3 automatically.",
+          "uses": [
+            "Automatically detect credit card numbers and SSNs in S3 buckets",
+            "GDPR/HIPAA compliance auditing — find where sensitive data lives"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon GuardDuty",
+          "desc": "Intelligent threat detection using ML, analyzing CloudTrail logs, VPC Flow Logs, and DNS logs to find malicious activity.",
+          "uses": [
+            "Detect compromised EC2 instances mining cryptocurrency",
+            "Flag unusual API calls from known malicious IP addresses"
+          ],
+          "tip": "GuardDuty = threat detection (what is happening?). Inspector = vulnerability scanning (what could happen?). Macie = data protection (where is sensitive data?)."
+        },
+        {
+          "name": "Amazon Inspector",
+          "desc": "Automated vulnerability assessment for EC2 instances, Lambda functions, and ECR container images — continuously scanning for CVEs.",
+          "uses": [
+            "Continuous scanning of EC2 fleet for known OS and software vulnerabilities",
+            "Scan Docker images in ECR before deployment to production"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Artifact",
+          "desc": "Self-service compliance portal. Download AWS security and compliance reports (SOC, PCI, ISO) and manage legal agreements.",
+          "uses": [
+            "Download SOC 2 Type II reports for your company's auditors",
+            "Review and sign AWS Business Associate Agreement (BAA) for HIPAA"
+          ],
+          "tip": "Artifact = compliance DOCUMENTS. Config = compliance RULES. Don't confuse them."
+        },
+        {
+          "name": "AWS Shield",
+          "desc": "Managed DDoS protection. Standard is free and automatic for all AWS customers protecting Layer 3/4 attacks.",
+          "uses": [
+            "Automatic DDoS protection for all EC2, ELB, CloudFront, Route 53 resources",
+            "Always-on protection against SYN floods and UDP reflection attacks"
+          ],
+          "tip": "Shield Standard = free, automatic. Shield Advanced = paid, includes WAF, DRT team, cost protection."
+        },
+        {
+          "name": "AWS Shield Advanced",
+          "desc": "Enhanced DDoS protection: Layer 7 mitigation, 24/7 access to the DDoS Response Team (DRT), cost protection, and advanced metrics.",
+          "uses": [
+            "High-traffic e-commerce sites needing Layer 7 DDoS protection",
+            "Financial services requiring guaranteed uptime with DRT escalation path"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS WAF",
+          "desc": "Web Application Firewall to filter HTTP/S requests. Block SQL injection, XSS, bad bots, and malicious IPs using rules.",
+          "uses": [
+            "Block OWASP Top 10 attacks on ALB or API Gateway",
+            "Rate limiting to prevent scrapers from abusing your public API"
+          ],
+          "tip": "WAF works with CloudFront, ALB, API Gateway, AppSync. Managed rule groups available."
+        },
+        {
+          "name": "AWS Secrets Manager",
+          "desc": "Securely store, rotate, and retrieve secrets (DB passwords, API keys, tokens). Auto-rotation built in for RDS/Redshift credentials.",
+          "uses": [
+            "Automatically rotate RDS database credentials on a schedule",
+            "Distribute API keys to Lambda functions without hardcoding credentials"
+          ],
+          "tip": "Secrets Manager = rotation + storage. Parameter Store (SSM) = config + simpler secrets (cheaper)."
+        },
+        {
+          "name": "AWS Security Hub",
+          "desc": "Centralized security posture management. Aggregates findings from GuardDuty, Inspector, Macie, and third-party tools in one dashboard.",
+          "uses": [
+            "Unified security dashboard across multiple AWS accounts and services",
+            "Automated compliance checks against CIS, PCI-DSS, and AWS Foundational Security standards"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Certificate Manager",
+          "desc": "Provision, manage, and auto-renew SSL/TLS certificates for free when used with ACM-integrated services (CloudFront, ALB, API Gateway).",
+          "uses": [
+            "Free SSL certificates for a website served via ALB or CloudFront",
+            "Automated renewal — no more expired certificate incidents"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "mgmt",
+      "name": "Management & Governance",
+      "color": "#374151",
+      "icon": "⚙️",
+      "services": [
+        {
+          "name": "AWS CloudWatch",
+          "desc": "Monitoring, logging, and observability for AWS resources. Collect metrics, create alarms, visualize dashboards, and store logs.",
+          "uses": [
+            "Alert when EC2 CPU > 80% and trigger Auto Scaling",
+            "Aggregate application logs from multiple services into a single log group"
+          ],
+          "tip": "CloudWatch = monitoring & logs. CloudTrail = API audit logs. Know: Metrics, Alarms, Logs, Events, Dashboards."
+        },
+        {
+          "name": "AWS CloudTrail",
+          "desc": "Records every API call made in your AWS account — who did what, when, and from where. Stored in S3. Enabled by default.",
+          "uses": [
+            "Audit who deleted a production S3 bucket at 2am",
+            "Security forensics for unauthorized IAM policy changes"
+          ],
+          "tip": "CloudTrail = WHO did WHAT. CloudWatch = HOW IS IT performing. CloudTrail logs go to S3 or CloudWatch Logs."
+        },
+        {
+          "name": "AWS Config",
+          "desc": "Continuously records AWS resource configurations and evaluates them against compliance rules. Shows configuration history and drift.",
+          "uses": [
+            "Detect when any S3 bucket is made publicly accessible",
+            "Audit compliance: ensure all EBS volumes are encrypted"
+          ],
+          "tip": "Config = resource configuration compliance over time. Artifact = compliance reports from AWS. Don't confuse."
+        },
+        {
+          "name": "AWS Trusted Advisor",
+          "desc": "Real-time best practice recommendations across 5 pillars: Cost Optimization, Security, Fault Tolerance, Performance, Service Limits.",
+          "uses": [
+            "Identify idle EC2 instances and unused EBS volumes to cut costs",
+            "Flag security groups with unrestricted inbound port 22 (SSH) access"
+          ],
+          "tip": "Free checks: Service Limits + some Security. Business/Enterprise Support = all checks. Exam loves this service."
+        },
+        {
+          "name": "AWS Health Dashboard",
+          "desc": "Personalized view of AWS service health events that affect YOUR specific resources — not just general service status.",
+          "uses": [
+            "Get proactive alerts about EC2 instance retirement in your account",
+            "Check if a regional outage is affecting your specific RDS instances"
+          ],
+          "tip": "AWS Health Dashboard (personal) = your resources. service.aws.amazon.com = all AWS services status."
+        },
+        {
+          "name": "AWS Systems Manager",
+          "desc": "Unified operations hub for managing AWS and on-prem infrastructure. Run Command, Patch Manager, Session Manager, Parameter Store, and more.",
+          "uses": [
+            "Run commands across 1000 EC2 instances at once — no SSH needed",
+            "Centralized patch management with maintenance windows and compliance reporting"
+          ],
+          "tip": "Session Manager = SSH/RDP without opening ports. Parameter Store = config/secrets storage (cheaper than Secrets Manager)."
+        },
+        {
+          "name": "AWS Organizations",
+          "desc": "Centrally manage multiple AWS accounts. Consolidated billing, Service Control Policies (SCPs), and Organizational Units (OUs).",
+          "uses": [
+            "Single consolidated invoice for all 50 AWS accounts in a company",
+            "Prevent all accounts in an OU from disabling CloudTrail using an SCP"
+          ],
+          "tip": "SCP = guardrails that override even admin IAM permissions. Consolidated billing = volume discounts."
+        },
+        {
+          "name": "AWS Control Tower",
+          "desc": "Automates setup of a secure, compliant, multi-account AWS environment (landing zone) with pre-configured guardrails.",
+          "uses": [
+            "Set up a new AWS landing zone with security baseline in hours not months",
+            "Enforce guardrails like 'disallow root user access keys' across all accounts"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS CloudFormation",
+          "desc": "Infrastructure as Code (IaC). Define AWS resources in JSON/YAML templates and provision them reproducibly as stacks.",
+          "uses": [
+            "Deploy identical dev, staging, and prod environments from one template",
+            "Version-controlled infrastructure with rollback capability on failure"
+          ],
+          "tip": "CloudFormation = IaC. CDK = define IaC in Python/TypeScript (generates CF). Terraform = third-party IaC."
+        },
+        {
+          "name": "AWS Well-Architected Tool",
+          "desc": "Review your architectures against the 6 pillars of the AWS Well-Architected Framework and get improvement recommendations.",
+          "uses": [
+            "Get a prioritized improvement plan for your workload's security posture",
+            "Benchmark architecture against best practices before a major launch"
+          ],
+          "tip": "6 Pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability."
+        },
+        {
+          "name": "AWS Service Catalog",
+          "desc": "Create and manage catalogs of pre-approved IT products that teams can self-service — enforces standards and governance.",
+          "uses": [
+            "Allow developers to deploy only approved CloudFormation templates",
+            "Standardize EC2 configurations and enforce tagging policies via catalog"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics & Big Data",
+      "color": "#c2410c",
+      "icon": "📊",
+      "services": [
+        {
+          "name": "Amazon Athena",
+          "desc": "Serverless SQL query engine for data in S3. No infrastructure to manage — pay only for queries run. Uses Presto under the hood.",
+          "uses": [
+            "Run ad hoc SQL on S3 access logs without loading them into a database",
+            "Analyze CloudTrail JSON logs with standard SQL queries instantly"
+          ],
+          "tip": "Athena = serverless SQL on S3. Pair with AWS Glue Data Catalog. No server setup — just query and pay per TB scanned."
+        },
+        {
+          "name": "AWS Glue",
+          "desc": "Serverless ETL service + data catalog. Discover, prepare, and transform data for analytics. Glue Studio adds a visual drag-and-drop interface.",
+          "uses": [
+            "Transform raw JSON in S3 into Parquet for Redshift loading (ETL)",
+            "Crawl S3 data to automatically build a central schema catalog for Athena"
+          ],
+          "tip": "Glue = ETL. Glue Data Catalog = metadata store shared with Athena and Redshift Spectrum."
+        },
+        {
+          "name": "AWS Glue Studio",
+          "desc": "Visual drag-and-drop interface for building, running, and monitoring Glue ETL jobs — no coding required.",
+          "uses": [
+            "Business analysts building ETL pipelines without writing Python/Scala",
+            "Visually map source-to-target transformations for data warehouse loads"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon QuickSight",
+          "desc": "Serverless BI service for building interactive dashboards. ML-powered insights (anomaly detection, forecasting) built in. Pay-per-session pricing.",
+          "uses": [
+            "Build sales dashboards shared across the organization from Redshift data",
+            "Embed interactive charts in a customer-facing SaaS application"
+          ],
+          "tip": "QuickSight = BI/dashboards. Athena = query. Redshift = warehouse. These three often appear together in exam scenarios."
+        },
+        {
+          "name": "AWS Kinesis",
+          "desc": "Real-time streaming data platform. Kinesis Data Streams = ingest; Kinesis Data Firehose = load to S3/Redshift; Kinesis Analytics = SQL on streams.",
+          "uses": [
+            "Real-time clickstream analysis for personalization on an e-commerce site",
+            "Ingest log data from 10,000 servers and load to S3 via Firehose"
+          ],
+          "tip": "Kinesis = real-time streaming. SQS = queuing (not real-time analytics). Exam: Firehose = no custom code, Streams = custom consumers."
+        },
+        {
+          "name": "Amazon OpenSearch Service",
+          "desc": "Managed Elasticsearch/OpenSearch for log analytics, full-text search, and security analytics. Includes Kibana/OpenSearch Dashboards.",
+          "uses": [
+            "Full-text search across millions of product listings on an e-commerce site",
+            "SIEM — centralize and analyze security logs for threat hunting"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Data Pipeline",
+          "desc": "Managed ETL orchestration service to move and transform data between AWS services and on-premises data sources on a schedule.",
+          "uses": [
+            "Nightly export from DynamoDB to S3 for reporting",
+            "Weekly load from on-prem Oracle database to Redshift"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Data Exchange",
+          "desc": "Marketplace to find, subscribe to, and use third-party data sets in AWS. Delivers data directly to S3.",
+          "uses": [
+            "Subscribe to financial market data for quantitative trading models",
+            "Access healthcare datasets from data providers for ML research"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Lake Formation",
+          "desc": "Build, secure, and manage data lakes. Fine-grained access control at the table/column/row level across S3-based data lakes.",
+          "uses": [
+            "Centralized governance — grant column-level access to sensitive data lake columns",
+            "Set up a certified data lake with security and audit trail in hours"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "AI & Machine Learning",
+      "color": "#0369a1",
+      "icon": "🤖",
+      "services": [
+        {
+          "name": "AWS SageMaker",
+          "desc": "End-to-end ML platform: build, train, tune, deploy, and monitor ML models at scale. Fully managed, supports all major frameworks.",
+          "uses": [
+            "Train a custom fraud detection model on transaction data",
+            "One-click deploy a trained model as a real-time REST API endpoint"
+          ],
+          "tip": "SageMaker = the ML platform. Other AI services (Rekognition, Comprehend, etc.) are pre-trained — you use them via API."
+        },
+        {
+          "name": "Amazon Lex",
+          "desc": "Build conversational chatbots with voice and text using the same technology that powers Alexa.",
+          "uses": [
+            "Customer service chatbot handling FAQs and routing escalations",
+            "Voice-based IVR system for order tracking in a call center"
+          ],
+          "tip": "Lex = chatbot. Polly = text-to-speech. Transcribe = speech-to-text. Know which does what."
+        },
+        {
+          "name": "Amazon Transcribe",
+          "desc": "Automatic speech recognition (ASR) — converts audio or video speech to text. Supports speaker diarization and custom vocabulary.",
+          "uses": [
+            "Transcribe customer service call recordings for quality analysis",
+            "Auto-generate subtitles and closed captions for video content"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Comprehend",
+          "desc": "NLP service to find insights in text: sentiment, entities, key phrases, language detection, and custom classification.",
+          "uses": [
+            "Sentiment analysis of thousands of product reviews automatically",
+            "Extract company names and locations from legal documents at scale"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Textract",
+          "desc": "ML service to extract text, forms, tables, and key-value pairs from scanned documents and images beyond simple OCR.",
+          "uses": [
+            "Automate invoice processing by extracting line items and totals",
+            "Digitize mortgage applications by extracting form field data"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Polly",
+          "desc": "Convert text to lifelike speech using deep learning. Dozens of voices and languages. SSML support for controlling pronunciation.",
+          "uses": [
+            "Add voice narration to an e-learning application",
+            "Accessibility features — read page content aloud for visually impaired users"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Rekognition",
+          "desc": "Image and video analysis: object detection, facial recognition, unsafe content detection, text in images, celebrity recognition.",
+          "uses": [
+            "Facial recognition for employee building access control",
+            "Automatically detect and blur explicit content in user-uploaded images"
+          ],
+          "tip": "Rekognition = image/video AI. Textract = documents. Comprehend = text/NLP. Transcribe = audio."
+        },
+        {
+          "name": "Amazon Translate",
+          "desc": "Neural machine translation for real-time and batch translation of text between 75+ languages.",
+          "uses": [
+            "Translate product listings into 20 languages for a global marketplace",
+            "Real-time multilingual customer support chat translation"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Forecast",
+          "desc": "Fully managed time-series forecasting using ML. No ML experience needed — just provide historical data.",
+          "uses": [
+            "Forecast product demand to optimize inventory levels",
+            "Predict server capacity needs for auto-scaling planning"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Bedrock",
+          "desc": "Managed generative AI service. Access foundation models (Claude, Llama, Titan, etc.) via API to build GenAI apps without managing infrastructure.",
+          "uses": [
+            "Build a RAG-based knowledge assistant on internal documents",
+            "Text summarization and generation APIs for a content platform"
+          ],
+          "tip": "Bedrock = GenAI foundation models as a service. Key new exam topic for CLF-C02 GenAI domain."
+        }
+      ]
+    },
+    {
+      "id": "devtools",
+      "name": "Developer Tools & CI/CD",
+      "color": "#15803d",
+      "icon": "🧰",
+      "services": [
+        {
+          "name": "AWS CodeCommit",
+          "desc": "Managed private Git repositories in AWS. Fully integrated with other CodeSuite tools. Being deprecated — migrating to GitHub/GitLab.",
+          "uses": [
+            "Host private Git repos for teams with IAM-based access control",
+            "Trigger CodePipeline on commits for CI/CD workflows"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS CodeBuild",
+          "desc": "Fully managed CI build service. Compile code, run tests, produce artifacts. No servers to manage. Pay per build minute.",
+          "uses": [
+            "Run unit tests on every pull request and block merge on failure",
+            "Build Docker images and push to ECR as part of a CI pipeline"
+          ],
+          "tip": "CodeBuild = compile + test. CodeDeploy = deploy. CodePipeline = orchestrate all steps."
+        },
+        {
+          "name": "AWS CodeDeploy",
+          "desc": "Automate application deployments to EC2, Lambda, ECS, and on-premises servers. Supports blue/green and rolling deployments.",
+          "uses": [
+            "Zero-downtime blue/green deployments for a Node.js API on EC2",
+            "Automatic Lambda function version rollouts with traffic shifting"
+          ],
+          "tip": "CodeDeploy handles the actual DEPLOYMENT step. Different from CodeBuild (build) and CodePipeline (orchestration)."
+        },
+        {
+          "name": "AWS CodePipeline",
+          "desc": "Fully managed CI/CD pipeline. Orchestrates source → build → test → deploy stages using CodeCommit, CodeBuild, CodeDeploy, and third-party tools.",
+          "uses": [
+            "Automate the full release workflow from Git push to production deploy",
+            "Multi-stage pipeline with manual approval gate before production release"
+          ],
+          "tip": "CodePipeline = the CI/CD ORCHESTRATOR. It chains CodeCommit + CodeBuild + CodeDeploy together."
+        },
+        {
+          "name": "AWS CodeStar",
+          "desc": "Unified project management for setting up CI/CD toolchains quickly. Creates CodeCommit, CodeBuild, CodeDeploy, and CodePipeline in one click.",
+          "uses": [
+            "Spin up a complete dev/deploy environment for a new project in minutes",
+            "Track all project activity, deployments, and issues in one dashboard"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Cloud9",
+          "desc": "Cloud-based IDE accessible from any browser. Pre-configured for serverless development with built-in AWS CLI and Lambda debugger.",
+          "uses": [
+            "Develop and debug Lambda functions without any local setup",
+            "Collaborative coding — share your IDE environment with a teammate"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS X-Ray",
+          "desc": "Distributed tracing service. Trace requests across microservices, visualize service maps, and identify performance bottlenecks.",
+          "uses": [
+            "Identify which Lambda function call is causing 3-second latency in an API",
+            "Visualize service dependency map for a microservices architecture"
+          ],
+          "tip": "X-Ray = distributed tracing. CloudWatch = metrics/logs. Together they give full observability."
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "name": "Application Integration",
+      "color": "#be185d",
+      "icon": "🔗",
+      "services": [
+        {
+          "name": "Amazon SQS",
+          "desc": "Fully managed message queuing service. Decouples microservices, distributes tasks, and buffers asynchronous workloads. Standard and FIFO queues.",
+          "uses": [
+            "Buffer order processing tasks to handle Black Friday traffic spikes",
+            "Decouple a web app from a slow order fulfillment service"
+          ],
+          "tip": "SQS = pull-based queue (consumers poll). SNS = push-based pub/sub. Often used together as SNS fan-out → multiple SQS queues."
+        },
+        {
+          "name": "Amazon SNS",
+          "desc": "Fully managed pub/sub messaging and push notifications. One message published to a topic is delivered to all subscribers (Lambda, SQS, email, SMS, HTTP).",
+          "uses": [
+            "Send SMS/email alerts to ops teams when CloudWatch alarm fires",
+            "Fan-out: one S3 event triggers parallel processing by multiple Lambda functions"
+          ],
+          "tip": "SNS topics → push to subscribers. SQS queues → consumers pull. Key exam pattern: SNS + SQS for fan-out."
+        },
+        {
+          "name": "Amazon MQ",
+          "desc": "Managed message broker service for Apache ActiveMQ and RabbitMQ. Migrate existing message broker workloads to AWS with minimal code changes.",
+          "uses": [
+            "Lift on-prem ActiveMQ broker to the cloud without rewriting app code",
+            "Hybrid cloud messaging between on-prem systems and AWS services"
+          ],
+          "tip": "MQ = for EXISTING apps using ActiveMQ/RabbitMQ protocols (AMQP, MQTT, STOMP). New apps should use SQS/SNS."
+        },
+        {
+          "name": "AWS EventBridge",
+          "desc": "Serverless event bus. Route events from AWS services, SaaS apps, and custom apps to targets. Replaces CloudWatch Events.",
+          "uses": [
+            "Route S3 events to multiple Lambda functions and Step Functions simultaneously",
+            "SaaS integration: Zendesk ticket events trigger Lambda workflows"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Step Functions",
+          "desc": "Serverless visual workflow orchestration. Build state machines that coordinate Lambda, ECS, and other AWS services with retry logic, branching, and error handling.",
+          "uses": [
+            "Orchestrate a 10-step order fulfillment workflow with retries on failures",
+            "Run ML data preparation pipeline with parallel processing steps"
+          ],
+          "tip": "Step Functions = complex multi-step workflows. Lambda = single function. Use Step Functions when you need orchestration."
+        },
+        {
+          "name": "AWS AppSync",
+          "desc": "Managed GraphQL API service with real-time subscriptions and offline data sync. Connects to DynamoDB, Lambda, RDS, and HTTP sources.",
+          "uses": [
+            "Build a real-time collaborative app where all users see live updates",
+            "Offline-capable mobile app that syncs data when connectivity is restored"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Amplify",
+          "desc": "Full-stack platform to build, ship, and host web and mobile apps. CI/CD, hosting, auth (Cognito), storage (S3), and API (AppSync) in one toolkit.",
+          "uses": [
+            "Deploy a Next.js app with CI/CD from GitHub in under 10 minutes",
+            "Add Cognito authentication and AppSync API to a React app without backend code"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "migration",
+      "name": "Migration & Transfer",
+      "color": "#6d28d9",
+      "icon": "🚀",
+      "services": [
+        {
+          "name": "AWS Migration Hub",
+          "desc": "Central dashboard to track the progress of application migrations from multiple AWS migration tools (DMS, MGN, SMS).",
+          "uses": [
+            "Monitor status of migrating 200 servers from VMware to EC2",
+            "Discover on-prem server inventory as the first step of cloud migration"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Database Migration Service",
+          "desc": "Migrate databases to AWS with minimal downtime. Supports homogenous (MySQL→RDS MySQL) and heterogeneous (Oracle→Aurora) migrations. Continuous replication.",
+          "uses": [
+            "Live migration from on-prem Oracle to Aurora PostgreSQL with <1hr downtime",
+            "Set up ongoing replication for a phased database cutover plan"
+          ],
+          "tip": "DMS = database migration. Schema Conversion Tool (SCT) = convert schema for heterogeneous migrations."
+        },
+        {
+          "name": "AWS Application Migration Service",
+          "desc": "Lift-and-shift service (formerly CloudEndure). Replicate servers to AWS and cut over with minutes of downtime.",
+          "uses": [
+            "Migrate 500 on-prem VMs to EC2 with minimal downtime",
+            "Continuously replicate servers to AWS as DR with RPO of seconds"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Snow Family",
+          "desc": "Physical devices for offline bulk data transfer: Snowcone (8TB portable), Snowball Edge (80TB), Snowmobile (100PB truck).",
+          "uses": [
+            "Transfer 500TB data center backup to S3 where internet would take months",
+            "Edge processing and data collection in oil fields with no internet"
+          ],
+          "tip": "Snowball Edge has onboard compute (EC2-compatible) for edge processing. Use when data transfer >1 week over internet."
+        },
+        {
+          "name": "AWS DataSync",
+          "desc": "Online automated data transfer between on-prem storage (NFS, SMB) and S3, EFS, or FSx — faster than native tools, encrypts in transit.",
+          "uses": [
+            "Weekly automated sync of on-prem file server to EFS",
+            "One-time migration of 10TB NAS to S3 before decommissioning"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Transfer Family",
+          "desc": "Fully managed SFTP, FTPS, and FTP service for transferring files into and out of S3 and EFS.",
+          "uses": [
+            "Migrate legacy SFTP file exchange to S3 without changing client software",
+            "Partner file exchange using SFTP backed by S3 with IAM-based access"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "hybrid",
+      "name": "Hybrid & Edge Computing",
+      "color": "#0e7490",
+      "icon": "📡",
+      "services": [
+        {
+          "name": "AWS Outposts",
+          "desc": "Fully managed AWS infrastructure delivered and installed on-premises. Run AWS services locally for ultra-low latency or data residency needs.",
+          "uses": [
+            "Factory floor manufacturing apps needing single-digit ms latency to local machines",
+            "Regulated workloads requiring data to never leave a specific physical location"
+          ],
+          "tip": "Outposts = AWS IN YOUR DATA CENTER. WaveLength = AWS IN 5G TELECOM. Ground Station = AWS FOR SATELLITES."
+        },
+        {
+          "name": "AWS Ground Station",
+          "desc": "Fully managed ground station network to communicate with and control satellites, and process satellite data in AWS.",
+          "uses": [
+            "Download earth observation imagery directly into S3 for analysis",
+            "Control and communicate with LEO satellites without building your own antenna"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS WaveLength",
+          "desc": "Embed AWS compute and storage within 5G telecom networks for single-digit millisecond latency at the network edge.",
+          "uses": [
+            "Real-time AR navigation apps on 5G mobile devices",
+            "Smart traffic management requiring ultra-low-latency local processing"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS VPN",
+          "desc": "Managed IPSec VPN tunnel between on-premises networks and AWS VPCs over the public internet. Encrypted, quick to set up.",
+          "uses": [
+            "Quickly connect a remote office to AWS VPC over the internet",
+            "Backup connectivity path alongside AWS Direct Connect"
+          ],
+          "tip": "VPN = encrypted over public internet (quick, lower cost). Direct Connect = private line (consistent, higher cost). Both connect on-prem to VPC."
+        }
+      ]
+    },
+    {
+      "id": "enduser",
+      "name": "End User Computing & Engagement",
+      "color": "#9f1239",
+      "icon": "🖥️",
+      "services": [
+        {
+          "name": "AWS WorkSpaces",
+          "desc": "Cloud-based virtual Windows and Linux desktops. Employees access a full desktop from any device. Pay hourly or monthly.",
+          "uses": [
+            "Provision secure remote desktops for employees during a data center migration",
+            "Deliver consistent desktops to contractors without corporate hardware"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS AppStream 2.0",
+          "desc": "Stream desktop applications to browsers — no local installation. Secure, scalable, managed by AWS.",
+          "uses": [
+            "Deliver 3D CAD software to engineers on any laptop — no GPU needed",
+            "Secure access to enterprise apps from BYOD devices without data leaving AWS"
+          ],
+          "exam": true
+        },
+        {
+          "name": "Amazon Pinpoint",
+          "desc": "Multi-channel marketing and transactional communication: email, SMS, push notifications, voice, in-app messaging. Audience segmentation included.",
+          "uses": [
+            "Send targeted promotional emails to users who abandoned their cart",
+            "Transactional SMS for OTPs and order confirmation notifications"
+          ],
+          "tip": "Pinpoint = marketing + transactional communications. SNS = pub/sub notifications for devs/ops. Pinpoint is for end-user engagement."
+        },
+        {
+          "name": "Amazon SES",
+          "desc": "Simple Email Service — high-volume transactional and marketing email. Low cost, high deliverability, supports DKIM/SPF.",
+          "uses": [
+            "Send 10 million order confirmation emails per month cost-effectively",
+            "Marketing newsletters with bounce/complaint handling built in"
+          ],
+          "exam": true
+        }
+      ]
+    },
+    {
+      "id": "media",
+      "name": "Media & Marketplace",
+      "color": "#92400e",
+      "icon": "🎬",
+      "services": [
+        {
+          "name": "Amazon Elastic Transcoder",
+          "desc": "Legacy media transcoding service. Convert video files from source format to multiple output formats for different devices.",
+          "uses": [
+            "Convert uploaded video to 360p, 720p, and 1080p MP4 for adaptive streaming",
+            "Generate video thumbnails as part of a media processing pipeline"
+          ],
+          "tip": "Elastic Transcoder is legacy. AWS Elemental MediaConvert is the modern replacement with more features."
+        },
+        {
+          "name": "AWS Elemental MediaConvert",
+          "desc": "File-based video transcoding for broadcast-quality output. DRM support, HDR, captions, frame rate conversion — for OTT platforms.",
+          "uses": [
+            "Encode video library with DRM for a Netflix-like streaming service",
+            "Transcode live sports recordings for archive and VOD distribution"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS IQ",
+          "desc": "Connect with AWS-certified third-party experts for on-demand consulting, architecture reviews, and hands-on technical work.",
+          "uses": [
+            "Hire a certified Solutions Architect to review your architecture",
+            "Get expert help with a specific migration or implementation project"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Marketplace",
+          "desc": "Digital catalog with thousands of third-party software solutions available to deploy and bill through AWS.",
+          "uses": [
+            "Deploy a pre-hardened NGINX AMI with security patches on EC2",
+            "Subscribe to a SaaS security scanner billed through your AWS invoice"
+          ],
+          "tip": "AWS Marketplace = buy software that runs on AWS. Consolidated billing means software cost appears on your AWS bill."
+        },
+        {
+          "name": "AWS Online Tech Talks",
+          "desc": "Free live and on-demand webinars hosted by AWS engineers covering services, architectures, and best practices.",
+          "uses": [
+            "Watch a deep-dive webinar on a new AWS service before using it",
+            "Free structured learning for exam preparation on specific topics"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Support Plans",
+          "desc": "5 tiers: Basic (free), Developer ($29/mo), Business ($100+/mo), Enterprise On-Ramp ($5500+/mo), Enterprise ($15000+/mo).",
+          "uses": [
+            "Business support: <1hr response for production system down + TAM access",
+            "Enterprise: dedicated TAM, concierge, and architecture review support"
+          ],
+          "tip": "Exam: Only Business and above get 24/7 phone/chat + AWS Support API. Enterprise gets a TAM. Basic = no case support."
+        },
+        {
+          "name": "AWS Pricing Calculator",
+          "desc": "Estimate the cost of AWS services before you build. Model architecture scenarios and get detailed cost breakdowns.",
+          "uses": [
+            "Estimate monthly bill for a 3-tier web app before committing to architecture",
+            "Compare cost of EC2 vs Fargate for a containerized workload"
+          ],
+          "exam": true
+        }
+      ]
+    }
+  ]
+}
