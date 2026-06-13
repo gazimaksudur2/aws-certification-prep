@@ -1,15 +1,62 @@
+# Dependencies
 node_modules
+
+# Production build
 dist
 dist-ssr
-*.local
-.DS_Store
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Vite
+.vite
+
+# Environment variables (secrets / local overrides)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / IDE
 .vscode/*
 !.vscode/extensions.json
 .idea
+*.swp
+*.swo
+*~
 
-prompts.txt
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Local-only Vite env files
+*.local
+
+# Cursor workspace (plans, local agent state)
+.cursor/
 .cursorignore
 
-public/*.md
-public/*.txt
+# Netlify local CLI output
+.netlify
+
+# Test coverage
+coverage
+
+# Project-specific local notes
+prompts.txt
+
+# Source markdown / text used for ingestion (not shipped as app assets)
+public/**/*.md
+public/**/*.txt
+
+# Raw study-guide HTML used to generate public/data/*.json at build time
+public/**/*study-guide*.html

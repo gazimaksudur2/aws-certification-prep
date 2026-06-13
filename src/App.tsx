@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { Landing } from './pages/Landing';
 import { Learning } from './pages/Learning';
 import { Quiz } from './pages/Quiz';
+import { GuidedPractice } from './pages/GuidedPractice';
 import { Results } from './pages/Results';
 import { Browse } from './pages/Browse';
 
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/practice" element={<Home />} />
           <Route path="/quiz" element={<Quiz />} />
+          <Route path="/guided" element={<GuidedPractice />} />
           <Route path="/results" element={<Results />} />
           <Route path="/practice/browse" element={<Browse />} />
           <Route path="/learning" element={<Learning />} />

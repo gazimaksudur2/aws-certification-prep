@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuiz } from '../hooks/useQuiz';
 import { useHistory } from '../hooks/useHistory';
-import type { AttemptHistoryEntry } from '../types';
+import type { AttemptHistoryEntry, QuizMode } from '../types';
 import {
   getExamBankMeta,
   getQuestionsForExam,
@@ -59,12 +59,15 @@ export function Home() {
     setCount(Math.min(20, poolSize));
   }
 
-  const handleStart = () => {
+  const begin = (mode: QuizMode) => {
     if (!examId || maxCount < 5) return;
     const safeCount = Math.min(Math.max(count, 5), maxCount);
-    startQuiz(examId, safeCount, topic);
-    navigate('/quiz');
+    startQuiz(examId, safeCount, topic, mode);
+    navigate(mode === 'guided' ? '/guided' : '/quiz');
   };
+
+  const handleStartTimed = () => begin('timed');
+  const handleStartGuided = () => begin('guided');
 
   const safeMax = Math.max(maxCount, 5);
   const rangeValue = Math.min(count, safeMax);
@@ -248,11 +251,19 @@ export function Home() {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 type="button"
-                onClick={handleStart}
+                onClick={handleStartTimed}
                 disabled={maxCount < 5}
                 className="btn-primary text-base flex-1"
               >
                 Start timed quiz →
+              </button>
+              <button
+                type="button"
+                onClick={handleStartGuided}
+                disabled={maxCount < 5}
+                className="btn-secondary text-base flex-1"
+              >
+                Start guided practice →
               </button>
               <button
                 type="button"

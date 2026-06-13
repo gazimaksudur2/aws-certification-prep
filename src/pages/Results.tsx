@@ -131,6 +131,7 @@ export function Results() {
 
   useEffect(() => {
     if (!session || !summary || savedRef.current) return;
+    if (session.mode === 'guided') return;
     savedRef.current = true;
 
     const entry: AttemptHistoryEntry = {
@@ -156,10 +157,12 @@ export function Results() {
 
   if (!session || !summary) return null;
 
+  const isGuided = session.mode === 'guided';
   const passed = summary.scorePercent >= summary.passThreshold;
 
-  const submitNote =
-    summary.submittedReason === 'time_expired'
+  const submitNote = isGuided
+    ? 'Guided practice summary — instant feedback was shown after each question. This run was not saved to attempt history.'
+    : summary.submittedReason === 'time_expired'
       ? 'Auto-submitted when the allotted time elapsed.'
       : 'You chose to submit (or answered through the final question without running out of time).';
 
@@ -181,13 +184,15 @@ export function Results() {
               {passed ? 'Passed' : 'Below pass mark'}
             </div>
             <h1 className="mt-1 text-3xl md:text-4xl font-extrabold">
-              {summary.examCode} · results
+              {summary.examCode} · {isGuided ? 'guided practice' : 'results'}
             </h1>
             <p className="mt-1 text-sm text-aws-orange">{summary.examTitle}</p>
             <p className="mt-3 text-slate-400">{submitNote}</p>
 
             <dl className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-              <Stat label="Allowed time" value={formatHm(summary.timeLimitSeconds)} />
+              {!isGuided && (
+                <Stat label="Allowed time" value={formatHm(summary.timeLimitSeconds)} />
+              )}
               <Stat
                 label="Time spent"
                 value={`${Math.floor(summary.durationSeconds / 60)}m ${summary.durationSeconds % 60}s`}

@@ -28,6 +28,7 @@ export function Quiz() {
 
   useEffect(() => {
     if (!session) navigate('/practice', { replace: true });
+    else if (session.mode === 'guided') navigate('/guided', { replace: true });
   }, [session, navigate]);
 
   const sessionRef = useRef(session);

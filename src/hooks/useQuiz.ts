@@ -9,6 +9,7 @@ import {
 } from 'react';
 import type {
   AnsweredQuestion,
+  QuizMode,
   QuizSession,
   SubmissionReason,
 } from '../types';
@@ -21,7 +22,12 @@ import { timeLimitSecondsFromQuestionCount } from '../utils/timeLimit';
 
 interface QuizContextValue {
   session: QuizSession | null;
-  startQuiz: (examId: string, count: number, topic?: string) => void;
+  startQuiz: (
+    examId: string,
+    count: number,
+    topic?: string,
+    mode?: QuizMode,
+  ) => void;
   recordAnswer: (questionId: number, selected: string[]) => void;
   skip: (questionId: number) => void;
   /**
@@ -44,7 +50,7 @@ export function QuizProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<QuizSession | null>(null);
 
   const startQuiz = useCallback(
-    (examId: string, count: number, topic?: string) => {
+    (examId: string, count: number, topic?: string, mode: QuizMode = 'timed') => {
       const meta = getExamBankMeta(examId);
       if (!meta || count < 1) return;
 
@@ -57,15 +63,17 @@ export function QuizProvider({ children }: { children: ReactNode }) {
       const picked = pickRandom(filtered, count);
       if (picked.length === 0) return;
 
-      const timeLimitSeconds = timeLimitSecondsFromQuestionCount(
-        picked.length,
-      );
+      const timeLimitSeconds =
+        mode === 'guided'
+          ? 0
+          : timeLimitSecondsFromQuestionCount(picked.length);
 
       setSession({
         examId,
         examCode: meta.code,
         examTitle: meta.title,
         passThresholdPercent: meta.passThresholdPercent,
+        mode,
         questions: picked,
         answers: {},
         currentIndex: 0,

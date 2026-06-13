@@ -1,5 +1,7 @@
 export type SubmissionReason = 'manual' | 'time_expired';
 
+export type QuizMode = 'timed' | 'guided';
+
 export interface Option {
   id: string;
   text: string;
@@ -28,6 +30,7 @@ export interface QuizSession {
   examCode: string;
   examTitle: string;
   passThresholdPercent: number;
+  mode: QuizMode;
   questions: Question[];
   answers: Record<number, AnsweredQuestion>;
   currentIndex: number;
