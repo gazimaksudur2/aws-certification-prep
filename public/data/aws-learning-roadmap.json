@@ -1,0 +1,2598 @@
+{
+  "schemaVersion": 2,
+  "source": "AWS_Study_Roadmap_CLF_SAA.html",
+  "domains": [
+    {
+      "id": "compute",
+      "name": "Compute",
+      "color": "#f59e0b",
+      "icon": "⚙️",
+      "subtitle": "EC2 · Lambda · ECS · EKS · Elastic Beanstalk · Batch · Lightsail",
+      "phase": 1,
+      "services": [
+        {
+          "name": "Amazon EC2",
+          "desc": "Virtual servers (instances) in the cloud. Foundation of AWS compute.",
+          "priority": "critical",
+          "examTopics": [
+            "Instance types: General (t3, m5), Compute (c5), Memory (r5), Storage (i3), Accelerated (p3, g4)",
+            "Purchasing options: On-Demand, Reserved (1yr/3yr, Standard/Convertible), Spot, Dedicated Hosts, Savings Plans",
+            "AMI: regional, can be shared, used for launch",
+            "User Data: runs at first launch (bootstrap scripts)",
+            "Metadata: 169.254.169.254/latest/meta-data/",
+            "Instance Store vs EBS: ephemeral vs persistent",
+            "Placement Groups: Cluster (low-latency), Spread (max AZ separation), Partition (distributed)",
+            "ENI (Elastic Network Interface): can attach/move between instances",
+            "Elastic IP: static public IP",
+            "Hibernate: RAM saved to EBS, faster restart",
+            "Nitro: newer hypervisor, better performance, bare metal support"
+          ],
+          "exam": true,
+          "uses": [
+            "Host web apps, APIs, or any custom workload needing full server control",
+            "Run compute-intensive jobs like video rendering or data processing"
+          ],
+          "tip": "Know On-Demand vs Reserved vs Spot vs Savings Plans. EC2 is IaaS."
+        },
+        {
+          "name": "EC2 Auto Scaling",
+          "desc": "Automatically adjusts EC2 fleet size based on demand.",
+          "priority": "critical",
+          "examTopics": [
+            "Launch Template vs Launch Configuration (Templates preferred, support versioning)",
+            "Scaling policies: Target Tracking, Step, Simple, Scheduled",
+            "Cooldown period: default 300s, prevents rapid scaling",
+            "Lifecycle hooks: pause during launch/terminate for custom actions",
+            "Mixed instance policy: combine On-Demand + Spot",
+            "Health checks: EC2 health vs ELB health",
+            "Min / Max / Desired capacity"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS Lambda",
+          "desc": "Serverless function execution — pay per invocation.",
+          "priority": "critical",
+          "examTopics": [
+            "Max execution: 15 minutes",
+            "Memory: 128 MB – 10 GB (CPU scales with memory)",
+            "Triggers: API Gateway, S3, DynamoDB Streams, SQS, SNS, CloudWatch Events/EventBridge",
+            "Concurrency: default 1000/region (soft limit), reserved vs provisioned",
+            "Cold Start: first invocation latency (use provisioned concurrency to avoid)",
+            "Layers: shared code/libraries across functions",
+            "Deployment package: ZIP or container image (up to 10 GB)",
+            "Environment variables (can be encrypted with KMS)",
+            "VPC configuration: needs NAT if requires internet access"
+          ],
+          "exam": true,
+          "uses": [
+            "Event-driven microservices triggered by S3 uploads or API calls",
+            "Real-time data transformation in serverless architectures"
+          ],
+          "tip": "Serverless = no server management. Max 15 min timeout. Pay per invocation."
+        },
+        {
+          "name": "Elastic Beanstalk",
+          "desc": "PaaS — deploy web apps without managing infrastructure.",
+          "priority": "high",
+          "examTopics": [
+            "Supports: Java, .NET, PHP, Node, Python, Ruby, Go, Docker",
+            "Manages: EC2, ASG, ELB, RDS, monitoring automatically",
+            "Deployment modes: All at once, Rolling, Rolling with additional batch, Immutable, Blue/Green",
+            "Not truly serverless — EC2 instances under the hood",
+            ".ebextensions: customize configuration via YAML files"
+          ]
+        },
+        {
+          "name": "AWS Batch",
+          "desc": "Run batch computing jobs at any scale (HPC/scientific).",
+          "priority": "medium",
+          "examTopics": [
+            "Managed EC2 or Spot instances under the hood",
+            "Job Queue → Job Definition → Compute Environment",
+            "Use for: ETL, genomics, financial modelling",
+            "Difference from Lambda: no time limit, can use Docker containers"
+          ],
+          "uses": [
+            "Overnight financial risk model computations",
+            "Large-scale ML training data preprocessing"
+          ]
+        },
+        {
+          "name": "Amazon Lightsail",
+          "desc": "Simplified VPS — predictable pricing for small workloads.",
+          "priority": "medium",
+          "examTopics": [
+            "Includes compute, storage, DNS, static IP bundled",
+            "Good for: blogs, simple websites, dev environments",
+            "Not integrated deeply with other AWS services",
+            "Exam trap: choose Lightsail for simple/predictable workloads, EC2 for scalable ones"
+          ],
+          "uses": [
+            "Simple WordPress or small web app hosting",
+            "Affordable dev/test environments with predictable billing"
+          ]
+        },
+        {
+          "name": "AWS Outposts",
+          "desc": "AWS hardware in your on-premises data center for hybrid workloads.",
+          "priority": "medium",
+          "examTopics": [
+            "Same APIs, tools, and hardware as AWS cloud",
+            "Owned/operated by AWS, installed on-premises",
+            "Use when: data residency, low latency to on-prem, local processing required",
+            "Supports EC2, EBS, S3, RDS, ECS, EKS on Outposts"
+          ],
+          "uses": [
+            "Factory floor manufacturing apps needing single-digit ms latency to local machines",
+            "Regulated workloads requiring data to never leave a specific physical location"
+          ],
+          "tip": "Outposts = AWS IN YOUR DATA CENTER. WaveLength = AWS IN 5G TELECOM. Ground Station = AWS FOR SATELLITES."
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "EC2 Purchasing Options — When to Use Each",
+          "cards": [
+            {
+              "title": "On-Demand",
+              "rows": [
+                {
+                  "key": "Best for:",
+                  "val": "Unpredictable, short workloads"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Highest per-hour"
+                },
+                {
+                  "key": "Commitment:",
+                  "val": "None"
+                }
+              ]
+            },
+            {
+              "title": "Reserved (1yr/3yr)",
+              "rows": [
+                {
+                  "key": "Best for:",
+                  "val": "Steady-state apps (databases)"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Up to 72% off On-Demand"
+                },
+                {
+                  "key": "Commitment:",
+                  "val": "1 or 3 years"
+                }
+              ]
+            },
+            {
+              "title": "Spot Instances",
+              "rows": [
+                {
+                  "key": "Best for:",
+                  "val": "Batch jobs, fault-tolerant"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Up to 90% off On-Demand"
+                },
+                {
+                  "key": "Risk:",
+                  "val": "2-min warning before termination"
+                }
+              ]
+            },
+            {
+              "title": "Savings Plans",
+              "rows": [
+                {
+                  "key": "Best for:",
+                  "val": "Flexible compute across Lambda/EC2/Fargate"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Up to 66% off"
+                },
+                {
+                  "key": "Commitment:",
+                  "val": "$/hr commitment for 1–3 yr"
+                }
+              ]
+            },
+            {
+              "title": "Dedicated Hosts",
+              "rows": [
+                {
+                  "key": "Best for:",
+                  "val": "Compliance / BYOL (licensing)"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Most expensive"
+                },
+                {
+                  "key": "Note:",
+                  "val": "Physical server dedicated to you"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "🪤 Common Exam Traps — Compute",
+          "items": [
+            "Spot vs Reserved: Spot for batch/flexible workloads, Reserved for steady-state databases",
+            "Lambda limit: 15-minute max — anything longer needs EC2/ECS/Batch",
+            "Elastic Beanstalk ≠ Serverless — it runs EC2 instances under the hood",
+            "Instance Store data is LOST on stop/terminate — not suitable for persistent data",
+            "Placement Group — Cluster: same AZ, NOT multi-AZ — NOT highly available"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Storage",
+      "color": "#10b981",
+      "icon": "🗄️",
+      "subtitle": "S3 · EBS · EFS · FSx · Storage Gateway · AWS Backup",
+      "phase": 1,
+      "services": [
+        {
+          "name": "Amazon S3",
+          "desc": "Object storage. Unlimited capacity, 11 9s durability.",
+          "priority": "critical",
+          "examTopics": [
+            "Storage Classes: Standard, Intelligent-Tiering, Standard-IA, One Zone-IA, Glacier Instant, Glacier Flexible, Glacier Deep Archive",
+            "Max object size: 5 TB; multipart upload required >100MB, mandatory >5GB",
+            "Versioning: protect against accidental delete/overwrite",
+            "Replication: CRR (cross-region), SRR (same-region) — versioning must be enabled",
+            "Encryption: SSE-S3, SSE-KMS, SSE-C, client-side",
+            "Access: Bucket Policy (resource-based), ACL (legacy), IAM (identity-based)",
+            "Pre-signed URLs: time-limited access for unauthenticated users",
+            "Static website hosting (no HTTPS natively — use CloudFront)",
+            "Transfer Acceleration: uses CloudFront edge for faster upload",
+            "S3 Select: query data inside objects with SQL",
+            "Event Notifications → SNS / SQS / Lambda / EventBridge",
+            "Object Lock: WORM compliance (Governance / Compliance mode)",
+            "Requester Pays: requester pays data transfer costs",
+            "MFA Delete: requires MFA to permanently delete versions"
+          ],
+          "exam": true,
+          "uses": [
+            "Host static websites and store media assets globally",
+            "Data lake for analytics workloads like Athena queries"
+          ],
+          "tip": "Know S3 storage classes: Standard, Intelligent-Tiering, Standard-IA, Glacier Instant, Glacier Flexible, Deep Archive. Also know versioning, bucket policies."
+        },
+        {
+          "name": "Amazon EBS",
+          "desc": "Block storage volumes attached to EC2. Like a network hard drive.",
+          "priority": "very-high",
+          "examTopics": [
+            "Types: gp3 (default SSD), io2/io1 (high IOPS, critical DBs), st1 (HDD, throughput), sc1 (HDD, cold)",
+            "AZ-locked — cannot attach to EC2 in another AZ directly",
+            "Snapshots: incremental, stored in S3, can copy cross-region",
+            "Encryption: encrypted at rest and in transit; encrypted AMI → encrypted EBS",
+            "Multi-Attach: io1/io2 can attach to multiple EC2 in same AZ",
+            "gp3 vs gp2: gp3 allows independent IOPS/throughput provisioning, cheaper",
+            "Delete on termination: default ON for root volume"
+          ]
+        },
+        {
+          "name": "Amazon EFS",
+          "desc": "Managed NFS — shared file system for Linux instances.",
+          "priority": "high",
+          "examTopics": [
+            "Multi-AZ — can mount to multiple EC2 simultaneously",
+            "Linux only (NFS protocol)",
+            "Storage tiers: Standard and EFS-IA (Infrequent Access)",
+            "Performance modes: General Purpose vs Max I/O",
+            "Throughput modes: Bursting vs Provisioned",
+            "EFS vs EBS: EFS = shared/Linux, EBS = single instance/any OS"
+          ],
+          "uses": [
+            "Shared storage for a fleet of web servers serving the same content",
+            "Content management systems (WordPress, Drupal) on multiple servers"
+          ],
+          "tip": "EFS = shared Linux NFS. FSx for Windows = SMB/Windows shares. S3 = object storage."
+        },
+        {
+          "name": "Amazon FSx",
+          "desc": "Fully managed third-party file systems.",
+          "priority": "medium",
+          "examTopics": [
+            "FSx for Windows File Server: SMB, Active Directory, Windows-based workloads",
+            "FSx for Lustre: HPC, ML, financial modelling, integrates with S3",
+            "FSx for NetApp ONTAP: multi-protocol (NFS/SMB/iSCSI)",
+            "FSx for OpenZFS: Linux/BSD workloads",
+            "Key trap: Windows shared storage → FSx for Windows (NOT EFS)"
+          ],
+          "uses": [
+            "Lift Windows-based file shares to the cloud without re-architecting",
+            "HPC workloads (genomics, simulation) needing ultra-fast parallel storage"
+          ]
+        },
+        {
+          "name": "AWS Storage Gateway",
+          "desc": "Hybrid cloud storage bridge between on-premises and AWS.",
+          "priority": "medium",
+          "examTopics": [
+            "S3 File Gateway: NFS/SMB → S3 (caches locally)",
+            "FSx File Gateway: SMB/Windows → FSx",
+            "Volume Gateway (Cached): iSCSI, primary in S3, cache on-prem",
+            "Volume Gateway (Stored): iSCSI, primary on-prem, async backup to S3",
+            "Tape Gateway: Virtual Tape Library → S3/Glacier (replace physical tapes)"
+          ],
+          "uses": [
+            "Transparently back up on-prem data to S3 without changing apps",
+            "Extend on-prem storage seamlessly to the cloud"
+          ]
+        },
+        {
+          "name": "AWS Backup",
+          "desc": "Centralized backup management for AWS services.",
+          "priority": "medium",
+          "examTopics": [
+            "Supports: EC2, EBS, RDS, Aurora, DynamoDB, EFS, FSx, S3, Outposts",
+            "Backup plans: schedule, retention, lifecycle to cold storage",
+            "Cross-region & cross-account backup support",
+            "Vault Lock: WORM — prevent deletion by anyone"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "🪤 S3 vs EBS vs EFS Comparison",
+          "items": [
+            "S3: Object storage, internet-accessible, not mountable as file system, used for backups/static files/media",
+            "EBS: Block storage, one EC2 at a time (except io2 Multi-Attach), AZ-specific, high performance",
+            "EFS: File storage, shared across many EC2 instances, multi-AZ, Linux only, higher cost"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "databases",
+      "name": "Databases",
+      "color": "#3b82f6",
+      "icon": "🛢️",
+      "subtitle": "RDS · Aurora · DynamoDB · ElastiCache · Redshift · Neptune · DocumentDB",
+      "phase": 2,
+      "services": [
+        {
+          "name": "Amazon RDS",
+          "desc": "Managed relational databases (MySQL, PostgreSQL, MariaDB, Oracle, MSSQL).",
+          "priority": "critical",
+          "examTopics": [
+            "Multi-AZ: synchronous replication, automatic failover, NOT for read scaling",
+            "Read Replicas: asynchronous, up to 5 per DB, used for read scaling",
+            "Read Replicas can be cross-region (charges for data transfer)",
+            "Automated backups (0–35 days retention) + manual snapshots",
+            "Encryption: must be enabled at creation; encrypted source → encrypted replica",
+            "Storage: gp2/gp3/io1, auto-scaling supported",
+            "RDS Proxy: pooling connections, improves Lambda scalability",
+            "IAM authentication: MySQL, PostgreSQL",
+            "Maintenance window: scheduled downtime for updates"
+          ],
+          "exam": true,
+          "uses": [
+            "E-commerce product catalog and order management systems",
+            "Enterprise apps needing ACID-compliant SQL databases"
+          ],
+          "tip": "RDS = managed but not serverless. Multi-AZ = high availability. Read Replicas = performance."
+        },
+        {
+          "name": "Amazon Aurora",
+          "desc": "AWS-optimized relational DB — 5x MySQL, 3x PostgreSQL performance.",
+          "priority": "critical",
+          "examTopics": [
+            "6 copies of data across 3 AZs (storage auto-heals)",
+            "Up to 15 Read Replicas (vs 5 for RDS), sub-10ms lag",
+            "Aurora Global Database: cross-region, <1 sec replication lag",
+            "Aurora Serverless v2: auto-scales capacity (ACUs), great for variable workloads",
+            "Backtrack: roll back DB without restore (within hours)",
+            "Multi-Master: write to multiple instances simultaneously",
+            "Cluster endpoint, reader endpoint, custom endpoint"
+          ],
+          "exam": true,
+          "uses": [
+            "High-throughput SaaS apps needing MySQL/PostgreSQL compatibility",
+            "Replacing costly Oracle licenses with a cloud-native alternative"
+          ]
+        },
+        {
+          "name": "Amazon DynamoDB",
+          "desc": "Fully managed NoSQL key-value/document database. Serverless.",
+          "priority": "critical",
+          "examTopics": [
+            "Single-digit millisecond performance at any scale",
+            "Primary Key: Partition Key (simple) or Partition Key + Sort Key (composite)",
+            "Capacity: Provisioned (RCU/WCU) or On-Demand mode",
+            "DynamoDB Streams: capture item changes, integrates with Lambda",
+            "Global Tables: multi-region, multi-master replication",
+            "DAX (DynamoDB Accelerator): in-memory cache, microsecond reads, write-through",
+            "TTL: automatically expire items",
+            "GSI (Global Secondary Index): different partition/sort key",
+            "LSI (Local Secondary Index): same partition, different sort key — must create at table creation",
+            "Point-in-Time Recovery (PITR): continuous backups, last 35 days",
+            "Transactions: ACID across multiple items/tables"
+          ],
+          "exam": true,
+          "uses": [
+            "Gaming leaderboards and session management needing millisecond reads",
+            "Shopping cart data that needs horizontal scaling with traffic spikes"
+          ],
+          "tip": "NoSQL = DynamoDB. Key exam topic: on-demand vs provisioned capacity, DAX for caching."
+        },
+        {
+          "name": "Amazon ElastiCache",
+          "desc": "Managed in-memory caching (Redis and Memcached).",
+          "priority": "high",
+          "examTopics": [
+            "Redis: persistence, replication, pub/sub, Sorted Sets, Multi-AZ, backup/restore",
+            "Memcached: pure cache, multi-threaded, no persistence, simpler",
+            "Use cases: session store, leaderboards, real-time analytics, DB query caching",
+            "Lazy loading vs Write-through cache strategies",
+            "Exam trap: need persistence or Multi-AZ → Redis; simple caching → Memcached"
+          ],
+          "uses": [
+            "Cache database query results to serve millions of API requests",
+            "Session storage for web apps needing sub-millisecond access"
+          ],
+          "tip": "Caching layer to improve performance. Redis = more features. Memcached = simpler."
+        },
+        {
+          "name": "Amazon Redshift",
+          "desc": "Petabyte-scale data warehouse for analytics (columnar storage, OLAP).",
+          "priority": "high",
+          "examTopics": [
+            "Columnar storage → fast aggregations, analytics queries",
+            "Massive Parallel Processing (MPP) across nodes",
+            "Redshift Spectrum: query S3 data without loading it",
+            "Enhanced VPC Routing: data stays in VPC",
+            "OLTP (transactions) → RDS/Aurora; OLAP (analytics) → Redshift",
+            "Snapshots: automated and manual, can copy cross-region"
+          ],
+          "uses": [
+            "BI and ad-hoc SQL queries on years of historical sales data",
+            "Complex analytical queries joining TB of data for executive dashboards"
+          ],
+          "tip": "OLAP = Redshift (analytics). OLTP = RDS (transactional). Know this distinction for exam."
+        },
+        {
+          "name": "Amazon Neptune",
+          "desc": "Fully managed graph database.",
+          "priority": "medium",
+          "examTopics": [
+            "Use cases: social networks, fraud detection, recommendation engines",
+            "Supports Gremlin (graph traversal) and SPARQL (RDF)",
+            "Multi-AZ, read replicas, similar architecture to Aurora"
+          ],
+          "uses": [
+            "Social network graphs (friend-of-friend queries)",
+            "Fraud detection by analyzing relationship patterns"
+          ]
+        },
+        {
+          "name": "Amazon DocumentDB",
+          "desc": "MongoDB-compatible document database.",
+          "priority": "medium",
+          "examTopics": [
+            "JSON documents, MongoDB API compatible (but not MongoDB itself)",
+            "Good for: content management, catalogs, user profiles",
+            "Similar architecture to Aurora (storage scales automatically)"
+          ],
+          "uses": [
+            "Content management systems with complex nested data structures",
+            "User profiles and product catalogs with variable schemas"
+          ]
+        },
+        {
+          "name": "Amazon Keyspaces",
+          "desc": "Managed Apache Cassandra-compatible wide-column database.",
+          "priority": "low",
+          "examTopics": [
+            "Use for IoT, time-series data, Cassandra migrations",
+            "Serverless, scales automatically"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "RDS vs Aurora vs DynamoDB — When to Choose",
+          "cards": [
+            {
+              "title": "RDS",
+              "rows": [
+                {
+                  "key": "Type:",
+                  "val": "Managed relational (OLTP)"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Traditional apps, SQL, ACID"
+                },
+                {
+                  "key": "HA:",
+                  "val": "Multi-AZ failover"
+                },
+                {
+                  "key": "Replicas:",
+                  "val": "Up to 5 read replicas"
+                }
+              ]
+            },
+            {
+              "title": "Aurora",
+              "rows": [
+                {
+                  "key": "Type:",
+                  "val": "AWS-optimized relational"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "High performance, global apps"
+                },
+                {
+                  "key": "HA:",
+                  "val": "6 copies across 3 AZs"
+                },
+                {
+                  "key": "Replicas:",
+                  "val": "Up to 15 read replicas"
+                }
+              ]
+            },
+            {
+              "title": "DynamoDB",
+              "rows": [
+                {
+                  "key": "Type:",
+                  "val": "NoSQL key-value/document"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Serverless, variable loads, gaming"
+                },
+                {
+                  "key": "HA:",
+                  "val": "Multi-AZ by default"
+                },
+                {
+                  "key": "Scale:",
+                  "val": "Virtually unlimited, millisecond"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "networking",
+      "name": "Networking & Content Delivery",
+      "color": "#8b5cf6",
+      "icon": "🌐",
+      "subtitle": "VPC · Route 53 · CloudFront · ELB · Direct Connect · Transit Gateway",
+      "phase": 1,
+      "services": [
+        {
+          "name": "Amazon VPC",
+          "desc": "Your private network in AWS — logically isolated cloud environment.",
+          "priority": "critical",
+          "examTopics": [
+            "Subnets: Public (route to IGW), Private (no direct internet)",
+            "Internet Gateway (IGW): allows internet access for public subnets (horizontally scaled, HA)",
+            "NAT Gateway: allows private subnet instances to initiate outbound internet traffic (managed, AZ-specific, create one per AZ)",
+            "Route Tables: control traffic routing; each subnet associated with one",
+            "Security Groups: stateful, instance-level firewall (allow rules only)",
+            "NACLs: stateless, subnet-level, support allow AND deny rules, rules evaluated in order",
+            "VPC Peering: connect two VPCs (same or cross-account/region), non-transitive",
+            "VPC Endpoints: private access to AWS services without IGW — Interface Endpoint: uses PrivateLink (ENI in subnet), most services — Gateway Endpoint: S3 and DynamoDB only (free, route table entry)",
+            "Flow Logs: capture IP traffic metadata for troubleshooting",
+            "Default VPC: pre-created, public subnets, internet-accessible",
+            "CIDR ranges: /16 to /28 allowed"
+          ],
+          "exam": true,
+          "uses": [
+            "Isolate sensitive workloads in private subnets without internet access",
+            "Connect on-prem to AWS using VPN or Direct Connect through VPC"
+          ],
+          "tip": "Key concepts: Public vs Private subnets, Security Groups (stateful), NACLs (stateless), NAT Gateway."
+        },
+        {
+          "name": "Elastic Load Balancing",
+          "desc": "Distribute traffic across multiple targets for HA and scaling.",
+          "priority": "critical",
+          "examTopics": [
+            "ALB (Application Load Balancer): Layer 7 (HTTP/HTTPS), path/host-based routing, WebSockets, Lambda targets, fixed response, redirect",
+            "NLB (Network Load Balancer): Layer 4 (TCP/UDP/TLS), ultra-high performance (millions of req/s), static IP, used for TCP traffic",
+            "GWLB (Gateway Load Balancer): deploy/manage 3rd-party virtual appliances (firewalls, IDS), operates at Layer 3",
+            "CLB (Classic LB): legacy, Layer 4 & 7, avoid in new designs",
+            "Cross-zone load balancing: distribute across AZs (on by default for ALB)",
+            "Connection Draining / Deregistration Delay: complete in-flight requests on deregistering targets",
+            "Sticky Sessions: route user to same target (uses cookie)",
+            "SSL Termination: decrypt at LB, plain traffic to targets",
+            "SNI: multiple SSL certs on same listener (ALB & NLB)"
+          ],
+          "exam": true,
+          "uses": [
+            "Distribute web traffic across EC2 instances in multiple AZs",
+            "Health check-based routing to automatically bypass unhealthy instances"
+          ],
+          "tip": "ALB = Layer 7 (HTTP/HTTPS). NLB = Layer 4 (TCP/UDP, static IP). Know with Auto Scaling."
+        },
+        {
+          "name": "Amazon Route 53",
+          "desc": "Authoritative DNS + health checking + traffic routing.",
+          "priority": "critical",
+          "examTopics": [
+            "Record types: A (IPv4), AAAA (IPv6), CNAME, Alias (AWS-specific), MX, TXT, NS",
+            "Alias vs CNAME: Alias can point to AWS resources (free, works at zone apex), CNAME cannot be at apex",
+            "Routing Policies: — Simple: single resource — Weighted: split traffic by % — Latency: lowest latency region — Failover: active/passive with health check — Geolocation: based on user's location — Geoproximity: based on location + bias — Multi-Value Answer: multiple values with health checks",
+            "Health Checks: can trigger failover automatically",
+            "TTL: how long DNS resolvers cache the record",
+            "Private Hosted Zones: DNS within VPC only"
+          ],
+          "exam": true,
+          "uses": [
+            "DNS with health check-based failover to a backup region",
+            "Latency-based routing directing users to the closest AWS region"
+          ],
+          "tip": "Route 53 = DNS + health checks. Routing policies: Simple, Weighted, Latency, Failover, Geolocation."
+        },
+        {
+          "name": "Amazon CloudFront",
+          "desc": "CDN — caches content at 400+ edge locations globally.",
+          "priority": "very-high",
+          "examTopics": [
+            "Origins: S3, EC2, ALB, HTTP endpoint (on-prem)",
+            "OAC (Origin Access Control): restrict S3 to only CloudFront (replaces OAI)",
+            "Cache behaviors: path-based routing to different origins",
+            "TTL: default 24hr, controlled by Cache-Control headers",
+            "Invalidation: purge cache (path or wildcard), costs money",
+            "Signed URLs/Signed Cookies: private content distribution",
+            "Field-Level Encryption: encrypt specific form fields at edge",
+            "Lambda@Edge / CloudFront Functions: run code at edge",
+            "Price Class: restrict to specific edge location regions for cost savings",
+            "HTTPS: free SSL cert via ACM (must be in us-east-1)"
+          ],
+          "uses": [
+            "Serve static website assets globally with low latency",
+            "Stream video content to global audiences with minimal buffering"
+          ],
+          "tip": "CDN = CloudFront. Know: origins (S3, EC2, ALB), OAI for private S3, Lambda@Edge."
+        },
+        {
+          "name": "AWS Transit Gateway",
+          "desc": "Hub-and-spoke networking for VPCs and on-premises connections.",
+          "priority": "high",
+          "examTopics": [
+            "Connects thousands of VPCs and on-prem networks through a central hub",
+            "Transitive routing (unlike VPC Peering which is non-transitive)",
+            "Cross-region peering between Transit Gateways",
+            "Route Tables on TGW for traffic segmentation",
+            "Multicast support",
+            "Replace complex VPC peering meshes with Transit Gateway"
+          ],
+          "uses": [
+            "Hub-and-spoke model connecting 100+ VPCs in a large enterprise",
+            "Simplifying mesh VPC peering topology to a star topology"
+          ]
+        },
+        {
+          "name": "AWS Direct Connect",
+          "desc": "Dedicated private network connection from on-premises to AWS.",
+          "priority": "high",
+          "examTopics": [
+            "Consistent bandwidth, lower latency than VPN over internet",
+            "NOT encrypted by default — add VPN over Direct Connect for encryption",
+            "Takes weeks to months to set up physically",
+            "1 Gbps / 10 Gbps / 100 Gbps connections",
+            "Direct Connect Gateway: connect to VPCs in multiple regions via single Direct Connect",
+            "Virtual Interfaces (VIF): Public VIF (AWS public services), Private VIF (VPC), Transit VIF (Transit Gateway)"
+          ],
+          "uses": [
+            "Consistent sub-10ms latency for hybrid apps that need both cloud and on-prem",
+            "Transferring petabytes of data with reduced bandwidth costs vs internet"
+          ],
+          "tip": "Direct Connect = private dedicated line. VPN = encrypted over internet. Direct Connect is faster/more consistent."
+        },
+        {
+          "name": "AWS VPN",
+          "desc": "Encrypted IPsec VPN over public internet to AWS VPC.",
+          "priority": "high",
+          "examTopics": [
+            "Site-to-Site VPN: on-premises to VPC via Internet Gateway or Virtual Private Gateway",
+            "Client VPN: remote employees connect to VPC",
+            "Setup takes minutes (vs weeks for Direct Connect)",
+            "Max 1.25 Gbps per tunnel (vs Direct Connect 100 Gbps)",
+            "VPN as backup for Direct Connect = common exam scenario"
+          ],
+          "uses": [
+            "Quickly connect a remote office to AWS VPC over the internet",
+            "Backup connectivity path alongside AWS Direct Connect"
+          ],
+          "tip": "VPN = encrypted over public internet (quick, lower cost). Direct Connect = private line (consistent, higher cost). Both connect on-prem to VPC."
+        },
+        {
+          "name": "AWS Global Accelerator",
+          "desc": "Improves global app performance using AWS backbone network.",
+          "priority": "high",
+          "examTopics": [
+            "2 static Anycast IPs routed to nearest AWS edge",
+            "Works at Layer 4 (TCP/UDP) — compare to CloudFront Layer 7",
+            "Supports: EC2, ALB, NLB, Elastic IPs",
+            "No caching (unlike CloudFront)",
+            "Good for: gaming, IoT, non-HTTP, global users needing low latency"
+          ],
+          "uses": [
+            "Improve availability and performance for global gaming or fintech apps",
+            "Static IP addresses for multi-region applications behind load balancers"
+          ],
+          "tip": "CloudFront = cache content at edge. Global Accelerator = route TCP/UDP traffic via AWS backbone."
+        },
+        {
+          "name": "AWS PrivateLink",
+          "desc": "Expose services to other VPCs without VPC peering or internet.",
+          "priority": "medium",
+          "examTopics": [
+            "Uses Interface VPC Endpoints (ENI-based)",
+            "Service provider → NLB → PrivateLink → Consumer's ENI",
+            "Traffic stays on AWS network (no public internet, no peering)",
+            "Used by AWS services themselves for private connectivity"
+          ],
+          "uses": [
+            "Securely access SaaS products without public internet exposure",
+            "Private inter-VPC service communication without VPC peering or IGW"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "CloudFront vs Global Accelerator",
+          "cards": [
+            {
+              "title": "CloudFront",
+              "rows": [
+                {
+                  "key": "Layer:",
+                  "val": "7 (HTTP/HTTPS)"
+                },
+                {
+                  "key": "Caches:",
+                  "val": "Yes — static & dynamic content"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Web/media delivery, static sites"
+                },
+                {
+                  "key": "IPs:",
+                  "val": "Variable (DNS-based)"
+                }
+              ]
+            },
+            {
+              "title": "Global Accelerator",
+              "rows": [
+                {
+                  "key": "Layer:",
+                  "val": "4 (TCP/UDP)"
+                },
+                {
+                  "key": "Caches:",
+                  "val": "No"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Gaming, IoT, non-HTTP, latency"
+                },
+                {
+                  "key": "IPs:",
+                  "val": "2 static Anycast IPs"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "🪤 Critical Networking Exam Traps",
+          "items": [
+            "NAT Gateway vs IGW: IGW allows bidirectional internet. NAT Gateway is for outbound only from private subnets. NAT is AZ-specific — for HA, create one per AZ.",
+            "Security Groups are stateful — if outbound allowed, return traffic allowed automatically. NACLs are stateless — need explicit inbound AND outbound rules.",
+            "VPC Peering is non-transitive — if A peers B and B peers C, A cannot reach C. Use Transit Gateway for transitive routing.",
+            "Direct Connect ≠ Encrypted — add VPN over Direct Connect for encryption.",
+            "ALB vs NLB: ALB for HTTP/HTTPS with path routing, NLB for TCP/UDP ultra-low latency or static IPs."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security & Identity",
+      "color": "#ef4444",
+      "icon": "🔐",
+      "subtitle": "IAM · KMS · Cognito · GuardDuty · Shield · WAF · Inspector · Macie",
+      "phase": 2,
+      "services": [],
+      "callouts": [
+        {
+          "kind": "info",
+          "title": "⚠️ Shared Responsibility Model — Must Know",
+          "items": [
+            "AWS Responsibility (\"OF the cloud\"): Physical hardware, global infrastructure, network, hypervisor, managed service underlying infrastructure, AZ/Region redundancy",
+            "Customer Responsibility (\"IN the cloud\"): OS patching (EC2), application code, data classification, encryption, IAM, Security Groups, network traffic, firewall config",
+            "Shared: Patch management (AWS patches RDS OS, customer patches EC2 OS), encryption (both can contribute), awareness & training"
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "🔑 AWS IAM (Critical)",
+          "items": [
+            "Users, Groups, Roles, Policies",
+            "Policies: Identity-based, Resource-based, Permission Boundaries, SCPs, Session policies",
+            "Principle of Least Privilege — grant only what's needed",
+            "IAM Roles for EC2: no long-term keys stored on instance",
+            "IAM Role for Cross-Account access: trust policy + assume role",
+            "Policy evaluation: explicit Deny → Organization SCP → Resource-based → Identity-based",
+            "IAM Access Analyzer: finds external access",
+            "MFA: virtual, hardware, SMS (not recommended)",
+            "Password policy: complexity, rotation, reuse prevention",
+            "Root account: lock away, never use for day-to-day",
+            "Access keys: for CLI/SDK — rotate regularly, never embed in code",
+            "Inline vs Managed Policies: Managed = reusable, Inline = specific attachment"
+          ]
+        },
+        {
+          "title": "🔒 AWS KMS (Critical)",
+          "items": [
+            "Manages encryption keys (CMKs)",
+            "Key types: AWS Managed, Customer Managed (CMK), Customer-provided (SSE-C)",
+            "Envelope Encryption: data key encrypts data, CMK encrypts data key",
+            "KMS integrates with: S3, EBS, RDS, DynamoDB, Lambda, SSM Parameter Store",
+            "Multi-Region Keys: replicate CMK across regions",
+            "Key Policies: control who can use/manage keys",
+            "CloudHSM: dedicated hardware security module (you manage, FIPS 140-2 Level 3)"
+          ]
+        },
+        {
+          "title": "🛡️ AWS Shield (High)",
+          "items": [
+            "DDoS protection",
+            "Shield Standard: free, automatic, protects all AWS customers (L3/L4)",
+            "Shield Advanced: paid (~$3000/mo), L7 protection, DDoS cost protection, 24/7 DRT team, WAF included",
+            "Attach to: ELB, CloudFront, Route 53, Global Accelerator, Elastic IP"
+          ]
+        },
+        {
+          "title": "🔥 AWS WAF (High)",
+          "items": [
+            "Web Application Firewall — filters HTTP/HTTPS traffic",
+            "Protect against: SQL injection, XSS, bad bots, rate limiting",
+            "Attach to: ALB, API Gateway, CloudFront, AppSync",
+            "Web ACLs with rules and rule groups",
+            "Managed Rule Groups (AWS & 3rd party)",
+            "IP sets, Geo match, rate-based rules"
+          ]
+        },
+        {
+          "title": "🔍 GuardDuty (High)",
+          "items": [
+            "Intelligent threat detection (ML-based)",
+            "Analyzes: CloudTrail, VPC Flow Logs, DNS Logs, EKS Audit Logs, S3 Logs",
+            "Detects: compromised EC2, crypto mining, unusual API calls",
+            "No agents needed — fully managed",
+            "Findings → EventBridge → Lambda for automated remediation"
+          ]
+        },
+        {
+          "title": "👤 Amazon Cognito (High)",
+          "items": [
+            "Authentication/Authorization for web & mobile apps",
+            "User Pools: user directory, sign-up/sign-in, JWT tokens",
+            "Identity Pools: federated identities → temporary AWS credentials",
+            "Supports: social identity (Google, Facebook), SAML, OIDC",
+            "User Pools + Identity Pools: authenticate then authorize to AWS services"
+          ]
+        },
+        {
+          "title": "📜 AWS Secrets Manager (High)",
+          "items": [
+            "Store, rotate, manage secrets (passwords, API keys)",
+            "Automatic rotation (Lambda-based)",
+            "Integrates with RDS, Redshift, DocumentDB natively",
+            "vs SSM Parameter Store: Secrets Manager costs more, has auto-rotation",
+            "Parameter Store: free tier, good for config, not just secrets"
+          ]
+        },
+        {
+          "title": "🕵️ Amazon Macie (Medium)",
+          "items": [
+            "ML-based S3 data discovery and protection",
+            "Finds: PII, financial data, credentials in S3",
+            "Data classifications: sensitive, personal",
+            "Alerts via EventBridge or Security Hub"
+          ]
+        },
+        {
+          "title": "🔎 AWS Inspector (Medium)",
+          "items": [
+            "Automated security assessments for EC2, Lambda, ECR",
+            "Checks: CVEs, network accessibility, software vulnerabilities",
+            "Continuous scanning (unlike Trusted Advisor one-time)",
+            "Inspector v2 is automated and event-driven"
+          ]
+        },
+        {
+          "title": "🏢 AWS Organizations / SCPs (Critical)",
+          "items": [
+            "Centrally manage multiple AWS accounts",
+            "SCPs (Service Control Policies): guardrails — limit what accounts can do, even for root",
+            "SCPs do NOT grant permissions — only restrict",
+            "OUs (Organizational Units): group accounts",
+            "Consolidated Billing: single payment, volume discounts",
+            "AWS RAM (Resource Access Manager): share resources across accounts"
+          ]
+        },
+        {
+          "title": "🔐 AWS SSO / IAM Identity Center (Medium)",
+          "items": [
+            "Single Sign-On across AWS accounts and applications",
+            "Integrates with Active Directory, external IdP",
+            "Fine-grained permissions per account/application",
+            "Replaces creating IAM users in every account"
+          ]
+        },
+        {
+          "title": "📋 AWS Compliance Services (High)",
+          "items": [
+            "AWS Artifact: compliance reports (SOC, PCI-DSS, ISO) on-demand",
+            "AWS Audit Manager: automate evidence collection for audits",
+            "AWS Security Hub: aggregated security findings across accounts",
+            "AWS Detective: root cause analysis of security issues (GraphQL)",
+            "Shared Responsibility: AWS secures OF the cloud; customer secures IN the cloud"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring & Logging",
+      "color": "#06b6d4",
+      "icon": "📊",
+      "subtitle": "CloudWatch · CloudTrail · AWS Config · X-Ray · Health Dashboard",
+      "phase": 3,
+      "services": [
+        {
+          "name": "Amazon CloudWatch",
+          "desc": "Monitoring and observability for AWS resources and applications.",
+          "priority": "critical",
+          "examTopics": [
+            "Metrics: CPU, NetworkIn, DiskRead, custom metrics",
+            "Default resolution: 1 minute; High resolution: 1 second (extra cost)",
+            "CloudWatch Logs: collect, store, query application/system logs",
+            "Log Groups → Log Streams → Log Events",
+            "Metric Filters: extract metrics from log data",
+            "CloudWatch Alarms: trigger actions (ASG scale, SNS notification)",
+            "CloudWatch Dashboards: custom visualizations (cross-account/cross-region)",
+            "CloudWatch Events → now EventBridge",
+            "CloudWatch Agent: for memory/disk metrics on EC2 (not default)",
+            "Container Insights: ECS/EKS metrics",
+            "Logs Insights: query logs with SQL-like syntax"
+          ],
+          "exam": true
+        },
+        {
+          "name": "AWS CloudTrail",
+          "desc": "Audit log of ALL API calls made in your AWS account.",
+          "priority": "very-high",
+          "examTopics": [
+            "Who, what, when, where for every AWS API call",
+            "Events: Management Events (default, control plane) & Data Events (S3, Lambda — extra cost)",
+            "90-day event history free; persist to S3 for longer retention",
+            "Multi-region trail: captures all regions",
+            "Organization trail: capture all accounts in AWS Organizations",
+            "Log file integrity validation: SHA-256 hashing",
+            "CloudTrail ≠ CloudWatch: CloudTrail = WHO did WHAT; CloudWatch = HOW is it performing"
+          ],
+          "uses": [
+            "Audit who deleted a production S3 bucket at 2am",
+            "Security forensics for unauthorized IAM policy changes"
+          ]
+        },
+        {
+          "name": "AWS Config",
+          "desc": "Configuration history and compliance checking for AWS resources.",
+          "priority": "high",
+          "examTopics": [
+            "Records configuration changes over time (configuration timeline)",
+            "Config Rules: evaluate compliance (managed or custom Lambda)",
+            "Remediation: SSM Automation to fix non-compliant resources",
+            "Conformance Packs: collections of Config Rules + remediation actions",
+            "Config ≠ CloudTrail: Config = current state + history; CloudTrail = API calls"
+          ],
+          "uses": [
+            "Detect when any S3 bucket is made publicly accessible",
+            "Audit compliance: ensure all EBS volumes are encrypted"
+          ],
+          "tip": "Config = resource configuration compliance over time. Artifact = compliance reports from AWS. Don't confuse."
+        },
+        {
+          "name": "AWS X-Ray",
+          "desc": "Distributed tracing for microservices and serverless apps.",
+          "priority": "medium",
+          "examTopics": [
+            "Traces requests end-to-end across services",
+            "Service map: visual of microservices and latency",
+            "Segments & Subsegments: identify bottlenecks",
+            "Works with: Lambda, EC2, ECS, API Gateway, SQS"
+          ],
+          "uses": [
+            "Identify which Lambda function call is causing 3-second latency in an API",
+            "Visualize service dependency map for a microservices architecture"
+          ],
+          "tip": "X-Ray = distributed tracing. CloudWatch = metrics/logs. Together they give full observability."
+        },
+        {
+          "name": "AWS Health Dashboard",
+          "desc": "Personalized view of AWS service health and planned maintenance.",
+          "priority": "medium",
+          "examTopics": [
+            "Personal Health Dashboard: YOUR account's affected resources",
+            "Service Health Dashboard: global AWS service status (public)",
+            "EventBridge integration: automate responses to health events"
+          ],
+          "uses": [
+            "Get proactive alerts about EC2 instance retirement in your account",
+            "Check if a regional outage is affecting your specific RDS instances"
+          ],
+          "tip": "AWS Health Dashboard (personal) = your resources. service.aws.amazon.com = all AWS services status."
+        }
+      ]
+    },
+    {
+      "id": "migration",
+      "name": "Migration & Transfer",
+      "color": "#f97316",
+      "icon": "🚚",
+      "subtitle": "DMS · SMS · Snow Family · DataSync · Transfer Family",
+      "phase": 3,
+      "services": [
+        {
+          "name": "AWS DMS",
+          "desc": "Database Migration Service — migrate DBs to AWS with minimal downtime.",
+          "priority": "high",
+          "examTopics": [
+            "Homogeneous (same engine) & Heterogeneous (different engine) migrations",
+            "For heterogeneous: use Schema Conversion Tool (SCT) first",
+            "Supports: ongoing replication (CDC — Change Data Capture) for minimal downtime",
+            "Source: Oracle, SQL Server, MySQL, PostgreSQL, MongoDB, S3",
+            "Target: RDS, Aurora, DynamoDB, Redshift, S3, Kafka"
+          ]
+        },
+        {
+          "name": "AWS Snow Family",
+          "desc": "Physical devices to move large amounts of data when network is impractical.",
+          "priority": "high",
+          "examTopics": [
+            "Snowcone: 8 TB HDD / 14 TB SSD, small, rugged, edge computing",
+            "Snowball Edge Storage Optimized: 80 TB, data transfer + edge compute",
+            "Snowball Edge Compute Optimized: 42 TB + powerful compute (vCPUs)",
+            "Snowmobile: 100 PB, shipping container on a truck, massive data center migrations",
+            "Rule of thumb: >10 TB or >1 week to transfer → consider Snow Family",
+            "All devices: encrypted at rest (AES-256) and in transit"
+          ],
+          "uses": [
+            "Transfer 500TB data center backup to S3 where internet would take months",
+            "Edge processing and data collection in oil fields with no internet"
+          ],
+          "tip": "Snowball Edge has onboard compute (EC2-compatible) for edge processing. Use when data transfer >1 week over internet."
+        },
+        {
+          "name": "AWS DataSync",
+          "desc": "Online data transfer service — fast migration of data to AWS.",
+          "priority": "medium",
+          "examTopics": [
+            "Sync from on-prem (NFS, SMB, HDFS) to S3, EFS, FSx",
+            "Automated, scheduled, bandwidth throttling",
+            "Preserves metadata and permissions",
+            "vs Storage Gateway: DataSync = data migration; Storage Gateway = ongoing hybrid access"
+          ],
+          "uses": [
+            "Weekly automated sync of on-prem file server to EFS",
+            "One-time migration of 10TB NAS to S3 before decommissioning"
+          ]
+        },
+        {
+          "name": "AWS Transfer Family",
+          "desc": "SFTP/FTP/FTPS server managed by AWS, backed by S3 or EFS.",
+          "priority": "medium",
+          "examTopics": [
+            "Lift-and-shift SFTP workflows to cloud",
+            "No code changes required for existing SFTP clients"
+          ],
+          "uses": [
+            "Migrate legacy SFTP file exchange to S3 without changing client software",
+            "Partner file exchange using SFTP backed by S3 with IAM-based access"
+          ]
+        },
+        {
+          "name": "AWS MGN / SMS",
+          "desc": "Lift-and-shift (rehost) server migration to AWS EC2.",
+          "priority": "medium",
+          "examTopics": [
+            "MGN (Application Migration Service) replaced SMS",
+            "Continuous replication → minimal cutover downtime",
+            "The 7 Rs: Retire, Retain, Rehost, Replatform, Refactor, Repurchase, Relocate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics",
+      "color": "#6366f1",
+      "icon": "📈",
+      "subtitle": "Athena · Kinesis · Glue · QuickSight · OpenSearch · EMR · Lake Formation",
+      "phase": 3,
+      "services": [
+        {
+          "name": "Amazon Athena",
+          "desc": "Serverless SQL queries directly on S3 data. No ETL needed.",
+          "priority": "high",
+          "examTopics": [
+            "Pay per query (per TB scanned)",
+            "Supports: CSV, JSON, ORC, Parquet, Avro",
+            "Use columnar formats (Parquet/ORC) + compression = lower cost",
+            "Integrates with Glue Data Catalog (schema)",
+            "QuickSight integration for visualization",
+            "Federated Query: query other data sources (RDS, DynamoDB)"
+          ],
+          "uses": [
+            "Run ad hoc SQL on S3 access logs without loading them into a database",
+            "Analyze CloudTrail JSON logs with standard SQL queries instantly"
+          ],
+          "tip": "Athena = serverless SQL on S3. Pair with AWS Glue Data Catalog. No server setup — just query and pay per TB scanned."
+        },
+        {
+          "name": "Amazon Kinesis",
+          "desc": "Real-time streaming data platform.",
+          "priority": "very-high",
+          "examTopics": [
+            "Kinesis Data Streams (KDS): ingest streaming data, custom consumers, retention 1–365 days, shards",
+            "Kinesis Data Firehose: fully managed delivery to S3/Redshift/OpenSearch, near real-time (60s buffer), no shards",
+            "Kinesis Data Analytics: SQL/Flink on streaming data",
+            "Kinesis Video Streams: ingest video for ML",
+            "KDS vs Firehose: KDS = custom consumers, real-time; Firehose = managed delivery, near real-time",
+            "SQS vs Kinesis: SQS = task queue/decoupling; Kinesis = real-time analytics on ordered streams"
+          ]
+        },
+        {
+          "name": "AWS Glue",
+          "desc": "Serverless ETL (Extract, Transform, Load) service.",
+          "priority": "high",
+          "examTopics": [
+            "Glue Data Catalog: central metadata repository (used by Athena, Redshift, EMR)",
+            "Glue Crawlers: auto-discover schema from data sources",
+            "Glue Jobs: Python/Scala Spark ETL scripts",
+            "Glue DataBrew: visual data prep (no code)",
+            "Glue Studio: visual ETL pipeline creation"
+          ],
+          "uses": [
+            "Transform raw JSON in S3 into Parquet for Redshift loading (ETL)",
+            "Crawl S3 data to automatically build a central schema catalog for Athena"
+          ],
+          "tip": "Glue = ETL. Glue Data Catalog = metadata store shared with Athena and Redshift Spectrum."
+        },
+        {
+          "name": "Amazon QuickSight",
+          "desc": "Serverless BI and visualization tool.",
+          "priority": "medium",
+          "examTopics": [
+            "ML Insights: anomaly detection, forecasting",
+            "SPICE: in-memory fast query engine",
+            "Row-Level Security for fine-grained data access",
+            "Embeddable dashboards in apps"
+          ],
+          "uses": [
+            "Build sales dashboards shared across the organization from Redshift data",
+            "Embed interactive charts in a customer-facing SaaS application"
+          ],
+          "tip": "QuickSight = BI/dashboards. Athena = query. Redshift = warehouse. These three often appear together in exam scenarios."
+        },
+        {
+          "name": "Amazon OpenSearch",
+          "desc": "Managed search and log analytics (successor to Elasticsearch).",
+          "priority": "medium",
+          "examTopics": [
+            "Full-text search, log analytics, real-time monitoring",
+            "Often paired with Kinesis Firehose for log ingestion",
+            "OpenSearch Dashboards (Kibana equivalent)"
+          ]
+        },
+        {
+          "name": "Amazon EMR",
+          "desc": "Managed Hadoop/Spark cluster for big data processing.",
+          "priority": "medium",
+          "examTopics": [
+            "Frameworks: Spark, Hive, HBase, Presto, Flink",
+            "Uses EC2 Spot instances for cost savings",
+            "Master/Core/Task nodes",
+            "EMR vs Glue: EMR is more control/customizable; Glue is fully managed/serverless"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ml",
+      "name": "Machine Learning (AI/ML Services)",
+      "color": "#ec4899",
+      "icon": "🤖",
+      "subtitle": "SageMaker · Rekognition · Comprehend · Lex · Transcribe · Polly · Bedrock",
+      "phase": 3,
+      "services": [
+        {
+          "name": "Amazon SageMaker",
+          "desc": "End-to-end ML platform — build, train, deploy ML models.",
+          "priority": "high",
+          "examTopics": [
+            "Components: Studio (IDE), Ground Truth (labeling), Training Jobs, Endpoints",
+            "Built-in algorithms + BYOD (Bring Your Own Docker)",
+            "Automatic Model Tuning (hyperparameter optimization)",
+            "SageMaker Feature Store, Model Registry, Pipelines (MLOps)",
+            "Inference: real-time endpoints, batch transform, serverless inference"
+          ]
+        },
+        {
+          "name": "Amazon Rekognition",
+          "desc": "Image and video analysis using ML.",
+          "priority": "medium",
+          "examTopics": [
+            "Face detection/recognition, object detection, text in images, content moderation, celebrity recognition",
+            "No ML expertise needed — API-based"
+          ],
+          "uses": [
+            "Facial recognition for employee building access control",
+            "Automatically detect and blur explicit content in user-uploaded images"
+          ],
+          "tip": "Rekognition = image/video AI. Textract = documents. Comprehend = text/NLP. Transcribe = audio."
+        },
+        {
+          "name": "Amazon Textract",
+          "desc": "Extract text and data from scanned documents.",
+          "priority": "medium",
+          "examTopics": [
+            "Beyond OCR — understands forms, tables, key-value pairs",
+            "Medical: Amazon Comprehend Medical for clinical text"
+          ],
+          "uses": [
+            "Automate invoice processing by extracting line items and totals",
+            "Digitize mortgage applications by extracting form field data"
+          ]
+        },
+        {
+          "name": "Amazon Comprehend",
+          "desc": "NLP — sentiment, entity recognition, key phrase, language detection.",
+          "priority": "medium",
+          "examTopics": [
+            "Comprehend Medical: specialized for clinical/medical text",
+            "Custom classification with your own training data"
+          ],
+          "uses": [
+            "Sentiment analysis of thousands of product reviews automatically",
+            "Extract company names and locations from legal documents at scale"
+          ]
+        },
+        {
+          "name": "Amazon Lex",
+          "desc": "Build conversational chatbots (same tech as Alexa).",
+          "priority": "medium",
+          "examTopics": [
+            "ASR (Automatic Speech Recognition) + NLU (Natural Language Understanding)",
+            "Integrates with Connect, Lambda, Kendra"
+          ],
+          "uses": [
+            "Customer service chatbot handling FAQs and routing escalations",
+            "Voice-based IVR system for order tracking in a call center"
+          ],
+          "tip": "Lex = chatbot. Polly = text-to-speech. Transcribe = speech-to-text. Know which does what."
+        },
+        {
+          "name": "Amazon Transcribe",
+          "desc": "Speech-to-text. Convert audio to text.",
+          "priority": "low",
+          "examTopics": [
+            "Custom vocabulary, redaction of PII, speaker identification"
+          ],
+          "uses": [
+            "Transcribe customer service call recordings for quality analysis",
+            "Auto-generate subtitles and closed captions for video content"
+          ]
+        },
+        {
+          "name": "Amazon Polly",
+          "desc": "Text-to-speech. Convert text to natural-sounding speech.",
+          "priority": "low",
+          "examTopics": [
+            "Multiple languages, SSML support, Neural TTS"
+          ],
+          "uses": [
+            "Add voice narration to an e-learning application",
+            "Accessibility features — read page content aloud for visually impaired users"
+          ]
+        },
+        {
+          "name": "Amazon Bedrock",
+          "desc": "Access foundation models (FMs) from leading AI companies via API.",
+          "priority": "medium",
+          "examTopics": [
+            "Provides models from: Anthropic (Claude), AI21, Stability AI, Amazon Titan, Meta",
+            "No need to manage infrastructure",
+            "Knowledge Bases for RAG (Retrieval Augmented Generation)",
+            "Agents: orchestrate multi-step tasks"
+          ],
+          "uses": [
+            "Build a RAG-based knowledge assistant on internal documents",
+            "Text summarization and generation APIs for a content platform"
+          ],
+          "tip": "Bedrock = GenAI foundation models as a service. Key new exam topic for CLF-C02 GenAI domain."
+        },
+        {
+          "name": "Amazon Kendra",
+          "desc": "Enterprise intelligent search powered by ML.",
+          "priority": "low",
+          "examTopics": [
+            "Natural language search across internal documents",
+            "Connectors for S3, SharePoint, Salesforce, ServiceNow"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "containers",
+      "name": "Containers",
+      "color": "#14b8a6",
+      "icon": "📦",
+      "subtitle": "ECS · EKS · ECR · Fargate · App Runner",
+      "phase": 3,
+      "services": [
+        {
+          "name": "Amazon ECS",
+          "desc": "AWS-native container orchestration using Docker containers.",
+          "priority": "very-high",
+          "examTopics": [
+            "Launch types: EC2 (you manage nodes) and Fargate (serverless)",
+            "Task Definition: blueprint for container (CPU, memory, image, port)",
+            "Task = running container(s); Service = maintains desired task count",
+            "Integrates with: ALB (dynamic port mapping), CloudWatch, IAM, ECR",
+            "ECS Task Roles: IAM role for containers (best practice over EC2 instance role)",
+            "ECS Anywhere: run ECS on your own infrastructure"
+          ],
+          "uses": [
+            "Deploy containerized microservices at scale",
+            "Run CI/CD build agents as ephemeral containers"
+          ]
+        },
+        {
+          "name": "Amazon EKS",
+          "desc": "Managed Kubernetes on AWS.",
+          "priority": "high",
+          "examTopics": [
+            "Run standard Kubernetes workloads on AWS",
+            "Managed Control Plane, you manage worker nodes (or Fargate for serverless pods)",
+            "EKS Anywhere: run on-premises Kubernetes with AWS management",
+            "EKS vs ECS: EKS for Kubernetes-native teams; ECS simpler, AWS-native"
+          ],
+          "uses": [
+            "Run production Kubernetes clusters without managing the control plane",
+            "Migrate existing Kubernetes workloads to AWS"
+          ]
+        },
+        {
+          "name": "AWS Fargate",
+          "desc": "Serverless compute engine for containers (ECS and EKS).",
+          "priority": "very-high",
+          "examTopics": [
+            "No EC2 instances to manage — pay per vCPU and memory",
+            "Works with both ECS and EKS",
+            "Exam trigger: \"serverless containers\" → Fargate"
+          ],
+          "uses": [
+            "Run containers without managing underlying servers",
+            "Auto-scale container workloads with zero infrastructure ops"
+          ],
+          "tip": "Fargate = serverless containers. ECS/EKS still used but Fargate manages the nodes."
+        },
+        {
+          "name": "Amazon ECR",
+          "desc": "Managed Docker container image registry.",
+          "priority": "medium",
+          "examTopics": [
+            "Private & public repositories",
+            "Lifecycle policies: auto-delete old images",
+            "Image scanning for vulnerabilities",
+            "Cross-region and cross-account replication"
+          ]
+        },
+        {
+          "name": "AWS App Runner",
+          "desc": "Deploy containerized apps or source code with zero infrastructure management.",
+          "priority": "low",
+          "examTopics": [
+            "Simpler than ECS — no task definitions, services, etc.",
+            "Auto scales, HTTPS, load balancing built-in"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "🪤 ECS vs EKS vs Lambda — Choosing Correctly",
+          "items": [
+            "Lambda: Short tasks <15min, event-driven, truly serverless, no container management",
+            "ECS + Fargate: Containerized apps, AWS-native, simpler than Kubernetes, serverless containers",
+            "ECS + EC2: Containers needing full EC2 control, GPU, special instance types",
+            "EKS: Existing Kubernetes workloads, complex orchestration needs, multi-cloud strategy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "serverless",
+      "name": "Serverless",
+      "color": "#eab308",
+      "icon": "⚡",
+      "subtitle": "Lambda · API Gateway · DynamoDB · Fargate · SAM · Step Functions",
+      "phase": 3,
+      "services": [
+        {
+          "name": "Amazon API Gateway",
+          "desc": "Fully managed API creation, deployment, and management.",
+          "priority": "very-high",
+          "examTopics": [
+            "Types: REST API, HTTP API (cheaper, faster), WebSocket API",
+            "Integrations: Lambda, HTTP backend, AWS services, VPC Link (private)",
+            "Features: caching, throttling, usage plans, API keys, CORS",
+            "Authorizers: Lambda authorizer (custom), Cognito User Pool authorizer",
+            "Stages: dev, staging, prod with canary deployments",
+            "HTTP API vs REST API: HTTP API = simpler, cheaper, faster; REST API = more features",
+            "Edge-optimized (CloudFront) vs Regional vs Private"
+          ]
+        },
+        {
+          "name": "AWS Step Functions",
+          "desc": "Serverless workflow orchestration using visual state machines.",
+          "priority": "high",
+          "examTopics": [
+            "States: Task, Choice, Wait, Parallel, Map, Pass, Succeed, Fail",
+            "Standard Workflows: at-most-once, up to 1 year, auditable history",
+            "Express Workflows: at-least-once, up to 5 min, high throughput, cheaper",
+            "vs SQS: Step Functions = complex ordered workflows; SQS = simple task queuing",
+            "Error handling, retry, timeout built-in",
+            "Integrates with Lambda, DynamoDB, ECS, SNS, SQS, Glue"
+          ],
+          "uses": [
+            "Orchestrate a 10-step order fulfillment workflow with retries on failures",
+            "Run ML data preparation pipeline with parallel processing steps"
+          ]
+        },
+        {
+          "name": "AWS SAM",
+          "desc": "Serverless Application Model — IaC framework for serverless apps.",
+          "priority": "medium",
+          "examTopics": [
+            "Extension of CloudFormation for Lambda, API Gateway, DynamoDB",
+            "sam build, sam package, sam deploy",
+            "Local testing with sam local"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "name": "Application Integration",
+      "color": "#a855f7",
+      "icon": "🔗",
+      "subtitle": "SQS · SNS · EventBridge · SES · AppFlow · MQ",
+      "phase": 3,
+      "services": [
+        {
+          "name": "Amazon SQS",
+          "desc": "Fully managed message queuing for decoupling applications.",
+          "priority": "critical",
+          "examTopics": [
+            "Pull-based (consumers poll the queue)",
+            "Standard Queue: best-effort ordering, at-least-once delivery, unlimited throughput",
+            "FIFO Queue: exactly-once, ordered, up to 3000 msg/s (with batching)",
+            "Visibility Timeout: message hidden after read; if not deleted → reappears (default 30s, max 12hr)",
+            "Dead Letter Queue (DLQ): failed messages after N retries",
+            "Message retention: 1 minute to 14 days (default 4 days)",
+            "Max message size: 256 KB (Extended Client Library for up to 2 GB via S3)",
+            "Long Polling: wait up to 20s for messages (cheaper than short polling)",
+            "Delay Queues: delay message delivery (0–900s)",
+            "SSE: encryption at rest using KMS"
+          ],
+          "exam": true,
+          "uses": [
+            "Buffer order processing tasks to handle Black Friday traffic spikes",
+            "Decouple a web app from a slow order fulfillment service"
+          ],
+          "tip": "SQS = pull-based queue (consumers poll). SNS = push-based pub/sub. Often used together as SNS fan-out → multiple SQS queues."
+        },
+        {
+          "name": "Amazon SNS",
+          "desc": "Pub/Sub messaging — one message to many subscribers.",
+          "priority": "very-high",
+          "examTopics": [
+            "Push-based (subscribers receive messages)",
+            "Subscribers: SQS, Lambda, HTTP/HTTPS, Email, SMS, Mobile Push, Kinesis Firehose",
+            "Topics: Standard and FIFO",
+            "Fan-out pattern: SNS → multiple SQS queues (highly common exam pattern)",
+            "Message Filtering: filter messages by attributes",
+            "No message persistence — delivery or dropped"
+          ],
+          "uses": [
+            "Send SMS/email alerts to ops teams when CloudWatch alarm fires",
+            "Fan-out: one S3 event triggers parallel processing by multiple Lambda functions"
+          ],
+          "tip": "SNS topics → push to subscribers. SQS queues → consumers pull. Key exam pattern: SNS + SQS for fan-out."
+        },
+        {
+          "name": "Amazon EventBridge",
+          "desc": "Serverless event bus for routing events between AWS services and SaaS apps.",
+          "priority": "very-high",
+          "examTopics": [
+            "Default event bus (AWS services), custom event bus, partner event bus (SaaS)",
+            "Rules: event pattern matching → target",
+            "Targets: Lambda, SQS, SNS, Kinesis, Step Functions, EC2 (Run Command), ECS Task",
+            "Schema Registry: auto-discover event schemas",
+            "EventBridge Scheduler: cron/rate expressions (replaces CloudWatch Events)",
+            "vs SNS: EventBridge = rich filtering, SaaS integration; SNS = simpler pub/sub"
+          ]
+        },
+        {
+          "name": "Amazon MQ",
+          "desc": "Managed message broker (Apache ActiveMQ, RabbitMQ).",
+          "priority": "medium",
+          "examTopics": [
+            "Use when migrating existing on-prem apps using AMQP, MQTT, OpenWire, STOMP",
+            "NOT serverless (runs on EC2)",
+            "vs SQS/SNS: use MQ when you need protocol compatibility with existing apps"
+          ],
+          "uses": [
+            "Lift on-prem ActiveMQ broker to the cloud without rewriting app code",
+            "Hybrid cloud messaging between on-prem systems and AWS services"
+          ],
+          "tip": "MQ = for EXISTING apps using ActiveMQ/RabbitMQ protocols (AMQP, MQTT, STOMP). New apps should use SQS/SNS."
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "SQS vs SNS vs EventBridge — Critical Comparison",
+          "cards": [
+            {
+              "title": "SQS",
+              "rows": [
+                {
+                  "key": "Model:",
+                  "val": "Queue (pull-based)"
+                },
+                {
+                  "key": "Consumers:",
+                  "val": "One consumer per message"
+                },
+                {
+                  "key": "Persistence:",
+                  "val": "Yes (up to 14 days)"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Decoupling, task queuing, buffering"
+                }
+              ]
+            },
+            {
+              "title": "SNS",
+              "rows": [
+                {
+                  "key": "Model:",
+                  "val": "Pub/Sub (push-based)"
+                },
+                {
+                  "key": "Consumers:",
+                  "val": "Many subscribers at once"
+                },
+                {
+                  "key": "Persistence:",
+                  "val": "No"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Fan-out, notifications, alerts"
+                }
+              ]
+            },
+            {
+              "title": "EventBridge",
+              "rows": [
+                {
+                  "key": "Model:",
+                  "val": "Event bus (push-based)"
+                },
+                {
+                  "key": "Consumers:",
+                  "val": "Rules → multiple targets"
+                },
+                {
+                  "key": "Persistence:",
+                  "val": "No"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Event routing, SaaS integration, scheduling"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "governance",
+      "name": "Management & Governance",
+      "color": "#64748b",
+      "icon": "📋",
+      "subtitle": "CloudFormation · Systems Manager · Trusted Advisor · Control Tower · Service Catalog",
+      "phase": 4,
+      "services": [
+        {
+          "name": "AWS CloudFormation",
+          "desc": "Infrastructure as Code — provision AWS resources via templates.",
+          "priority": "very-high",
+          "examTopics": [
+            "Templates (JSON/YAML) → Stack → Resources",
+            "Sections: AWSTemplateFormatVersion, Description, Parameters, Mappings, Conditions, Resources (required), Outputs",
+            "StackSets: deploy stacks across multiple accounts and regions",
+            "Change Sets: preview changes before applying",
+            "Drift Detection: find manual changes made outside CloudFormation",
+            "Nested Stacks: reuse templates (modules)",
+            "Rollback: automatic on failure",
+            "cfn-init, cfn-signal: EC2 bootstrap helpers",
+            "vs CDK: CDK uses programming languages (Python, TypeScript) to synthesize CloudFormation"
+          ],
+          "uses": [
+            "Deploy identical dev, staging, and prod environments from one template",
+            "Version-controlled infrastructure with rollback capability on failure"
+          ],
+          "tip": "CloudFormation = IaC. CDK = define IaC in Python/TypeScript (generates CF). Terraform = third-party IaC."
+        },
+        {
+          "name": "AWS Systems Manager (SSM)",
+          "desc": "Manage EC2 and on-prem instances at scale.",
+          "priority": "high",
+          "examTopics": [
+            "SSM Agent: must be installed on instances",
+            "Session Manager: SSH/RDP without port 22 open, no bastion host needed",
+            "Parameter Store: store config/secrets (encrypted or plain)",
+            "Run Command: remotely execute commands on instances",
+            "Patch Manager: auto-patch EC2 OS and applications",
+            "State Manager: maintain desired state configuration",
+            "Inventory: collect software/hardware info from instances"
+          ]
+        },
+        {
+          "name": "AWS Trusted Advisor",
+          "desc": "Real-time guidance to optimize your AWS environment.",
+          "priority": "high",
+          "examTopics": [
+            "5 categories: Cost Optimization, Performance, Security, Fault Tolerance, Service Limits",
+            "Free checks: basic (6 security + limits)",
+            "Full checks: require Business or Enterprise Support plan",
+            "Common exam scenario: which tool to check for underutilized resources → Trusted Advisor"
+          ],
+          "uses": [
+            "Identify idle EC2 instances and unused EBS volumes to cut costs",
+            "Flag security groups with unrestricted inbound port 22 (SSH) access"
+          ],
+          "tip": "Free checks: Service Limits + some Security. Business/Enterprise Support = all checks. Exam loves this service."
+        },
+        {
+          "name": "AWS Control Tower",
+          "desc": "Set up and govern a secure, multi-account AWS environment.",
+          "priority": "medium",
+          "examTopics": [
+            "Landing Zone: automated multi-account setup",
+            "Guardrails: preventive (SCPs) and detective (Config rules)",
+            "Account Factory: automated account vending machine",
+            "Built on top of Organizations, SSO, Config, CloudFormation"
+          ],
+          "uses": [
+            "Set up a new AWS landing zone with security baseline in hours not months",
+            "Enforce guardrails like 'disallow root user access keys' across all accounts"
+          ]
+        },
+        {
+          "name": "AWS Service Catalog",
+          "desc": "Self-service catalog of approved CloudFormation templates.",
+          "priority": "medium",
+          "examTopics": [
+            "IT governance: only deploy approved architectures",
+            "Portfolio → Products (CloudFormation stacks)",
+            "Users can launch products without needing full CloudFormation access"
+          ],
+          "uses": [
+            "Allow developers to deploy only approved CloudFormation templates",
+            "Standardize EC2 configurations and enforce tagging policies via catalog"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cost",
+      "name": "Cost Optimization",
+      "color": "#22c55e",
+      "icon": "💰",
+      "subtitle": "Cost Explorer · Budgets · Pricing Models · Compute Optimizer · Cost Anomaly",
+      "phase": 4,
+      "services": [
+        {
+          "name": "AWS Cost Explorer",
+          "desc": "Visualize, understand, and manage AWS costs and usage.",
+          "priority": "very-high",
+          "examTopics": [
+            "Historical cost analysis (up to 13 months)",
+            "Forecasting future costs (up to 12 months)",
+            "Filter by service, region, tags, account",
+            "Reserved Instance recommendations",
+            "Savings Plans recommendations"
+          ]
+        },
+        {
+          "name": "AWS Budgets",
+          "desc": "Set custom cost/usage alerts and take automated actions.",
+          "priority": "very-high",
+          "examTopics": [
+            "Budget types: Cost, Usage, RI Coverage, Savings Plans Coverage",
+            "Alerts: when actual or forecasted cost exceeds threshold",
+            "Budget Actions: automatically apply IAM policies, SCPs, stop EC2/RDS when over budget"
+          ]
+        },
+        {
+          "name": "AWS Compute Optimizer",
+          "desc": "ML-powered right-sizing recommendations for compute resources.",
+          "priority": "medium",
+          "examTopics": [
+            "Analyzes: EC2, ASG, Lambda, EBS, ECS on Fargate",
+            "Uses 14 days of CloudWatch metrics",
+            "Recommends right instance type/size to reduce cost or improve performance"
+          ]
+        },
+        {
+          "name": "AWS Cost Anomaly Detection",
+          "desc": "ML-based detection of unusual spending patterns.",
+          "priority": "medium",
+          "examTopics": [
+            "Sends alerts via SNS when anomalous spending detected",
+            "Can monitor by service, linked account, cost category"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "tip",
+          "title": "💡 Cost Optimization Best Practices (Exam-Tested)",
+          "items": [
+            "Right-sizing: Use Compute Optimizer to find oversized instances",
+            "Reserved Instances / Savings Plans: For predictable workloads (up to 72% savings)",
+            "Spot Instances: For fault-tolerant batch workloads (up to 90% savings)",
+            "S3 Lifecycle Policies: Move infrequent data to cheaper storage classes",
+            "Auto Scaling: Scale down during off-peak hours",
+            "Data Transfer: Keep traffic within same AZ when possible; use CloudFront for edge caching",
+            "Serverless: Pay per request (Lambda, Fargate, DynamoDB On-Demand)",
+            "Delete idle resources: Unattached EBS volumes, unused EIPs (cost money)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ha-dr",
+      "name": "High Availability & Disaster Recovery",
+      "color": "#ef4444",
+      "icon": "🔄",
+      "subtitle": "Multi-AZ · Multi-Region · RTO/RPO · Backup Strategies · Pilot Light",
+      "phase": 4,
+      "services": [],
+      "cards": [
+        {
+          "icon": "🎯",
+          "title": "RTO vs RPO (Critical)",
+          "items": [
+            "RPO (Recovery Point Objective): How much data can you afford to lose? Time between last backup and failure.",
+            "RTO (Recovery Time Objective): How fast must you recover? Time to restore service after failure.",
+            "Lower RPO/RTO = higher cost (more redundancy)",
+            "Exam: choose DR strategy based on RPO/RTO requirements"
+          ]
+        },
+        {
+          "icon": "❄️",
+          "title": "Backup & Restore (Cheapest)",
+          "items": [
+            "Backup data to S3 or Glacier",
+            "Highest RTO/RPO (hours)",
+            "Lowest cost",
+            "Restore: recreate environment from backup",
+            "Use for: non-critical systems"
+          ]
+        },
+        {
+          "icon": "🕯️",
+          "title": "Pilot Light",
+          "items": [
+            "Core critical components replicated but minimally running",
+            "DB replication active; app servers off",
+            "On disaster: scale up quickly",
+            "RTO: minutes to hours",
+            "Moderate cost"
+          ]
+        },
+        {
+          "icon": "🌡️",
+          "title": "Warm Standby",
+          "items": [
+            "Scaled-down fully functional copy always running",
+            "On disaster: scale up to full capacity",
+            "RTO: minutes",
+            "Higher cost than Pilot Light",
+            "Used for business-critical apps"
+          ]
+        },
+        {
+          "icon": "🚀",
+          "title": "Multi-Site / Hot Standby",
+          "items": [
+            "Full production capacity running in two regions simultaneously",
+            "Route 53 Failover or Active-Active routing",
+            "RTO: near zero (seconds)",
+            "RPO: near zero",
+            "Most expensive DR strategy"
+          ]
+        },
+        {
+          "icon": "🏗️",
+          "title": "HA Architecture Patterns",
+          "items": [
+            "Multi-AZ deployments for all databases and stateful services",
+            "ELB + Auto Scaling + Multi-AZ = standard HA pattern",
+            "S3 is 11 9s durable, 99.99% available by default",
+            "Aurora: 6 copies across 3 AZs, auto-healing",
+            "DynamoDB: multi-AZ by default",
+            "ElastiCache Redis: cluster mode + multi-AZ replicas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "waf",
+      "name": "AWS Well-Architected Framework",
+      "color": "#8b5cf6",
+      "icon": "🏛️",
+      "subtitle": "6 Pillars — Operational Excellence · Security · Reliability · Performance · Cost · Sustainability",
+      "phase": 4,
+      "services": [],
+      "cards": [
+        {
+          "icon": "⚙️",
+          "title": "Operational Excellence",
+          "intro": "Run and monitor systems to deliver business value. Continuously improve processes.",
+          "items": [
+            "Perform operations as code (IaC)",
+            "Annotate documentation",
+            "Make frequent, small, reversible changes",
+            "Anticipate failure — game days, chaos engineering",
+            "Learn from operational failures",
+            "Key services: CloudFormation, CloudWatch, X-Ray, Systems Manager"
+          ]
+        },
+        {
+          "icon": "🔒",
+          "title": "Security",
+          "intro": "Protect information, systems, and assets.",
+          "items": [
+            "Implement strong identity foundation (IAM, MFA)",
+            "Enable traceability (CloudTrail, CloudWatch)",
+            "Apply security at all layers",
+            "Automate security best practices",
+            "Protect data in transit and at rest (KMS, TLS)",
+            "Prepare for security events",
+            "Key services: IAM, KMS, CloudTrail, GuardDuty, WAF, Shield"
+          ]
+        },
+        {
+          "icon": "🛡️",
+          "title": "Reliability",
+          "intro": "Ensure workloads perform correctly and recover from failures.",
+          "items": [
+            "Test recovery procedures regularly",
+            "Automatically recover from failure",
+            "Scale horizontally for resiliency",
+            "Stop guessing capacity — use Auto Scaling",
+            "Manage change in automation (IaC)",
+            "Key services: ELB, ASG, Multi-AZ, Route 53, CloudFormation"
+          ]
+        },
+        {
+          "icon": "⚡",
+          "title": "Performance Efficiency",
+          "intro": "Use computing resources efficiently to meet system requirements.",
+          "items": [
+            "Democratize advanced technologies (use managed services)",
+            "Go global in minutes (multi-region with CloudFront)",
+            "Use serverless architectures",
+            "Experiment more often",
+            "Consider mechanical sympathy (use the right tool)",
+            "Key services: Auto Scaling, ElastiCache, CloudFront, Lambda, Aurora"
+          ]
+        },
+        {
+          "icon": "💰",
+          "title": "Cost Optimization",
+          "intro": "Deliver business value at the lowest price point.",
+          "items": [
+            "Implement Cloud Financial Management",
+            "Adopt a consumption model (pay for what you use)",
+            "Measure overall efficiency (use Cost Explorer)",
+            "Stop spending on undifferentiated heavy lifting",
+            "Analyze and attribute expenditure",
+            "Key services: Spot, Reserved, Savings Plans, S3 IA, Compute Optimizer"
+          ]
+        },
+        {
+          "icon": "🌱",
+          "title": "Sustainability",
+          "intro": "Minimize environmental impact of cloud workloads.",
+          "items": [
+            "Understand your impact",
+            "Establish sustainability goals",
+            "Maximize utilization — right-size workloads",
+            "Use managed services (AWS manages efficiency)",
+            "Reduce downstream impact",
+            "Key services: Auto Scaling, Graviton instances, Serverless"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "billing",
+      "name": "Billing, Pricing & Support",
+      "color": "#10b981",
+      "icon": "🧾",
+      "subtitle": "Pricing Models · Free Tier · Support Plans · Organizations · Consolidated Billing",
+      "phase": 4,
+      "services": [],
+      "cards": [
+        {
+          "icon": "💳",
+          "title": "AWS Pricing Fundamentals",
+          "items": [
+            "Pay for what you use: No upfront, no long-term commitments for most",
+            "Pay less when you use more: Volume discounts (S3, data transfer)",
+            "Pay even less with Reserved: 1 or 3-year commitment",
+            "Pricing factors: compute time, data stored, data transferred OUT (inbound usually free)",
+            "Free data transfer: inbound, same-region same-service, within CloudFront edge"
+          ]
+        },
+        {
+          "icon": "🆓",
+          "title": "AWS Free Tier",
+          "items": [
+            "Always Free: Lambda (1M req/month), DynamoDB (25 GB), CloudWatch (basic metrics)",
+            "12 Months Free: EC2 t2.micro (750hr), S3 (5GB), RDS (750hr), CloudFront (50 GB)",
+            "Trials: Short-term free trials for specific services (SageMaker, Inspector)"
+          ]
+        },
+        {
+          "icon": "📞",
+          "title": "Support Plans",
+          "items": [
+            "Basic: Free, documentation, forums, Trusted Advisor (7 checks), Health Dashboard",
+            "Developer: Business hours email support, 1 primary contact, 12-24hr response",
+            "Business: 24/7 phone/email/chat, Trusted Advisor (all checks), <1hr response for prod",
+            "Enterprise On-Ramp: TAM pool, 30min for critical",
+            "Enterprise: Dedicated TAM, Concierge support, 15min for critical, $15,000/mo"
+          ]
+        },
+        {
+          "icon": "🏢",
+          "title": "Consolidated Billing",
+          "items": [
+            "Single payment method for all accounts in an Organization",
+            "Volume discounts aggregate across all accounts",
+            "Reserved Instance benefits can be shared across accounts",
+            "Detailed billing reports per account",
+            "Management account pays for all member accounts"
+          ]
+        },
+        {
+          "icon": "🧮",
+          "title": "AWS Pricing Tools",
+          "items": [
+            "AWS Pricing Calculator: estimate costs before deployment",
+            "AWS Cost Explorer: analyze historical spend",
+            "AWS Budgets: set alerts on cost/usage",
+            "Cost and Usage Report (CUR): most granular billing data → S3",
+            "Savings Plans: flexible discount for compute commitment"
+          ]
+        },
+        {
+          "icon": "🌍",
+          "title": "Global Infrastructure",
+          "items": [
+            "Regions: ~33 geographic regions worldwide",
+            "Availability Zones: 2–6 per region (isolated data centers)",
+            "Edge Locations: 400+ for CloudFront CDN",
+            "Local Zones: extend AWS services close to large population centers",
+            "Wavelength Zones: ultra-low latency at 5G network edge",
+            "Choosing a region: compliance, latency, services available, pricing"
+          ]
+        }
+      ]
+    }
+  ],
+  "strategy": [
+    {
+      "id": "strategy-1",
+      "title": "🪤 Most Common Exam Traps",
+      "ordered": false,
+      "items": [
+        "NAT Instance vs NAT Gateway: always choose Gateway (managed, HA)",
+        "\"Serverless\" keyword → Lambda, Fargate, DynamoDB, Aurora Serverless, S3",
+        "EBS is AZ-locked; EFS is multi-AZ shared; S3 is globally accessible",
+        "Multi-AZ = High Availability (NOT performance). Read Replicas = performance (NOT HA)",
+        "SQS FIFO = ordered + exactly once; Standard = high throughput but not ordered",
+        "CloudTrail ≠ CloudWatch: Trail = audit WHO did WHAT; Watch = metrics HOW",
+        "SCPs do NOT grant permissions — only restrict what member accounts can do",
+        "IAM Roles for EC2: no access keys needed; use instance profile",
+        "Security Groups: stateful; NACLs: stateless (must allow both inbound and outbound)",
+        "Dedicated Instances ≠ Dedicated Hosts: Hosts give physical server visibility (BYOL)"
+      ]
+    },
+    {
+      "id": "strategy-2",
+      "title": "🧠 Scenario-Solving Technique",
+      "ordered": true,
+      "items": [
+        "Identify the key requirement: cost, latency, compliance, scalability, availability",
+        "Find keywords: \"serverless,\" \"lowest cost,\" \"HIPAA,\" \"on-premises,\" \"milliseconds\"",
+        "Eliminate clearly wrong answers first (reduce to 2 options)",
+        "For \"most cost effective\" → managed/serverless + right pricing model",
+        "For \"highest availability\" → Multi-AZ + Auto Scaling + Multi-Region",
+        "For \"security\" → least privilege + encryption + monitoring + WAF + Shield",
+        "For \"migration\" → identify source, target, timeline, downtime tolerance",
+        "When two answers seem correct → pick the more AWS-native, managed option"
+      ]
+    },
+    {
+      "id": "strategy-3",
+      "title": "📅 30-Day Study Plan",
+      "ordered": true,
+      "items": [
+        "Week 1: Compute (EC2, Lambda, ASG) + Storage (S3, EBS, EFS) + Networking basics (VPC, SG, NACL)",
+        "Week 2: Databases (RDS, Aurora, DynamoDB) + Security (IAM, KMS, WAF, Shield) + Route 53 + CloudFront",
+        "Week 3: Application Integration (SQS, SNS, EventBridge) + Serverless + Containers (ECS, EKS, Fargate) + Monitoring",
+        "Week 4: Well-Architected Framework + Billing + Practice exams + Review weak areas",
+        "Take at least 3 full practice exams in the final week",
+        "Review wrong answers thoroughly — understand WHY, not just WHAT"
+      ]
+    },
+    {
+      "id": "strategy-4",
+      "title": "⏱️ Exam Day Tips",
+      "ordered": false,
+      "items": [
+        "CLF-C02: 65 questions, 90 minutes (~83 sec/question)",
+        "SAA-C03: 65 questions, 130 minutes (~120 sec/question)",
+        "Mark and skip hard questions — come back later",
+        "Eliminate clearly wrong answers (usually 1–2 immediately)",
+        "Read the ENTIRE question — the last sentence often has the key constraint",
+        "Watch for \"MOST cost-effective,\" \"LEAST operational overhead,\" \"BEST practice\"",
+        "Don't overthink — if it's clearly AWS-managed and fits the scenario, choose it",
+        "Review flagged questions if time permits"
+      ]
+    },
+    {
+      "id": "strategy-5",
+      "title": "🔑 Services Often Confused",
+      "ordered": false,
+      "items": [
+        "S3 Transfer Acceleration vs CloudFront: both use edge, but Transfer Acceleration is for S3 PUT/GET speed",
+        "SQS vs Kinesis: SQS = decouple, Kinesis = stream/analyze real-time data",
+        "CloudWatch vs CloudTrail vs Config: metrics/logs vs API audit trail vs compliance/history",
+        "Secrets Manager vs SSM Parameter Store: Secrets Manager for credentials with auto-rotation",
+        "GuardDuty vs Inspector vs Macie: threat detection vs vulnerability scan vs S3 data discovery",
+        "DMS vs DataSync: database migration vs file/storage migration",
+        "Direct Connect vs VPN: dedicated physical link vs internet-based encrypted tunnel",
+        "EBS vs Instance Store: persistent network volume vs ephemeral local disk"
+      ]
+    },
+    {
+      "id": "strategy-6",
+      "title": "🚀 Highest ROI Topics (Last Week)",
+      "ordered": true,
+      "items": [
+        "S3 storage classes and lifecycle policies",
+        "EC2 purchasing options (Reserved vs Spot vs On-Demand)",
+        "VPC components and traffic flow (SG vs NACL, NAT Gateway)",
+        "RDS Multi-AZ vs Read Replicas",
+        "IAM Roles, Policies, SCPs",
+        "SQS vs SNS vs EventBridge differences",
+        "Route 53 routing policies",
+        "CloudFront and its use cases",
+        "Shared Responsibility Model",
+        "Well-Architected 6 pillars"
+      ]
+    }
+  ],
+  "checklist": [
+    {
+      "id": "check-01",
+      "text": "S3 storage classes: Standard → Intelligent-Tiering → IA → One Zone-IA → Glacier tiers",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-02",
+      "text": "EC2 purchasing: On-Demand vs Reserved vs Spot vs Savings Plans vs Dedicated",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-03",
+      "text": "VPC components: IGW, NAT Gateway, Route Tables, Security Groups, NACLs",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-04",
+      "text": "IAM: Users, Groups, Roles, Policies, Permission Boundaries, SCPs",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-05",
+      "text": "RDS Multi-AZ (HA) vs Read Replicas (performance) — key difference",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-06",
+      "text": "SQS Standard vs FIFO, visibility timeout, DLQ, long polling",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-07",
+      "text": "Shared Responsibility Model: AWS OF the cloud vs Customer IN the cloud",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-08",
+      "text": "Well-Architected 6 Pillars: OpEx, Security, Reliability, Perf, Cost, Sustainability",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-09",
+      "text": "Route 53 routing policies: Simple, Weighted, Latency, Failover, Geolocation",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-10",
+      "text": "CloudFront: OAC, signed URLs, caching, Lambda@Edge, price classes",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-11",
+      "text": "Aurora: 6-copy storage, 15 Read Replicas, Global Database, Serverless v2",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-12",
+      "text": "DynamoDB: partition key, sort key, GSI, LSI, Streams, DAX, Global Tables",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-13",
+      "text": "Lambda: 15min limit, concurrency, cold start, layers, triggers, VPC access",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-14",
+      "text": "ECS + Fargate vs EKS + Fargate: AWS-native vs Kubernetes",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-15",
+      "text": "SNS pub/sub: fan-out pattern, message filtering, FIFO topics",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-16",
+      "text": "EventBridge: event patterns, rules, targets, custom buses, Scheduler",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-17",
+      "text": "KMS: CMKs, envelope encryption, key policies, multi-region keys",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-18",
+      "text": "CloudTrail: management vs data events, multi-region, organization trail",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-19",
+      "text": "CloudWatch: metrics, alarms, logs, dashboards, custom metrics, agent",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-20",
+      "text": "EBS: gp3 vs io2, AZ-locked, snapshots, encryption, Multi-Attach",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-21",
+      "text": "EFS: NFS, Linux-only, multi-AZ, storage tiers, performance modes",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-22",
+      "text": "Auto Scaling: policies (target tracking, step), cooldown, lifecycle hooks",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-23",
+      "text": "ALB vs NLB vs GWLB: Layer 7 routing vs Layer 4 static IP vs L3 appliances",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-24",
+      "text": "VPC Peering (non-transitive) vs Transit Gateway (transitive, hub-spoke)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-25",
+      "text": "Direct Connect (private physical link) vs Site-to-Site VPN (internet IPsec)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-26",
+      "text": "S3 encryption: SSE-S3, SSE-KMS, SSE-C, client-side",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-27",
+      "text": "GuardDuty: threat detection, ML-based, no agents, analyzes logs",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-28",
+      "text": "WAF: web ACL rules, attach to ALB/CloudFront, rate limiting, geo-blocking",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-29",
+      "text": "Shield Standard (free, L3/L4) vs Shield Advanced (paid, L7, DRT)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-30",
+      "text": "Cognito: User Pools (authentication) vs Identity Pools (AWS credentials)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-31",
+      "text": "Step Functions: Standard vs Express, state types, error handling",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-32",
+      "text": "API Gateway: REST vs HTTP vs WebSocket, authorizers, stages, throttling",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-33",
+      "text": "Kinesis: Data Streams (custom consumers) vs Firehose (managed delivery)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-34",
+      "text": "Redshift: OLAP/data warehouse, columnar, MPP, Spectrum for S3 queries",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-35",
+      "text": "Athena: serverless SQL on S3, pay per scan, columnar format optimization",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-36",
+      "text": "Glue: serverless ETL, Data Catalog, Crawlers, integrates with Athena",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-37",
+      "text": "CloudFormation: templates, stacks, StackSets, change sets, drift detection",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-38",
+      "text": "Systems Manager: Session Manager, Parameter Store, Patch Manager, Run Command",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-39",
+      "text": "DR strategies: Backup/Restore vs Pilot Light vs Warm Standby vs Multi-Site",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-40",
+      "text": "RTO vs RPO: time to recover vs data loss tolerance",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-41",
+      "text": "AWS Organizations: SCPs (restrict only), OUs, consolidated billing, AWS RAM",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-42",
+      "text": "Snow Family: Snowcone (8TB) vs Snowball Edge (80TB) vs Snowmobile (100PB)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-43",
+      "text": "DMS: database migration, CDC for ongoing replication, Schema Conversion Tool",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-44",
+      "text": "ElastiCache: Redis (persistent, Multi-AZ, pub/sub) vs Memcached (simple cache)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-45",
+      "text": "Storage Gateway: S3 File, Volume Cached/Stored, Tape — hybrid storage bridge",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-46",
+      "text": "Cost tools: Cost Explorer (history) vs Budgets (alerts) vs Compute Optimizer (right-sizing)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-47",
+      "text": "Support plans: Basic→Developer→Business→Enterprise. Business = full Trusted Advisor",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-48",
+      "text": "AWS Global Infrastructure: Regions → AZs → Edge Locations → Local Zones",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-49",
+      "text": "S3 Versioning, MFA Delete, Object Lock (WORM), Replication (CRR/SRR)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    },
+    {
+      "id": "check-50",
+      "text": "VPC Endpoints: Gateway (S3/DynamoDB, free) vs Interface/PrivateLink (most services)",
+      "exams": [
+        "CLF-C02",
+        "SAA-C03"
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "week": 1,
+      "title": "Foundations",
+      "focus": "Compute (EC2, Lambda, ASG) + Storage (S3, EBS, EFS) + Networking basics (VPC, SG, NACL)",
+      "domainIds": [
+        "compute",
+        "storage",
+        "networking"
+      ]
+    },
+    {
+      "week": 2,
+      "title": "Data & Security",
+      "focus": "Databases (RDS, Aurora, DynamoDB) + Security (IAM, KMS, WAF, Shield) + Route 53 + CloudFront",
+      "domainIds": [
+        "databases",
+        "security",
+        "networking"
+      ]
+    },
+    {
+      "week": 3,
+      "title": "Integration & Ops",
+      "focus": "Application Integration (SQS, SNS, EventBridge) + Serverless + Containers + Monitoring",
+      "domainIds": [
+        "integration",
+        "serverless",
+        "containers",
+        "monitoring",
+        "analytics",
+        "ml",
+        "migration"
+      ]
+    },
+    {
+      "week": 4,
+      "title": "Architecture & Exam Prep",
+      "focus": "Well-Architected Framework + Billing + HA/DR + Practice exams + review weak areas",
+      "domainIds": [
+        "waf",
+        "billing",
+        "cost",
+        "governance",
+        "ha-dr"
+      ]
+    }
+  ]
+}

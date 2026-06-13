@@ -43,7 +43,7 @@ Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **T
 | **Results summary** | Score, pass/fail against the exam threshold, time spent, topic breakdown, and per-question review. |
 | **Attempt history** | Timed quiz attempts are saved in `localStorage` (up to 10 per exam). Guided practice runs are not recorded. |
 | **Question bank** | Search, filter, and expand any question to reveal the keyed answer — for study only. |
-| **Learning reference** | Browse AWS services grouped by cluster with descriptions, use cases, and exam tips. |
+| **Learning study hub** | Combined CLF-C02 + SAA-C03 roadmap with priority badges, exam topics, comparisons, traps, strategy, and a Top-50 checklist with saved progress. |
 | **No account required** | Everything runs client-side; no backend or authentication. |
 
 ---
@@ -158,18 +158,33 @@ A read-only study view of the full question pool:
 
 Answers are visible immediately — this mode is for review, not assessment.
 
-### Learning reference
+### Learning study hub
 
 **Route:** `/learning`
 
-A structured AWS service guide (currently sourced from CLF-C02 study material):
+A guided certification prep experience covering **both CLF-C02 and SAA-C03**:
 
-- Services grouped into clusters (Compute, Storage, Networking, etc.).
-- Search across names, descriptions, use cases, and exam tips.
-- Filter by cluster using pills or the sidebar.
-- Click a service card to open a detail modal with full content.
+**Roadmap tab**
+- Overview hero with domain/service counts
+- Priority legend (Critical → Low)
+- 4-week study plan with links into each domain
+- Progress rings for domains reviewed and checklist items mastered
 
-Your last selected cluster is remembered in `localStorage` under `learning-last-cluster`.
+**Service reference tab**
+- 17 domains, 76+ services with **priority badges** and expandable **key exam topics**
+- Search plus filters for exam (CLF / SAA / both) and priority level
+- Per-domain comparison tables, exam-trap callouts, and security/architecture info cards
+- **Mark reviewed** per domain; **Practice this domain** deep-links to `/practice?exam=…&topic=…`
+
+**Exam strategy tab**
+- Common traps, scenario-solving technique, 30-day plan, exam-day tips, confused services, high-ROI topics
+
+**Top 50 checklist tab**
+- Interactive checklist — click to mark mastered; progress saved in `localStorage`
+
+Progress keys: `learning-domains-reviewed-v1`, `learning-checklist-v1`, `learning-active-tab-v1`.
+
+Data source: [`public/data/aws-learning-roadmap.json`](public/data/aws-learning-roadmap.json) (`schemaVersion: 2`). Regenerate from the legacy HTML (if you still have it) via `npm run convert:roadmap`.
 
 ---
 
@@ -200,7 +215,7 @@ React Router drives a single-page app. All routes are declared in [`src/App.tsx`
 | `/guided` | `GuidedPractice` | Untimed guided practice session |
 | `/results` | `Results` | Score summary and detailed review |
 | `/practice/browse` | `Browse` | Searchable question bank |
-| `/learning` | `Learning` | AWS service reference |
+| `/learning` | `Learning` | CLF + SAA study hub (roadmap, reference, strategy, checklist) |
 
 The global navbar ([`src/components/Navbar.tsx`](src/components/Navbar.tsx)) links Home, Practice, Question Bank, and Learning.
 
@@ -271,7 +286,7 @@ Question banks follow a consistent JSON envelope (see [`src/types/index.ts`](src
 
 Banks are registered in [`src/utils/exams.ts`](src/utils/exams.ts) via a static `BANK_MAP` and surfaced through `listCatalog()`, `getQuestionsForExam()`, and `getTopicsForExam()`.
 
-Learning content is loaded at runtime from [`public/data/aws-clf-c02-study-guide.json`](public/data/aws-clf-c02-study-guide.json), generated at build time from a study-guide HTML source.
+Learning content is loaded at runtime from [`public/data/aws-learning-roadmap.json`](public/data/aws-learning-roadmap.json). Types live in [`src/types/learning.ts`](src/types/learning.ts); progress is tracked by [`src/hooks/useLearningProgress.ts`](src/hooks/useLearningProgress.ts).
 
 ---
 
@@ -314,7 +329,8 @@ aws-certification-quiz-app/
 | `npm run ingest:saa` | Regenerate `aws-saa-c03.json` from `public/aws-saa-practice-exam.md` |
 | `npm run ingest:saa:paired` | Alternative SAA ingestion from paired source files |
 | `npm run wrap-clf` | One-off wrapper: legacy `questions.json` → exam bank format |
-| `npm run generate:learning` | Regenerate `public/data/aws-clf-c02-study-guide.json` |
+| `npm run convert:roadmap` | Regenerate `aws-learning-roadmap.json` from roadmap HTML (one-time; HTML can be deleted after) |
+| `npm run generate:learning` | Legacy: regenerate `aws-clf-c02-study-guide.json` (superseded by roadmap JSON) |
 
 Source markdown and text files under `public/` are gitignored — they are local ingestion inputs, not shipped assets.
 

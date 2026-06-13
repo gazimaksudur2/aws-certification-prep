@@ -57,6 +57,7 @@ prompts.txt
 # Source markdown / text used for ingestion (not shipped as app assets)
 public/**/*.md
 public/**/*.txt
+public/**/*.html
 
 # Raw study-guide HTML used to generate public/data/*.json at build time
 public/**/*study-guide*.html

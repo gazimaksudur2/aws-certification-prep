@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuiz } from '../hooks/useQuiz';
 import { useHistory } from '../hooks/useHistory';
 import type { AttemptHistoryEntry, QuizMode } from '../types';
@@ -13,6 +13,7 @@ import { PASS_THRESHOLD_PERCENT } from '../utils/scoring';
 
 export function Home() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { startQuiz } = useQuiz();
 
   const catalog = useMemo(() => listCatalog(), []);
@@ -51,6 +52,31 @@ export function Home() {
   const passThresholdPercent = examId
     ? (getExamBankMeta(examId)?.passThresholdPercent ?? PASS_THRESHOLD_PERCENT)
     : PASS_THRESHOLD_PERCENT;
+
+  /** Deep link from Learning: /practice?exam=aws-saa-c03&topic=Compute */
+  useEffect(() => {
+    const examParam = searchParams.get('exam');
+    const topicParam = searchParams.get('topic');
+    if (!examParam) return;
+
+    const validExam = catalog.find((e) => e.examId === examParam);
+    if (!validExam) return;
+
+    setExamId(examParam);
+    const examTopics = getTopicsForExam(examParam);
+    const nextTopic =
+      topicParam && examTopics.includes(topicParam) ? topicParam : 'All';
+    setTopic(nextTopic);
+
+    const poolSize = Math.max(
+      nextTopic === 'All'
+        ? getQuestionsForExam(examParam).length
+        : getQuestionsForExam(examParam).filter((q) => q.topic === nextTopic)
+            .length,
+      1,
+    );
+    setCount(Math.min(20, poolSize));
+  }, [searchParams, catalog]);
 
   function handleExamPick(id: string) {
     setExamId(id);

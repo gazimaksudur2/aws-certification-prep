@@ -4,23 +4,25 @@ export function LearningClusterSidebar({
   activeCluster,
   clusterCounts,
   onPickCluster,
+  reviewedDomains,
 }: {
   clusters: Array<{ id: string; name: string; color: string; servicesCount: number }>;
   selectedCluster: 'all' | string;
   activeCluster: string | null;
   clusterCounts: Map<string, number>;
   onPickCluster: (id: 'all' | string) => void;
+  reviewedDomains?: Set<string>;
 }) {
   const totalAll = clusters.reduce((acc, c) => acc + c.servicesCount, 0);
   return (
     <aside className="hidden md:block md:col-span-4 lg:col-span-3">
-      <div className="card p-4 sticky top-20">
+      <div className="card p-4 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
         <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">
-          Clusters
+          Domains
         </div>
         <div className="space-y-1">
           <SidebarRow
-            label="All clusters"
+            label="All domains"
             count={totalAll}
             active={selectedCluster === 'all'}
             onClick={() => onPickCluster('all')}
@@ -29,6 +31,7 @@ export function LearningClusterSidebar({
             const active =
               selectedCluster === c.id ||
               (selectedCluster === 'all' && activeCluster === c.id);
+            const reviewed = reviewedDomains?.has(c.id);
             return (
               <SidebarRow
                 key={c.id}
@@ -36,6 +39,7 @@ export function LearningClusterSidebar({
                 count={clusterCounts.get(c.id) ?? c.servicesCount}
                 color={c.color}
                 active={active}
+                reviewed={reviewed}
                 onClick={() => onPickCluster(c.id)}
               />
             );
@@ -51,12 +55,14 @@ function SidebarRow({
   count,
   color,
   active,
+  reviewed,
   onClick,
 }: {
   label: string;
   count: number;
   color?: string;
   active: boolean;
+  reviewed?: boolean;
   onClick: () => void;
 }) {
   return (
@@ -74,9 +80,13 @@ function SidebarRow({
       ) : (
         <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-slate-600" />
       )}
-      <span className="flex-1 text-sm font-medium">{label}</span>
+      <span className="flex-1 text-sm font-medium truncate">{label}</span>
+      {reviewed && (
+        <span className="text-emerald-400 text-xs" title="Reviewed">
+          ✓
+        </span>
+      )}
       <span className="text-xs text-slate-500 tabular-nums">{count}</span>
     </button>
   );
 }
-
