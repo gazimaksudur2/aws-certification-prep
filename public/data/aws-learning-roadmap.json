@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "source": "AWS_Study_Roadmap_CLF_SAA.html",
+  "source": "AWS_Study_Roadmap_CLF_SAA.html + saa_c03_must_learn_resources.html",
   "domains": [
     {
       "id": "compute",
@@ -25,7 +25,9 @@
             "ENI (Elastic Network Interface): can attach/move between instances",
             "Elastic IP: static public IP",
             "Hibernate: RAM saved to EBS, faster restart",
-            "Nitro: newer hypervisor, better performance, bare metal support"
+            "Nitro: newer hypervisor, better performance, bare metal support",
+            "Spot: up to 90% off, 2-minute interruption notice; use Spot Fleet + capacity-optimized allocation for fault-tolerant/batch work",
+            "Savings Plans: Compute (flexible across EC2/Fargate/Lambda) vs EC2 Instance (cheaper, family/region locked)"
           ],
           "exam": true,
           "uses": [
@@ -274,7 +276,7 @@
         {
           "name": "Amazon EBS",
           "desc": "Block storage volumes attached to EC2. Like a network hard drive.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Types: gp3 (default SSD), io2/io1 (high IOPS, critical DBs), st1 (HDD, throughput), sc1 (HDD, cold)",
             "AZ-locked — cannot attach to EC2 in another AZ directly",
@@ -282,13 +284,16 @@
             "Encryption: encrypted at rest and in transit; encrypted AMI → encrypted EBS",
             "Multi-Attach: io1/io2 can attach to multiple EC2 in same AZ",
             "gp3 vs gp2: gp3 allows independent IOPS/throughput provisioning, cheaper",
-            "Delete on termination: default ON for root volume"
-          ]
+            "Delete on termination: default ON for root volume",
+            "gp3 decouples capacity from IOPS/throughput (set them independently); gp2 coupled IOPS to volume size",
+            "Instance Store: ephemeral local disk, data lost on stop/terminate — never for persistent data"
+          ],
+          "exam": true
         },
         {
           "name": "Amazon EFS",
           "desc": "Managed NFS — shared file system for Linux instances.",
-          "priority": "high",
+          "priority": "critical",
           "examTopics": [
             "Multi-AZ — can mount to multiple EC2 simultaneously",
             "Linux only (NFS protocol)",
@@ -301,12 +306,13 @@
             "Shared storage for a fleet of web servers serving the same content",
             "Content management systems (WordPress, Drupal) on multiple servers"
           ],
-          "tip": "EFS = shared Linux NFS. FSx for Windows = SMB/Windows shares. S3 = object storage."
+          "tip": "EFS = shared Linux NFS. FSx for Windows = SMB/Windows shares. S3 = object storage.",
+          "exam": true
         },
         {
           "name": "Amazon FSx",
           "desc": "Fully managed third-party file systems.",
-          "priority": "medium",
+          "priority": "high",
           "examTopics": [
             "FSx for Windows File Server: SMB, Active Directory, Windows-based workloads",
             "FSx for Lustre: HPC, ML, financial modelling, integrates with S3",
@@ -322,7 +328,7 @@
         {
           "name": "AWS Storage Gateway",
           "desc": "Hybrid cloud storage bridge between on-premises and AWS.",
-          "priority": "medium",
+          "priority": "high",
           "examTopics": [
             "S3 File Gateway: NFS/SMB → S3 (caches locally)",
             "FSx File Gateway: SMB/Windows → FSx",
@@ -338,7 +344,7 @@
         {
           "name": "AWS Backup",
           "desc": "Centralized backup management for AWS services.",
-          "priority": "medium",
+          "priority": "high",
           "examTopics": [
             "Supports: EC2, EBS, RDS, Aurora, DynamoDB, EFS, FSx, S3, Outposts",
             "Backup plans: schedule, retention, lifecycle to cold storage",
@@ -355,6 +361,76 @@
             "S3: Object storage, internet-accessible, not mountable as file system, used for backups/static files/media",
             "EBS: Block storage, one EC2 at a time (except io2 Multi-Attach), AZ-specific, high performance",
             "EFS: File storage, shared across many EC2 instances, multi-AZ, Linux only, higher cost"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "EBS gp3 vs io2 vs Instance Store",
+          "cards": [
+            {
+              "title": "gp3 (General-purpose SSD)",
+              "rows": [
+                {
+                  "key": "IOPS:",
+                  "val": "3,000 baseline -> 16,000 (independent of size)"
+                },
+                {
+                  "key": "Throughput:",
+                  "val": "125-1,000 MB/s, set independently"
+                },
+                {
+                  "key": "Persistence:",
+                  "val": "Persistent (network volume)"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Most workloads, cost-effective default"
+                }
+              ]
+            },
+            {
+              "title": "io2 / io2 Block Express",
+              "rows": [
+                {
+                  "key": "IOPS:",
+                  "val": "Up to 256,000"
+                },
+                {
+                  "key": "Durability:",
+                  "val": "99.999%"
+                },
+                {
+                  "key": "Persistence:",
+                  "val": "Persistent (network volume)"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Critical high-IOPS DBs (Oracle, SAP)"
+                }
+              ]
+            },
+            {
+              "title": "Instance Store",
+              "rows": [
+                {
+                  "key": "IOPS:",
+                  "val": "Very high (physically attached NVMe)"
+                },
+                {
+                  "key": "Durability:",
+                  "val": "Ephemeral"
+                },
+                {
+                  "key": "Persistence:",
+                  "val": "LOST on stop / terminate"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Temp data, caches, buffers, scratch"
+                }
+              ]
+            }
           ]
         }
       ]
@@ -435,7 +511,7 @@
         {
           "name": "Amazon ElastiCache",
           "desc": "Managed in-memory caching (Redis and Memcached).",
-          "priority": "high",
+          "priority": "critical",
           "examTopics": [
             "Redis: persistence, replication, pub/sub, Sorted Sets, Multi-AZ, backup/restore",
             "Memcached: pure cache, multi-threaded, no persistence, simpler",
@@ -447,7 +523,8 @@
             "Cache database query results to serve millions of API requests",
             "Session storage for web apps needing sub-millisecond access"
           ],
-          "tip": "Caching layer to improve performance. Redis = more features. Memcached = simpler."
+          "tip": "Caching layer to improve performance. Redis = more features. Memcached = simpler.",
+          "exam": true
         },
         {
           "name": "Amazon Redshift",
@@ -573,6 +650,61 @@
               ]
             }
           ]
+        },
+        {
+          "title": "RDS Multi-AZ vs Read Replicas",
+          "cards": [
+            {
+              "title": "Multi-AZ",
+              "rows": [
+                {
+                  "key": "Purpose:",
+                  "val": "High availability / failover"
+                },
+                {
+                  "key": "Replication:",
+                  "val": "Synchronous"
+                },
+                {
+                  "key": "Reads:",
+                  "val": "Standby NOT readable"
+                },
+                {
+                  "key": "Failover:",
+                  "val": "Automatic (DNS) on failure"
+                },
+                {
+                  "key": "Scope:",
+                  "val": "Single region, 2 AZs"
+                }
+              ]
+            },
+            {
+              "title": "Read Replicas",
+              "rows": [
+                {
+                  "key": "Purpose:",
+                  "val": "Read scaling / performance"
+                },
+                {
+                  "key": "Replication:",
+                  "val": "Asynchronous"
+                },
+                {
+                  "key": "Reads:",
+                  "val": "Replicas serve read traffic"
+                },
+                {
+                  "key": "Failover:",
+                  "val": "Manual promotion"
+                },
+                {
+                  "key": "Scope:",
+                  "val": "Same/cross-region (5; Aurora 15)"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -652,7 +784,7 @@
         {
           "name": "Amazon CloudFront",
           "desc": "CDN — caches content at 400+ edge locations globally.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Origins: S3, EC2, ALB, HTTP endpoint (on-prem)",
             "OAC (Origin Access Control): restrict S3 to only CloudFront (replaces OAI)",
@@ -669,12 +801,13 @@
             "Serve static website assets globally with low latency",
             "Stream video content to global audiences with minimal buffering"
           ],
-          "tip": "CDN = CloudFront. Know: origins (S3, EC2, ALB), OAI for private S3, Lambda@Edge."
+          "tip": "CDN = CloudFront. Know: origins (S3, EC2, ALB), OAI for private S3, Lambda@Edge.",
+          "exam": true
         },
         {
           "name": "AWS Transit Gateway",
           "desc": "Hub-and-spoke networking for VPCs and on-premises connections.",
-          "priority": "high",
+          "priority": "critical",
           "examTopics": [
             "Connects thousands of VPCs and on-prem networks through a central hub",
             "Transitive routing (unlike VPC Peering which is non-transitive)",
@@ -686,7 +819,8 @@
           "uses": [
             "Hub-and-spoke model connecting 100+ VPCs in a large enterprise",
             "Simplifying mesh VPC peering topology to a star topology"
-          ]
+          ],
+          "exam": true
         },
         {
           "name": "AWS Direct Connect",
@@ -803,6 +937,121 @@
               ]
             }
           ]
+        },
+        {
+          "title": "NAT Gateway vs NAT Instance",
+          "cards": [
+            {
+              "title": "NAT Gateway",
+              "rows": [
+                {
+                  "key": "Managed:",
+                  "val": "AWS-managed, auto-scales"
+                },
+                {
+                  "key": "HA:",
+                  "val": "Per-AZ — deploy one per AZ"
+                },
+                {
+                  "key": "Bandwidth:",
+                  "val": "Up to 100 Gbps"
+                },
+                {
+                  "key": "Maintenance:",
+                  "val": "None"
+                }
+              ]
+            },
+            {
+              "title": "NAT Instance",
+              "rows": [
+                {
+                  "key": "Managed:",
+                  "val": "Self-managed EC2"
+                },
+                {
+                  "key": "HA:",
+                  "val": "Manual (script / ASG)"
+                },
+                {
+                  "key": "Bandwidth:",
+                  "val": "Depends on instance type"
+                },
+                {
+                  "key": "Maintenance:",
+                  "val": "You patch, scale, secure (SG)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "ALB vs NLB vs GWLB",
+          "cards": [
+            {
+              "title": "ALB",
+              "rows": [
+                {
+                  "key": "Layer:",
+                  "val": "7 (HTTP/HTTPS)"
+                },
+                {
+                  "key": "Routing:",
+                  "val": "Path, host, header, query"
+                },
+                {
+                  "key": "Targets:",
+                  "val": "EC2, IP, Lambda, containers"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Web apps, microservices, redirects"
+                }
+              ]
+            },
+            {
+              "title": "NLB",
+              "rows": [
+                {
+                  "key": "Layer:",
+                  "val": "4 (TCP/UDP/TLS)"
+                },
+                {
+                  "key": "Perf:",
+                  "val": "Millions req/s, ultra-low latency"
+                },
+                {
+                  "key": "IPs:",
+                  "val": "Static / Elastic IP per AZ"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Extreme perf, static IP, TCP"
+                }
+              ]
+            },
+            {
+              "title": "GWLB",
+              "rows": [
+                {
+                  "key": "Layer:",
+                  "val": "3/4 (GENEVE 6081)"
+                },
+                {
+                  "key": "Routing:",
+                  "val": "Transparent appliance insertion"
+                },
+                {
+                  "key": "Targets:",
+                  "val": "3rd-party firewalls / IDS / IPS"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Inline virtual security appliances"
+                }
+              ]
+            }
+          ]
         }
       ],
       "callouts": [
@@ -826,7 +1075,216 @@
       "icon": "🔐",
       "subtitle": "IAM · KMS · Cognito · GuardDuty · Shield · WAF · Inspector · Macie",
       "phase": 2,
-      "services": [],
+      "services": [
+        {
+          "name": "AWS IAM",
+          "desc": "Identity backbone of AWS — manage who can access which resources.",
+          "priority": "critical",
+          "examTopics": [
+            "Users, Groups, Roles, Policies",
+            "Policies: Identity-based, Resource-based, Permission Boundaries, SCPs, Session policies",
+            "Principle of Least Privilege — grant only what is needed",
+            "IAM Roles for EC2: no long-term keys stored on the instance (instance profile)",
+            "Cross-account access: trust policy + AssumeRole (STS)",
+            "Policy evaluation: explicit Deny > Organization SCP > Resource-based > Identity-based",
+            "IAM Access Analyzer: finds resources shared externally",
+            "MFA: virtual, hardware, U2F (SMS not recommended)",
+            "Inline vs Managed Policies: Managed = reusable, Inline = 1:1 attachment"
+          ],
+          "tip": "Identity-based vs resource-based policies; an explicit Deny always wins; use Roles (not access keys) for EC2 and cross-account access."
+        },
+        {
+          "name": "AWS KMS",
+          "desc": "Managed encryption keys (CMKs) with envelope encryption.",
+          "priority": "critical",
+          "examTopics": [
+            "Key types: AWS managed, Customer Managed Key (CMK), customer-provided (SSE-C)",
+            "Envelope encryption: a data key encrypts data, the CMK encrypts the data key",
+            "Integrates with S3, EBS, RDS, DynamoDB, Lambda, SSM Parameter Store, Secrets Manager",
+            "Multi-Region Keys: replicate a CMK across regions",
+            "Key Policies + grants control who can use/manage keys",
+            "Automatic key rotation (yearly) for customer managed keys",
+            "CloudHSM: dedicated FIPS 140-2 Level 3 hardware you fully control"
+          ],
+          "tip": "KMS for managed keys + envelope encryption; choose CloudHSM when you need dedicated, FIPS 140-2 Level 3 hardware you control."
+        },
+        {
+          "name": "AWS WAF",
+          "desc": "Layer 7 web application firewall filtering HTTP/HTTPS traffic.",
+          "priority": "critical",
+          "examTopics": [
+            "Protects against SQL injection, XSS, bad bots, and floods",
+            "Attach Web ACLs to ALB, API Gateway, CloudFront, AppSync",
+            "Rules and rule groups; AWS Managed Rules and Marketplace rules",
+            "IP sets, geo match, and rate-based rules (rate limiting)",
+            "vs Shield: WAF = L7 application rules; Shield = L3/L4 DDoS protection"
+          ],
+          "tip": "Attach WAF Web ACLs to ALB / API Gateway / CloudFront. Use rate-based rules to throttle floods and bad bots."
+        },
+        {
+          "name": "AWS Shield",
+          "desc": "Managed DDoS protection for AWS resources.",
+          "priority": "critical",
+          "examTopics": [
+            "Shield Standard: free, automatic, protects all customers (L3/L4)",
+            "Shield Advanced: paid (~$3,000/mo), adds L7 protection and 24/7 DRT",
+            "Advanced includes DDoS cost protection and WAF at no extra charge",
+            "Attach to ELB, CloudFront, Route 53, Global Accelerator, Elastic IP"
+          ],
+          "tip": "Standard is free and automatic (L3/L4). Advanced adds L7 protection, 24/7 response team, and DDoS cost protection."
+        },
+        {
+          "name": "Amazon Cognito",
+          "desc": "Authentication and authorization for web and mobile apps.",
+          "priority": "critical",
+          "examTopics": [
+            "User Pools: user directory, sign-up/sign-in, JWT tokens",
+            "Identity Pools: federated identities -> temporary AWS credentials",
+            "Supports social IdPs (Google, Facebook), SAML, and OIDC",
+            "Combine User Pools + Identity Pools: authenticate, then authorize to AWS services"
+          ],
+          "tip": "User Pools = authentication (JWT). Identity Pools = federated temporary AWS credentials. Use both to authenticate then access AWS services."
+        },
+        {
+          "name": "AWS Secrets Manager",
+          "desc": "Store, rotate, and retrieve secrets like DB credentials and API keys.",
+          "priority": "high",
+          "examTopics": [
+            "Automatic rotation via Lambda (the key differentiator)",
+            "Native integration with RDS, Redshift, DocumentDB",
+            "Encrypted with KMS; fine-grained resource policies",
+            "vs SSM Parameter Store: Secrets Manager costs more but auto-rotates"
+          ],
+          "tip": "Choose Secrets Manager over SSM Parameter Store when you need automatic credential rotation."
+        },
+        {
+          "name": "AWS Certificate Manager (ACM)",
+          "desc": "Provision, manage, and deploy free TLS/SSL certificates.",
+          "priority": "high",
+          "examTopics": [
+            "Free public TLS certificates with automatic renewal",
+            "Attach to ALB, CloudFront, and API Gateway (not directly to EC2)",
+            "Public certs validated via DNS (Route 53) or email",
+            "CloudFront requires the certificate in us-east-1",
+            "ACM Private CA for internal/private certificates"
+          ],
+          "tip": "ACM = free auto-renewing TLS for ALB/CloudFront/API Gateway. For CloudFront the cert MUST be in us-east-1."
+        },
+        {
+          "name": "Amazon GuardDuty",
+          "desc": "Intelligent, ML-based threat detection.",
+          "priority": "high",
+          "examTopics": [
+            "Agentless — analyzes CloudTrail, VPC Flow Logs, DNS logs, EKS audit logs, S3 logs",
+            "Detects compromised instances, crypto-mining, unusual API calls",
+            "Optional malware scanning",
+            "Findings -> EventBridge -> Lambda for automated remediation"
+          ],
+          "tip": "GuardDuty is agentless threat detection. Route findings to EventBridge -> Lambda for automatic remediation."
+        },
+        {
+          "name": "AWS Organizations / SCPs",
+          "desc": "Centrally manage and govern multiple AWS accounts.",
+          "priority": "high",
+          "examTopics": [
+            "OUs (Organizational Units) group accounts into a hierarchy",
+            "SCPs (Service Control Policies): maximum-permission guardrails",
+            "SCPs only restrict — they never grant permissions (even root is bound)",
+            "Consolidated Billing: single payer, volume discounts",
+            "AWS RAM (Resource Access Manager): share resources across accounts"
+          ],
+          "tip": "SCPs set the ceiling of what accounts can do — they restrict, never grant. The account root is still bound by SCPs."
+        },
+        {
+          "name": "IAM Identity Center (AWS SSO)",
+          "desc": "Centralized single sign-on across AWS accounts and applications.",
+          "priority": "high",
+          "examTopics": [
+            "Single sign-on across all Organization accounts and SaaS apps",
+            "Integrates with Active Directory and external IdPs via SAML 2.0",
+            "Permission sets assigned per account/group",
+            "Replaces creating IAM users in every account"
+          ],
+          "tip": "Use IAM Identity Center instead of per-account IAM users; federate with AD/external IdP via SAML 2.0."
+        },
+        {
+          "name": "AWS Network Firewall",
+          "desc": "Managed stateful/stateless network firewall for your VPC.",
+          "priority": "medium",
+          "examTopics": [
+            "Filters traffic at the VPC perimeter (dedicated firewall subnets)",
+            "Stateful (Suricata-compatible) and stateless rule groups",
+            "Domain-name filtering and intrusion prevention (IPS)",
+            "Centralized inspection across many VPCs via Transit Gateway",
+            "vs Security Groups/NACLs: deep L3-L7 inspection, not just IP/port allow/deny"
+          ],
+          "tip": "Use Network Firewall for deep packet inspection / IPS at the VPC edge — Security Groups and NACLs only do basic allow/deny."
+        },
+        {
+          "name": "Amazon Macie",
+          "desc": "ML-powered discovery and protection of sensitive data in S3.",
+          "priority": "medium",
+          "examTopics": [
+            "Finds PII, financial data, and credentials in S3",
+            "Data classification: sensitive, personal",
+            "Alerts via EventBridge or Security Hub"
+          ],
+          "tip": "Macie = find PII/sensitive data in S3 for compliance scenarios."
+        },
+        {
+          "name": "Amazon Inspector",
+          "desc": "Automated vulnerability management for EC2, Lambda, and ECR.",
+          "priority": "medium",
+          "examTopics": [
+            "Scans for CVEs, network reachability, and software vulnerabilities",
+            "Continuous, event-driven scanning (Inspector v2)",
+            "Covers EC2, container images in ECR, and Lambda functions"
+          ],
+          "tip": "Inspector = continuous CVE/vulnerability scanning. Trusted Advisor = point-in-time best-practice checks (not vuln scanning)."
+        },
+        {
+          "name": "AWS Security Hub",
+          "desc": "Aggregated security findings and compliance checks across accounts.",
+          "priority": "medium",
+          "examTopics": [
+            "Single pane aggregating GuardDuty, Inspector, Macie, IAM Access Analyzer",
+            "Automated CIS, AWS Foundational Security Best Practices, PCI-DSS checks",
+            "Cross-account and cross-region aggregation",
+            "Findings in AWS Security Finding Format (ASFF) -> EventBridge"
+          ],
+          "tip": "Security Hub = central dashboard consolidating other services findings plus compliance standards."
+        },
+        {
+          "name": "AWS Artifact",
+          "desc": "Self-service portal for AWS compliance reports and agreements.",
+          "priority": "low",
+          "examTopics": [
+            "On-demand SOC, PCI-DSS, ISO compliance reports",
+            "Download AWS agreements (e.g., BAA for HIPAA)"
+          ],
+          "tip": "Artifact = download compliance reports (SOC/PCI/ISO) on demand."
+        },
+        {
+          "name": "AWS Audit Manager",
+          "desc": "Automates evidence collection for audits.",
+          "priority": "low",
+          "examTopics": [
+            "Continuously collects evidence mapped to frameworks (PCI, GDPR, SOC 2)",
+            "Turns AWS usage data into audit-ready reports"
+          ],
+          "tip": "Audit Manager = automate audit evidence collection mapped to compliance frameworks."
+        },
+        {
+          "name": "Amazon Detective",
+          "desc": "Analyze and visualize security data to find the root cause of issues.",
+          "priority": "low",
+          "examTopics": [
+            "Builds linked graphs from VPC Flow Logs, CloudTrail, and GuardDuty",
+            "Used to investigate the root cause after a GuardDuty finding"
+          ],
+          "tip": "GuardDuty detects; Detective investigates root cause."
+        }
+      ],
       "callouts": [
         {
           "kind": "info",
@@ -838,132 +1296,52 @@
           ]
         }
       ],
-      "cards": [
+      "comparisons": [
         {
-          "title": "🔑 AWS IAM (Critical)",
-          "items": [
-            "Users, Groups, Roles, Policies",
-            "Policies: Identity-based, Resource-based, Permission Boundaries, SCPs, Session policies",
-            "Principle of Least Privilege — grant only what's needed",
-            "IAM Roles for EC2: no long-term keys stored on instance",
-            "IAM Role for Cross-Account access: trust policy + assume role",
-            "Policy evaluation: explicit Deny → Organization SCP → Resource-based → Identity-based",
-            "IAM Access Analyzer: finds external access",
-            "MFA: virtual, hardware, SMS (not recommended)",
-            "Password policy: complexity, rotation, reuse prevention",
-            "Root account: lock away, never use for day-to-day",
-            "Access keys: for CLI/SDK — rotate regularly, never embed in code",
-            "Inline vs Managed Policies: Managed = reusable, Inline = specific attachment"
-          ]
-        },
-        {
-          "title": "🔒 AWS KMS (Critical)",
-          "items": [
-            "Manages encryption keys (CMKs)",
-            "Key types: AWS Managed, Customer Managed (CMK), Customer-provided (SSE-C)",
-            "Envelope Encryption: data key encrypts data, CMK encrypts data key",
-            "KMS integrates with: S3, EBS, RDS, DynamoDB, Lambda, SSM Parameter Store",
-            "Multi-Region Keys: replicate CMK across regions",
-            "Key Policies: control who can use/manage keys",
-            "CloudHSM: dedicated hardware security module (you manage, FIPS 140-2 Level 3)"
-          ]
-        },
-        {
-          "title": "🛡️ AWS Shield (High)",
-          "items": [
-            "DDoS protection",
-            "Shield Standard: free, automatic, protects all AWS customers (L3/L4)",
-            "Shield Advanced: paid (~$3000/mo), L7 protection, DDoS cost protection, 24/7 DRT team, WAF included",
-            "Attach to: ELB, CloudFront, Route 53, Global Accelerator, Elastic IP"
-          ]
-        },
-        {
-          "title": "🔥 AWS WAF (High)",
-          "items": [
-            "Web Application Firewall — filters HTTP/HTTPS traffic",
-            "Protect against: SQL injection, XSS, bad bots, rate limiting",
-            "Attach to: ALB, API Gateway, CloudFront, AppSync",
-            "Web ACLs with rules and rule groups",
-            "Managed Rule Groups (AWS & 3rd party)",
-            "IP sets, Geo match, rate-based rules"
-          ]
-        },
-        {
-          "title": "🔍 GuardDuty (High)",
-          "items": [
-            "Intelligent threat detection (ML-based)",
-            "Analyzes: CloudTrail, VPC Flow Logs, DNS Logs, EKS Audit Logs, S3 Logs",
-            "Detects: compromised EC2, crypto mining, unusual API calls",
-            "No agents needed — fully managed",
-            "Findings → EventBridge → Lambda for automated remediation"
-          ]
-        },
-        {
-          "title": "👤 Amazon Cognito (High)",
-          "items": [
-            "Authentication/Authorization for web & mobile apps",
-            "User Pools: user directory, sign-up/sign-in, JWT tokens",
-            "Identity Pools: federated identities → temporary AWS credentials",
-            "Supports: social identity (Google, Facebook), SAML, OIDC",
-            "User Pools + Identity Pools: authenticate then authorize to AWS services"
-          ]
-        },
-        {
-          "title": "📜 AWS Secrets Manager (High)",
-          "items": [
-            "Store, rotate, manage secrets (passwords, API keys)",
-            "Automatic rotation (Lambda-based)",
-            "Integrates with RDS, Redshift, DocumentDB natively",
-            "vs SSM Parameter Store: Secrets Manager costs more, has auto-rotation",
-            "Parameter Store: free tier, good for config, not just secrets"
-          ]
-        },
-        {
-          "title": "🕵️ Amazon Macie (Medium)",
-          "items": [
-            "ML-based S3 data discovery and protection",
-            "Finds: PII, financial data, credentials in S3",
-            "Data classifications: sensitive, personal",
-            "Alerts via EventBridge or Security Hub"
-          ]
-        },
-        {
-          "title": "🔎 AWS Inspector (Medium)",
-          "items": [
-            "Automated security assessments for EC2, Lambda, ECR",
-            "Checks: CVEs, network accessibility, software vulnerabilities",
-            "Continuous scanning (unlike Trusted Advisor one-time)",
-            "Inspector v2 is automated and event-driven"
-          ]
-        },
-        {
-          "title": "🏢 AWS Organizations / SCPs (Critical)",
-          "items": [
-            "Centrally manage multiple AWS accounts",
-            "SCPs (Service Control Policies): guardrails — limit what accounts can do, even for root",
-            "SCPs do NOT grant permissions — only restrict",
-            "OUs (Organizational Units): group accounts",
-            "Consolidated Billing: single payment, volume discounts",
-            "AWS RAM (Resource Access Manager): share resources across accounts"
-          ]
-        },
-        {
-          "title": "🔐 AWS SSO / IAM Identity Center (Medium)",
-          "items": [
-            "Single Sign-On across AWS accounts and applications",
-            "Integrates with Active Directory, external IdP",
-            "Fine-grained permissions per account/application",
-            "Replaces creating IAM users in every account"
-          ]
-        },
-        {
-          "title": "📋 AWS Compliance Services (High)",
-          "items": [
-            "AWS Artifact: compliance reports (SOC, PCI-DSS, ISO) on-demand",
-            "AWS Audit Manager: automate evidence collection for audits",
-            "AWS Security Hub: aggregated security findings across accounts",
-            "AWS Detective: root cause analysis of security issues (GraphQL)",
-            "Shared Responsibility: AWS secures OF the cloud; customer secures IN the cloud"
+          "title": "Secrets Manager vs SSM Parameter Store",
+          "cards": [
+            {
+              "title": "Secrets Manager",
+              "rows": [
+                {
+                  "key": "Rotation:",
+                  "val": "Automatic (Lambda)"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Per secret + API calls"
+                },
+                {
+                  "key": "Integrations:",
+                  "val": "RDS / Redshift / DocumentDB"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Credentials needing rotation"
+                }
+              ]
+            },
+            {
+              "title": "SSM Parameter Store",
+              "rows": [
+                {
+                  "key": "Rotation:",
+                  "val": "None built-in"
+                },
+                {
+                  "key": "Cost:",
+                  "val": "Free (Standard tier)"
+                },
+                {
+                  "key": "Types:",
+                  "val": "String / StringList / SecureString"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Config + simple secrets"
+                }
+              ]
+            }
           ]
         }
       ]
@@ -998,7 +1376,7 @@
         {
           "name": "AWS CloudTrail",
           "desc": "Audit log of ALL API calls made in your AWS account.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Who, what, when, where for every AWS API call",
             "Events: Management Events (default, control plane) & Data Events (S3, Lambda — extra cost)",
@@ -1011,7 +1389,8 @@
           "uses": [
             "Audit who deleted a production S3 bucket at 2am",
             "Security forensics for unauthorized IAM policy changes"
-          ]
+          ],
+          "exam": true
         },
         {
           "name": "AWS Config",
@@ -1168,17 +1547,31 @@
           "tip": "Athena = serverless SQL on S3. Pair with AWS Glue Data Catalog. No server setup — just query and pay per TB scanned."
         },
         {
-          "name": "Amazon Kinesis",
-          "desc": "Real-time streaming data platform.",
-          "priority": "very-high",
+          "name": "Kinesis Data Streams",
+          "desc": "Real-time, ordered, replayable data streaming with custom consumers.",
+          "priority": "high",
           "examTopics": [
-            "Kinesis Data Streams (KDS): ingest streaming data, custom consumers, retention 1–365 days, shards",
-            "Kinesis Data Firehose: fully managed delivery to S3/Redshift/OpenSearch, near real-time (60s buffer), no shards",
-            "Kinesis Data Analytics: SQL/Flink on streaming data",
-            "Kinesis Video Streams: ingest video for ML",
-            "KDS vs Firehose: KDS = custom consumers, real-time; Firehose = managed delivery, near real-time",
-            "SQS vs Kinesis: SQS = task queue/decoupling; Kinesis = real-time analytics on ordered streams"
-          ]
+            "Sharded throughput; retention 1-365 days; ordered per shard",
+            "Custom consumers via KCL/KPL; Enhanced Fan-Out for dedicated throughput",
+            "Replay data by re-reading from a position (SQS cannot replay)",
+            "Producers: SDK, KPL, Kinesis Agent, CloudWatch Logs",
+            "Related: Kinesis Data Analytics (SQL/Flink) and Kinesis Video Streams",
+            "vs SQS: Kinesis = ordered streams + multiple consumers + replay; SQS = task queue"
+          ],
+          "tip": "Pick Kinesis Data Streams when order and replay matter, or when many consumers must read the same data."
+        },
+        {
+          "name": "Kinesis Data Firehose",
+          "desc": "Fully managed near-real-time delivery of streaming data to data stores.",
+          "priority": "high",
+          "examTopics": [
+            "Delivers to S3, Redshift, OpenSearch, Splunk — no consumers to manage",
+            "Near real-time (buffer size/interval, ~60s)",
+            "Built-in transform (Lambda) and format conversion (Parquet/ORC)",
+            "No shards; auto-scales; not for sub-second or custom consumers",
+            "vs Data Streams: Firehose = managed delivery/load; Streams = custom processing"
+          ],
+          "tip": "Firehose = zero-admin load into S3/Redshift/OpenSearch. Data Streams = build your own real-time consumers."
         },
         {
           "name": "AWS Glue",
@@ -1372,7 +1765,7 @@
         {
           "name": "Amazon ECS",
           "desc": "AWS-native container orchestration using Docker containers.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Launch types: EC2 (you manage nodes) and Fargate (serverless)",
             "Task Definition: blueprint for container (CPU, memory, image, port)",
@@ -1384,7 +1777,8 @@
           "uses": [
             "Deploy containerized microservices at scale",
             "Run CI/CD build agents as ephemeral containers"
-          ]
+          ],
+          "exam": true
         },
         {
           "name": "Amazon EKS",
@@ -1404,7 +1798,7 @@
         {
           "name": "AWS Fargate",
           "desc": "Serverless compute engine for containers (ECS and EKS).",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "No EC2 instances to manage — pay per vCPU and memory",
             "Works with both ECS and EKS",
@@ -1414,7 +1808,8 @@
             "Run containers without managing underlying servers",
             "Auto-scale container workloads with zero infrastructure ops"
           ],
-          "tip": "Fargate = serverless containers. ECS/EKS still used but Fargate manages the nodes."
+          "tip": "Fargate = serverless containers. ECS/EKS still used but Fargate manages the nodes.",
+          "exam": true
         },
         {
           "name": "Amazon ECR",
@@ -1430,7 +1825,7 @@
         {
           "name": "AWS App Runner",
           "desc": "Deploy containerized apps or source code with zero infrastructure management.",
-          "priority": "low",
+          "priority": "medium",
           "examTopics": [
             "Simpler than ECS — no task definitions, services, etc.",
             "Auto scales, HTTPS, load balancing built-in"
@@ -1461,7 +1856,7 @@
         {
           "name": "Amazon API Gateway",
           "desc": "Fully managed API creation, deployment, and management.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Types: REST API, HTTP API (cheaper, faster), WebSocket API",
             "Integrations: Lambda, HTTP backend, AWS services, VPC Link (private)",
@@ -1470,7 +1865,8 @@
             "Stages: dev, staging, prod with canary deployments",
             "HTTP API vs REST API: HTTP API = simpler, cheaper, faster; REST API = more features",
             "Edge-optimized (CloudFront) vs Regional vs Private"
-          ]
+          ],
+          "exam": true
         },
         {
           "name": "AWS Step Functions",
@@ -1492,7 +1888,7 @@
         {
           "name": "AWS SAM",
           "desc": "Serverless Application Model — IaC framework for serverless apps.",
-          "priority": "medium",
+          "priority": "high",
           "examTopics": [
             "Extension of CloudFormation for Lambda, API Gateway, DynamoDB",
             "sam build, sam package, sam deploy",
@@ -1535,7 +1931,7 @@
         {
           "name": "Amazon SNS",
           "desc": "Pub/Sub messaging — one message to many subscribers.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Push-based (subscribers receive messages)",
             "Subscribers: SQS, Lambda, HTTP/HTTPS, Email, SMS, Mobile Push, Kinesis Firehose",
@@ -1548,12 +1944,13 @@
             "Send SMS/email alerts to ops teams when CloudWatch alarm fires",
             "Fan-out: one S3 event triggers parallel processing by multiple Lambda functions"
           ],
-          "tip": "SNS topics → push to subscribers. SQS queues → consumers pull. Key exam pattern: SNS + SQS for fan-out."
+          "tip": "SNS topics → push to subscribers. SQS queues → consumers pull. Key exam pattern: SNS + SQS for fan-out.",
+          "exam": true
         },
         {
           "name": "Amazon EventBridge",
           "desc": "Serverless event bus for routing events between AWS services and SaaS apps.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Default event bus (AWS services), custom event bus, partner event bus (SaaS)",
             "Rules: event pattern matching → target",
@@ -1561,7 +1958,8 @@
             "Schema Registry: auto-discover event schemas",
             "EventBridge Scheduler: cron/rate expressions (replaces CloudWatch Events)",
             "vs SNS: EventBridge = rich filtering, SaaS integration; SNS = simpler pub/sub"
-          ]
+          ],
+          "exam": true
         },
         {
           "name": "Amazon MQ",
@@ -1647,6 +2045,74 @@
               ]
             }
           ]
+        },
+        {
+          "title": "SQS vs SNS vs Kinesis",
+          "cards": [
+            {
+              "title": "SQS",
+              "rows": [
+                {
+                  "key": "Model:",
+                  "val": "Queue (pull)"
+                },
+                {
+                  "key": "Consumers:",
+                  "val": "One per message"
+                },
+                {
+                  "key": "Order/Replay:",
+                  "val": "FIFO option; no replay"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Decoupling, task buffering"
+                }
+              ]
+            },
+            {
+              "title": "SNS",
+              "rows": [
+                {
+                  "key": "Model:",
+                  "val": "Pub/Sub (push)"
+                },
+                {
+                  "key": "Consumers:",
+                  "val": "Many subscribers"
+                },
+                {
+                  "key": "Order/Replay:",
+                  "val": "FIFO option; no replay"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Fan-out, notifications"
+                }
+              ]
+            },
+            {
+              "title": "Kinesis",
+              "rows": [
+                {
+                  "key": "Model:",
+                  "val": "Streaming (ordered)"
+                },
+                {
+                  "key": "Consumers:",
+                  "val": "Many, independent"
+                },
+                {
+                  "key": "Order/Replay:",
+                  "val": "Ordered + replay in retention"
+                },
+                {
+                  "key": "Best for:",
+                  "val": "Real-time analytics, ordered events"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1661,7 +2127,7 @@
         {
           "name": "AWS CloudFormation",
           "desc": "Infrastructure as Code — provision AWS resources via templates.",
-          "priority": "very-high",
+          "priority": "critical",
           "examTopics": [
             "Templates (JSON/YAML) → Stack → Resources",
             "Sections: AWSTemplateFormatVersion, Description, Parameters, Mappings, Conditions, Resources (required), Outputs",
@@ -1677,7 +2143,8 @@
             "Deploy identical dev, staging, and prod environments from one template",
             "Version-controlled infrastructure with rollback capability on failure"
           ],
-          "tip": "CloudFormation = IaC. CDK = define IaC in Python/TypeScript (generates CF). Terraform = third-party IaC."
+          "tip": "CloudFormation = IaC. CDK = define IaC in Python/TypeScript (generates CF). Terraform = third-party IaC.",
+          "exam": true
         },
         {
           "name": "AWS Systems Manager (SSM)",
@@ -1696,7 +2163,7 @@
         {
           "name": "AWS Trusted Advisor",
           "desc": "Real-time guidance to optimize your AWS environment.",
-          "priority": "high",
+          "priority": "medium",
           "examTopics": [
             "5 categories: Cost Optimization, Performance, Security, Fault Tolerance, Service Limits",
             "Free checks: basic (6 security + limits)",
@@ -1737,6 +2204,32 @@
             "Allow developers to deploy only approved CloudFormation templates",
             "Standardize EC2 configurations and enforce tagging policies via catalog"
           ]
+        },
+        {
+          "name": "SSM Parameter Store",
+          "desc": "Hierarchical storage for configuration data and secrets.",
+          "priority": "high",
+          "examTopics": [
+            "String, StringList, and SecureString (KMS-encrypted) parameter types",
+            "Standard (free) vs Advanced (8 KB, parameter policies) tiers",
+            "No built-in rotation (unlike Secrets Manager)",
+            "Versioning; referenced from CloudFormation, Lambda, ECS",
+            "Public parameters: AWS-published AMI IDs, region lists"
+          ],
+          "tip": "Parameter Store = free config + SecureString secrets WITHOUT auto-rotation. Need rotation -> Secrets Manager."
+        },
+        {
+          "name": "CodePipeline / CodeDeploy",
+          "desc": "CI/CD pipeline orchestration and automated deployments.",
+          "priority": "medium",
+          "examTopics": [
+            "CodePipeline orchestrates source -> build -> test -> deploy stages",
+            "CodeBuild = managed build; CodeDeploy = automated deployments",
+            "Deployment strategies: in-place vs blue/green (EC2, Lambda, ECS)",
+            "CodeDeploy lifecycle hooks + automatic rollback on failure",
+            "Sources: CodeCommit, GitHub, S3"
+          ],
+          "tip": "CodeDeploy = blue/green & in-place deploys to EC2/Lambda/ECS; CodePipeline = the end-to-end CI/CD orchestrator."
         }
       ]
     },
@@ -1751,7 +2244,7 @@
         {
           "name": "AWS Cost Explorer",
           "desc": "Visualize, understand, and manage AWS costs and usage.",
-          "priority": "very-high",
+          "priority": "medium",
           "examTopics": [
             "Historical cost analysis (up to 13 months)",
             "Forecasting future costs (up to 12 months)",
@@ -1763,7 +2256,7 @@
         {
           "name": "AWS Budgets",
           "desc": "Set custom cost/usage alerts and take automated actions.",
-          "priority": "very-high",
+          "priority": "medium",
           "examTopics": [
             "Budget types: Cost, Usage, RI Coverage, Savings Plans Coverage",
             "Alerts: when actual or forecasted cost exceeds threshold",

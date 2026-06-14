@@ -1,4 +1,12 @@
-import type { ExamTag, LearningService, Priority } from '../../types/learning';
+import type {
+  Callout,
+  Comparison,
+  ExamTag,
+  InfoCard,
+  LearningDomain,
+  LearningService,
+  Priority,
+} from '../../types/learning';
 import { PRIORITY_LABELS } from '../../types/learning';
 
 export function priorityBadgeClass(priority: Priority): string {
@@ -26,6 +34,23 @@ export function PriorityBadge({ priority }: { priority: Priority }) {
   );
 }
 
+/** Lowercase and treat `-`, `_`, `/` as word separators so "multi az" matches "Multi-AZ". */
+export function normalizeForSearch(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[-_/]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Every whitespace-separated token in `term` must appear in the joined haystack (AND semantics). */
+export function matchesSearch(haystackParts: (string | undefined)[], term: string): boolean {
+  const normalizedTerm = normalizeForSearch(term);
+  if (!normalizedTerm) return true;
+  const haystack = normalizeForSearch(haystackParts.filter(Boolean).join(' '));
+  return normalizedTerm.split(' ').every((token) => haystack.includes(token));
+}
+
 export function serviceMatchesFilters(
   service: LearningService,
   search: string,
@@ -37,18 +62,85 @@ export function serviceMatchesFilters(
     const tags = service.exams ?? ['CLF-C02', 'SAA-C03'];
     if (!tags.includes(examFilter)) return false;
   }
-  const term = search.trim().toLowerCase();
-  if (!term) return true;
-  const haystack = [
-    service.name,
-    service.desc,
-    ...(service.examTopics ?? []),
-    service.tip ?? '',
-    ...(service.uses ?? []),
-  ]
-    .join(' ')
-    .toLowerCase();
-  return haystack.includes(term);
+  if (!search.trim()) return true;
+  return matchesSearch(
+    [
+      service.name,
+      service.desc,
+      ...(service.examTopics ?? []),
+      service.tip,
+      ...(service.uses ?? []),
+    ],
+    search,
+  );
+}
+
+export function comparisonMatchesSearch(comparison: Comparison, search: string): boolean {
+  return matchesSearch(
+    [
+      comparison.title,
+      ...comparison.cards.flatMap((card) => [
+        card.title,
+        ...card.rows.flatMap((row) => [row.key, row.val]),
+      ]),
+    ],
+    search,
+  );
+}
+
+export function calloutMatchesSearch(callout: Callout, search: string): boolean {
+  return matchesSearch([callout.title, ...callout.items], search);
+}
+
+export function infoCardMatchesSearch(card: InfoCard, search: string): boolean {
+  return matchesSearch([card.title, card.intro, ...card.items], search);
+}
+
+/**
+ * Applies search + exam/priority filters across a whole domain. Services honor all
+ * filters; extras (comparisons, callouts, cards) honor the search term only, since they
+ * carry no exam/priority metadata. When the search is empty, extras pass through unchanged.
+ */
+export function filterDomainContent(
+  domain: LearningDomain,
+  search: string,
+  examFilter: 'all' | ExamTag,
+  priorityFilter: 'all' | Priority,
+): LearningDomain {
+  const hasSearch = search.trim().length > 0;
+  // A search hit on the domain name/subtitle keeps all of that domain's extras visible.
+  const domainHeaderMatches =
+    hasSearch && matchesSearch([domain.name, domain.subtitle], search);
+
+  const services = domain.services.filter((s) =>
+    serviceMatchesFilters(s, search, examFilter, priorityFilter),
+  );
+
+  // Extras only appear when no exam/priority filter is narrowing the view to services.
+  const extrasAllowed = examFilter === 'all' && priorityFilter === 'all';
+  const keepExtra = (matches: boolean) =>
+    extrasAllowed && (!hasSearch || domainHeaderMatches || matches);
+
+  const comparisons = domain.comparisons?.filter((c) =>
+    keepExtra(comparisonMatchesSearch(c, search)),
+  );
+  const callouts = domain.callouts?.filter((c) =>
+    keepExtra(calloutMatchesSearch(c, search)),
+  );
+  const cards = domain.cards?.filter((c) =>
+    keepExtra(infoCardMatchesSearch(c, search)),
+  );
+
+  return { ...domain, services, comparisons, callouts, cards };
+}
+
+export function domainHasVisibleContent(domain: LearningDomain): boolean {
+  return Boolean(
+    domain.services.length ||
+      domain.comparisons?.length ||
+      domain.callouts?.length ||
+      domain.cards?.length,
+  );
 }
 
 export function buildPracticeUrl(domainId: string, examId = 'aws-saa-c03'): string {

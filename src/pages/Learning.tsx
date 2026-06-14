@@ -19,7 +19,11 @@ import {
 import { LearningOverview } from './learning/LearningOverview';
 import { LearningServiceCard } from './learning/LearningServiceCard';
 import { LearningStrategy } from './learning/LearningStrategy';
-import { PriorityBadge, serviceMatchesFilters } from './learning/learningUtils';
+import {
+  PriorityBadge,
+  domainHasVisibleContent,
+  filterDomainContent,
+} from './learning/learningUtils';
 
 type TabId = 'roadmap' | 'reference' | 'strategy' | 'checklist';
 type DomainId = 'all' | string;
@@ -85,35 +89,48 @@ export function Learning() {
     }
   }, []);
 
+  const anyFilterActive =
+    search.trim() !== '' || examFilter !== 'all' || priorityFilter !== 'all';
+
   const filteredDomains = useMemo(() => {
     if (!domains) return [];
     return domains
       .filter((d) => selectedDomain === 'all' || d.id === selectedDomain)
-      .map((d) => ({
-        ...d,
-        services: d.services
-          .filter((s) =>
-            serviceMatchesFilters(s, search, examFilter, priorityFilter),
-          )
-          .sort(
+      .map((d) => {
+        const filtered = filterDomainContent(d, search, examFilter, priorityFilter);
+        return {
+          ...filtered,
+          services: [...filtered.services].sort(
             (a, b) =>
               PRIORITY_ORDER.indexOf(a.priority) -
               PRIORITY_ORDER.indexOf(b.priority),
           ),
-      }))
-      .filter((d) => d.services.length > 0 || d.cards?.length);
+        };
+      })
+      .filter(domainHasVisibleContent);
   }, [domains, search, selectedDomain, examFilter, priorityFilter]);
 
+  const domainResultCount = (d: LearningDomain) =>
+    d.services.length +
+    (d.comparisons?.length ?? 0) +
+    (d.callouts?.length ?? 0) +
+    (d.cards?.length ?? 0);
+
   const totalMatches = useMemo(
-    () => filteredDomains.reduce((acc, d) => acc + d.services.length, 0),
+    () => filteredDomains.reduce((acc, d) => acc + domainResultCount(d), 0),
     [filteredDomains],
   );
 
   const domainCounts = useMemo(() => {
     const map = new Map<string, number>();
-    for (const d of domains ?? []) map.set(d.id, d.services.length);
+    if (anyFilterActive) {
+      for (const d of domains ?? []) map.set(d.id, 0);
+      for (const d of filteredDomains) map.set(d.id, domainResultCount(d));
+    } else {
+      for (const d of domains ?? []) map.set(d.id, d.services.length);
+    }
     return map;
-  }, [domains]);
+  }, [domains, filteredDomains, anyFilterActive]);
 
   useEffect(() => {
     if (!domains || tab !== 'reference') return;
@@ -283,10 +300,10 @@ export function Learning() {
           </div>
 
           <div className="text-sm text-slate-500">
-            {search.trim() || priorityFilter !== 'all' || examFilter !== 'all' ? (
+            {anyFilterActive ? (
               <span>
                 <span className="text-slate-200 font-semibold">{totalMatches}</span>{' '}
-                services match filters
+                results match filters
               </span>
             ) : (
               <span className="text-slate-400">
