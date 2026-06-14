@@ -116,8 +116,11 @@ export function filterDomainContent(
     serviceMatchesFilters(s, search, examFilter, priorityFilter),
   );
 
-  // Extras only appear when no exam/priority filter is narrowing the view to services.
-  const extrasAllowed = examFilter === 'all' && priorityFilter === 'all';
+  // Card-only framework domains (CAF, WAF, HA/DR, Billing) have no services to
+  // filter by exam/priority — always allow their cards/callouts through.
+  const isCardOnlyDomain = domain.services.length === 0;
+  const extrasAllowed =
+    isCardOnlyDomain || (examFilter === 'all' && priorityFilter === 'all');
   const keepExtra = (matches: boolean) =>
     extrasAllowed && (!hasSearch || domainHeaderMatches || matches);
 

@@ -127,7 +127,7 @@ export function Learning() {
       for (const d of domains ?? []) map.set(d.id, 0);
       for (const d of filteredDomains) map.set(d.id, domainResultCount(d));
     } else {
-      for (const d of domains ?? []) map.set(d.id, d.services.length);
+      for (const d of domains ?? []) map.set(d.id, domainResultCount(d));
     }
     return map;
   }, [domains, filteredDomains, anyFilterActive]);
@@ -373,8 +373,9 @@ export function Learning() {
                     </button>
                     <DomainPracticeLink domainId={domain.id} />
                     <span className="text-xs text-slate-500 w-full sm:w-auto sm:ml-0 ml-auto">
-                      {domain.services.length} service
-                      {domain.services.length === 1 ? '' : 's'}
+                      {domain.services.length > 0
+                        ? `${domain.services.length} service${domain.services.length === 1 ? '' : 's'}`
+                        : `${domainResultCount(domain)} topic${domainResultCount(domain) === 1 ? '' : 's'}`}
                     </span>
                   </div>
 

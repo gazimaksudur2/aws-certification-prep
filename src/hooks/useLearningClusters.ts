@@ -12,7 +12,7 @@ export function useLearningContent() {
     let alive = true;
     setLoading(true);
 
-    fetch(LEARNING_JSON_URL, { cache: 'force-cache' })
+    fetch(LEARNING_JSON_URL, { cache: 'no-store' })
       .then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed to load learning content (${res.status}).`);

@@ -2468,6 +2468,185 @@
       ]
     },
     {
+      "id": "caf",
+      "name": "AWS Cloud Adoption Framework (CAF)",
+      "color": "#0ea5e9",
+      "icon": "🧭",
+      "subtitle": "6 Perspectives · 4 Phases · 4 Transformation Domains — CLF-C02 focus",
+      "phase": 4,
+      "services": [],
+      "cards": [
+        {
+          "icon": "📋",
+          "title": "What is AWS CAF?",
+          "intro": "A strategic framework by AWS that helps organizations plan and execute cloud adoption. It maps 47 capabilities across 6 perspectives.",
+          "items": [
+            "Business capabilities: Business, People, Governance (drive value, readiness, and oversight)",
+            "Technical capabilities: Platform, Security, Operations (build and run the cloud)",
+            "CLF-C02: know all 6 perspectives, their stakeholders, their capabilities, and when to apply each",
+            "Perspectives describe WHO is responsible; transformation domains describe WHAT changes"
+          ]
+        },
+        {
+          "icon": "📈",
+          "title": "Business Perspective (Business capability)",
+          "intro": "Ensures cloud investments accelerate digital transformation ambitions and business outcomes. Aligns cloud strategy with corporate goals, value realization, and financial optimization.",
+          "items": [
+            "Stakeholders: CEO, CFO, COO, CIO, CTO",
+            "Strategy management — align cloud with business strategy",
+            "Portfolio management — manage the investment portfolio",
+            "Innovation management — drive cloud-enabled innovation",
+            "Product management — cloud-powered product development",
+            "Strategic partnership — manage vendor and partner relationships",
+            "Data monetization — create value from data assets",
+            "Business insights — analytics to drive decisions",
+            "Data science — advanced analytical capabilities",
+            "Exam tip: ROI, business outcomes, revenue growth, aligning cloud with corporate strategy → Business. 'Data monetization' is Business, not Platform (common trap)."
+          ]
+        },
+        {
+          "icon": "👥",
+          "title": "People Perspective (Business capability)",
+          "intro": "Bridge between technology and business. Builds a culture of continuous growth, learning, and change management; focuses on workforce readiness and organizational change.",
+          "items": [
+            "Stakeholders: CIO, COO, CTO, Cloud Director, HR Leaders",
+            "Culture evolution — foster a cloud-first culture",
+            "Transformational leadership — lead organizational change",
+            "Cloud fluency — build cloud literacy across the org",
+            "Workforce transformation — upskill and reskill staff",
+            "Change acceleration — speed up change adoption",
+            "Organization design — restructure for a cloud operating model",
+            "Organizational alignment — align teams with cloud goals",
+            "Exam tip: training, organizational change, workforce readiness, or HR → People. 'Culture evolution' is People, not Business."
+          ]
+        },
+        {
+          "icon": "🏛️",
+          "title": "Governance Perspective (Business capability)",
+          "intro": "Orchestrates cloud initiatives while maximizing organizational benefits and minimizing transformation-related risks. Establishes policies, controls, and oversight.",
+          "items": [
+            "Stakeholders: CIO, CFO, Chief Risk Officer, Chief Data Officer, Program Managers",
+            "Program & project management — govern cloud programs",
+            "Benefits management — track and realize cloud ROI",
+            "Risk management — identify and mitigate risks",
+            "Cloud financial management — control cloud costs and budgets",
+            "Application portfolio management — manage app inventory and migration",
+            "Data governance — manage data policies and quality",
+            "Data curation — organize and catalog data assets",
+            "Exam tip: risk management, compliance, cost controls, and benefits management → Governance. Don't confuse with the Security perspective."
+          ]
+        },
+        {
+          "icon": "🧱",
+          "title": "Platform Perspective (Technical capability)",
+          "intro": "Builds an enterprise-grade, scalable hybrid cloud platform. Modernizes existing workloads and implements cloud-native solutions; covers infrastructure design, data architecture, and engineering.",
+          "items": [
+            "Stakeholders: CTO, Architects, Cloud Engineers, Solution Architects",
+            "Platform architecture — design cloud infrastructure",
+            "Data architecture — design data models and flows",
+            "Platform engineering — build and maintain platforms",
+            "Data engineering — build data pipelines",
+            "Provisioning & orchestration — automate resource deployment",
+            "Modern application development — cloud-native app development",
+            "CI/CD pipelines — automate build and deploy",
+            "Exam tip: infrastructure design, cloud-native apps, DevOps pipelines → Platform. 'Data architecture' (Platform) ≠ 'data governance' (Governance)."
+          ]
+        },
+        {
+          "icon": "🔐",
+          "title": "Security Perspective (Technical capability)",
+          "intro": "Achieves confidentiality, integrity, and availability of data and cloud workloads. Manages security governance, threat detection, and incident response.",
+          "items": [
+            "Stakeholders: CISO, Chief Compliance Officer, Internal Audit, Security Architects",
+            "Security governance — establish security policies",
+            "Security assurance — verify controls are effective",
+            "Access management — IAM and identity controls",
+            "Threat detection — monitor for threats",
+            "Vulnerability management — identify and patch vulnerabilities",
+            "Infrastructure protection — harden compute and network",
+            "Data protection — encrypt and secure data",
+            "Application security — secure the application layer",
+            "Incident response — respond to and recover from incidents",
+            "Exam tip: CISO, compliance, data protection, threat detection → Security. Security protects workloads; Governance handles risk and compliance policy."
+          ]
+        },
+        {
+          "icon": "📡",
+          "title": "Operations Perspective (Technical capability)",
+          "intro": "Ensures cloud services are delivered at levels that meet business needs. Manages monitoring, event management, incident handling, and continuous optimization.",
+          "items": [
+            "Stakeholders: IT Operations Managers, Site Reliability Engineers, IT Service Managers",
+            "Observability — monitor systems end-to-end",
+            "Event management — detect and respond to events",
+            "AIOps — AI-driven IT operations",
+            "Incident & problem management — resolve service disruptions",
+            "Change management — manage changes to systems",
+            "Release management — control software deployments",
+            "Performance & capacity management — optimize resource utilization",
+            "Configuration management — track system configurations",
+            "Patch management — keep systems updated",
+            "Availability & continuity — ensure uptime and DR",
+            "Application management — manage the application lifecycle",
+            "Exam tip: ongoing monitoring, incident response, service delivery → Operations. 'Event management' is Operations, not Governance."
+          ]
+        },
+        {
+          "icon": "🚀",
+          "title": "4 Transformation Phases (Envision → Align → Launch → Scale)",
+          "intro": "A sequential, iterative journey from identifying opportunities to full-scale deployment. The exam often asks you to match a phase description to its name.",
+          "items": [
+            "1. Envision — identify and prioritize transformation opportunities tied to measurable business outcomes. Clue: 'demonstrate how cloud accelerates business outcomes'.",
+            "2. Align — identify capability gaps and cross-organizational dependencies; drive readiness and change management. Clue: 'identify capability gaps' / 'address deficiencies'.",
+            "3. Launch — deliver impactful pilots in production and demonstrate incremental business value. Clue: 'pilot in production' / 'prove value before scaling'.",
+            "4. Scale — expand proven pilots to the desired scale; ensure cloud benefits are realized and sustained. Clue: 'expand proven pilots' / 'full-scale cloud adoption'."
+          ]
+        },
+        {
+          "icon": "🔧",
+          "title": "4 Transformation Domains (what changes)",
+          "intro": "Areas of an organization that must change for cloud adoption to succeed. Domains describe what changes; perspectives describe who is responsible.",
+          "items": [
+            "Technology — migrate and modernize legacy infrastructure, applications, and analytics to cloud-native services",
+            "Process — digitize, automate, and optimize operations using new data platforms and ML",
+            "Organization — reimagine how teams create value; organize around products and value streams using agile",
+            "Product — reimagine the business model with new value propositions, revenue models, and markets"
+          ]
+        },
+        {
+          "icon": "🎯",
+          "title": "Benefits of AWS CAF (memorize all four)",
+          "items": [
+            "Reduce business risk — improved reliability, performance, and security",
+            "Improve ESG performance — sustainability and corporate transparency",
+            "Grow revenue — new products, services, and markets",
+            "Increase operational efficiency — lower costs and higher productivity"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "tip",
+          "title": "💡 Common CLF-C02 CAF exam patterns",
+          "items": [
+            "Accelerate digital transformation and business outcomes → Business (CEO, CFO, COO, CIO, CTO)",
+            "Train employees / drive cultural change → People (HR, cloud director, cross-functional leaders)",
+            "Track and realize business benefits from cloud investments → Benefits management (Governance)",
+            "CISO managing threat detection, vulnerability management, incident response → Security",
+            "Platform architecture, data architecture, CI/CD pipelines → Platform (CTO, architects, engineers)",
+            "Deliver pilots in production and demonstrate incremental value → Launch phase",
+            "Identify capability gaps and cross-organizational dependencies → Align phase",
+            "Deliver cloud services that meet business stakeholder needs → Operations",
+            "'Culture evolution' → People (not Business — common trap)",
+            "'Data monetization' → Business (not Platform — common trap)",
+            "Business, People, Governance = Business capabilities; Platform, Security, Operations = Technical capabilities",
+            "Expand proven pilots to full scale and sustain benefits → Scale phase",
+            "Risk management, program management, cloud financial management → Governance",
+            "'Strategy management' → Business perspective"
+          ]
+        }
+      ]
+    },
+    {
       "id": "billing",
       "name": "Billing, Pricing & Support",
       "color": "#10b981",
@@ -3078,9 +3257,10 @@
     {
       "week": 4,
       "title": "Architecture & Exam Prep",
-      "focus": "Well-Architected Framework + Billing + HA/DR + Practice exams + review weak areas",
+      "focus": "Well-Architected Framework + Cloud Adoption Framework (CAF) + Billing + HA/DR + Practice exams + review weak areas",
       "domainIds": [
         "waf",
+        "caf",
         "billing",
         "cost",
         "governance",
