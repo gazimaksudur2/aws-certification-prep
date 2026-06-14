@@ -222,7 +222,7 @@ export function Results() {
               </button>
               <button
                 type="button"
-                onClick={() => navigate(`/browse?exam=${summary.examId}`)}
+                onClick={() => navigate(`/practice/browse?exam=${summary.examId}`)}
                 className="btn-secondary"
               >
                 Browse · {summary.examCode}

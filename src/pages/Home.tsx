@@ -293,10 +293,10 @@ export function Home() {
               </button>
               <button
                 type="button"
-                onClick={() => navigate(`/browse?exam=${examId}`)}
+                onClick={() => navigate(`/practice/browse?exam=${examId}`)}
                 className="btn-secondary text-base"
               >
-                Browse · {selectedExam.code}
+                Browse · {selectedExam.code} · Q&A
               </button>
             </div>
           </section>
