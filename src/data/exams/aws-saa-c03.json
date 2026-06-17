@@ -4372,7 +4372,7 @@
                 }
             ],
             "correctAnswers": [
-                "A"
+                "B"
             ],
             "isMultiple": false,
             "topic": "Architecting",
@@ -13456,7 +13456,7 @@
                 }
             ],
             "correctAnswers": [
-                "B"
+                "A"
             ],
             "isMultiple": false,
             "topic": "Architecting",
@@ -19569,7 +19569,7 @@
             ],
             "correctAnswers": [
                 "A",
-                "C"
+                "E"
             ],
             "isMultiple": true,
             "topic": "Architecting",
