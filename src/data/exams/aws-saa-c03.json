@@ -12535,7 +12535,7 @@
                 }
             ],
             "correctAnswers": [
-                "C"
+                "D"
             ],
             "isMultiple": false,
             "topic": "Architecting",
@@ -19429,7 +19429,7 @@
             ],
             "correctAnswers": [
                 "A",
-                "B"
+                "C"
             ],
             "isMultiple": true,
             "topic": "Architecting",
