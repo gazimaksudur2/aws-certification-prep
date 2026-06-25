@@ -10,15 +10,13 @@ import type {
   SubmissionReason,
 } from '../types';
 import { PASS_THRESHOLD_PERCENT, isAnswerCorrect } from '../utils/scoring';
-import { 
-  Award, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  Award,
+  CheckCircle2,
+  XCircle,
   SkipForward,
   Clock,
   BarChart3,
-  TrendingUp,
-  TrendingDown,
   BookOpen,
   ChevronRight,
   ChevronDown,
@@ -27,7 +25,7 @@ import {
   Timer,
   AlertCircle,
   PieChart,
-  ListChecks
+  ListChecks,
 } from 'lucide-react';
 
 type RowStatus =

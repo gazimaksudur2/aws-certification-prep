@@ -24,20 +24,17 @@ import {
   domainHasVisibleContent,
   filterDomainContent,
 } from './learning/learningUtils';
-import { 
-  Search, 
-  Filter, 
-  BookOpen, 
-  MapPin, 
+import {
+  Search,
+  Filter,
+  BookOpen,
+  MapPin,
   Target,
   CheckCircle2,
   Sparkles,
   Layers,
   TrendingUp,
-  Clock,
-  Award,
-  ChevronRight,
-  X
+  X,
 } from 'lucide-react';
 
 type TabId = 'roadmap' | 'reference' | 'strategy' | 'checklist';
