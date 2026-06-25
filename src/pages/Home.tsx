@@ -586,29 +586,3 @@ function AttemptList({
   );
 }
 
-function StatCard({
-  label,
-  value,
-  hint,
-  icon: Icon,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-  icon?: React.ElementType;
-}) {
-  return (
-    <div className="card p-5 bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-slate-700/50">
-      <div className="flex items-center gap-3">
-        {Icon && <Icon className="w-5 h-5 text-aws-orange" />}
-        <div>
-          <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
-            {label}
-          </div>
-          <div className="mt-1 text-3xl font-extrabold text-white">{value}</div>
-          {hint && <div className="text-xs text-slate-500 mt-1">{hint}</div>}
-        </div>
-      </div>
-    </div>
-  );
-}
