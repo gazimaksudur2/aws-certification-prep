@@ -2,6 +2,8 @@
 
 A browser-based study app for AWS certification exams. Take timed practice quizzes that mirror exam pressure, use untimed guided practice with instant feedback, browse the full question bank, and review AWS services in a structured reference — all without signing in. Progress from timed quizzes is stored locally in your browser.
 
+[![Live](https://img.shields.io/badge/Live_-aws--certification--prep.netlify.app-0088cc?style=for-the-badge&logo=netlify)](https://aws-certification-prep.netlify.app/)
+
 Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **Tailwind CSS 3**.
 
 ---
