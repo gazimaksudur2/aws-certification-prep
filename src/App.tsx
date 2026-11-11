@@ -24,9 +24,43 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      <footer className="text-center text-xs text-slate-500 py-6">
-        Timed certification quizzes — results and attempt history remain in your
-        browser via localStorage.
+      <footer className="border-t border-slate-800/80 text-center text-xs text-slate-500 py-8 px-4 space-y-3">
+        <p className="leading-relaxed">
+          Timed certification quizzes — results and attempt history remain in your
+          browser via localStorage.
+        </p>
+        <p className="leading-relaxed">
+          👋 Created and maintained with care by{' '}
+          <a
+            href="https://gazimaksudur.me"
+            target="_blank"
+            rel="noreferrer"
+            className="text-slate-300 hover:text-aws-orange transition-colors"
+          >
+            Gazi Maksudur Rahman
+          </a>
+          {' · '}
+          <a
+            href="https://github.com/gazimaksudur2/aws-certification-prep"
+            target="_blank"
+            rel="noreferrer"
+            className="text-slate-300 hover:text-aws-orange transition-colors"
+          >
+            💻 View on GitHub
+          </a>
+        </p>
+        <p className="text-slate-400 leading-relaxed">
+          ⭐ Finding this resource helpful?{' '}
+          <a
+            href="https://github.com/gazimaksudur2/aws-certification-prep"
+            target="_blank"
+            rel="noreferrer"
+            className="text-aws-orange hover:text-orange-300 font-medium transition-colors"
+          >
+            Star the repository
+          </a>{' '}
+          and help more AWS learners discover it. 🙏
+        </p>
       </footer>
     </div>
   );

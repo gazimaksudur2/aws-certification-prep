@@ -1,8 +1,16 @@
 # AWS Certification Practice Hub
 
+> A free, community-focused resource for AWS certification learners.
+
 A browser-based study app for AWS certification exams. Take timed practice quizzes that mirror exam pressure, use untimed guided practice with instant feedback, browse the full question bank, and review AWS services in a structured reference — all without signing in. Progress from timed quizzes is stored locally in your browser.
 
 [![Live](https://img.shields.io/badge/Live_-aws--certification--prep.netlify.app-0088cc?style=for-the-badge&logo=netlify)](https://aws-certification-prep.netlify.app/)
+
+This project is maintained as a free learning resource for the AWS learning community. If it helps you prepare, please [give the repository a star](https://github.com/gazimaksudur2/aws-certification-prep) and share it with other learners. Contributions that improve the accuracy and usefulness of the material are welcome.
+
+**Project owner:** [Gazi Maksudur Rahman](https://gazimaksudur.me)
+
+**Repository:** [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
 
 Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **Tailwind CSS 3**.
 
@@ -29,6 +37,8 @@ Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **T
 - [Project structure](#project-structure)
 - [Scripts](#scripts)
 - [Adding a new exam](#adding-a-new-exam)
+- [Contributing](#contributing)
+- [Acknowledgement](#acknowledgement)
 - [Deployment](#deployment)
 
 ---
@@ -60,8 +70,8 @@ Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **T
 ### Install and run
 
 ```bash
-git clone <repository-url>
-cd aws-certification-quiz-app
+git clone https://github.com/gazimaksudur2/aws-certification-prep.git
+cd aws-certification-prep
 npm install
 npm run dev
 ```
@@ -349,6 +359,22 @@ Banks are statically imported today for simplicity. If bundle size becomes an is
 
 ---
 
+## Contributing
+
+Contributions are encouraged from learners, AWS practitioners, educators, and developers. You can help by adding carefully sourced exam questions, improving learning materials, correcting inaccurate information, fixing bugs, or improving the app experience.
+
+Please read the [contribution guide](CONTRIBUTING.md) before opening an issue or pull request. Every contribution should prioritize accuracy, clarity, and respect for AWS exam-content policies.
+
+---
+
+## Acknowledgement
+
+AWS Certification Practice Hub is owned and maintained by [Gazi Maksudur Rahman](https://gazimaksudur.me) and is offered as a free resource for the AWS learning community. Please support the project by [starring the repository](https://github.com/gazimaksudur2/aws-certification-prep), sharing it with other learners, and contributing improvements through the [GitHub repository](https://github.com/gazimaksudur2/aws-certification-prep).
+
+This project is independent and is not affiliated with, endorsed by, or sponsored by Amazon Web Services.
+
+---
+
 ## Deployment
 
 The app is a static SPA. [`netlify.toml`](netlify.toml) configures:
@@ -363,4 +389,4 @@ No server-side runtime is required. All quiz state and history remain in the use
 
 ## License
 
-Private project — see repository settings for licensing terms.
+This project is provided free of charge for learning and community use. See the repository's licensing terms for permissions and conditions before redistributing or reusing the source.
