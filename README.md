@@ -2,6 +2,14 @@
 
 > A free, community-focused resource for AWS certification learners.
 
+[![Live Demo](https://img.shields.io/badge/Live-aws--certification--prep.netlify.app-FF9900?style=for-the-badge&logo=netlify&logoColor=white)](https://aws-certification-prep.netlify.app/)
+[![Made by](https://img.shields.io/badge/Portfolio-gazimaksudur.me-0088cc?style=for-the-badge&logo=google-chrome&logoColor=white)](https://gazimaksudur.me)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Netlify Status](https://img.shields.io/badge/Netlify-Deployed-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://app.netlify.com/sites/aws-certification-prep/deploys)
+
 A browser-based study app for AWS certification exams. Take timed practice quizzes that mirror exam pressure, use untimed guided practice with instant feedback, browse the full question bank, and review AWS services in a structured reference — all without signing in. Progress from timed quizzes is stored locally in your browser.
 
 [![Live](https://img.shields.io/badge/Live_-aws--certification--prep.netlify.app-0088cc?style=for-the-badge&logo=netlify)](https://aws-certification-prep.netlify.app/)
@@ -369,9 +377,18 @@ Please read the [contribution guide](CONTRIBUTING.md) before opening an issue or
 
 ## Acknowledgement
 
-AWS Certification Practice Hub is owned and maintained by [Gazi Maksudur Rahman](https://gazimaksudur.me) and is offered as a free resource for the AWS learning community. Please support the project by [starring the repository](https://github.com/gazimaksudur2/aws-certification-prep), sharing it with other learners, and contributing improvements through the [GitHub repository](https://github.com/gazimaksudur2/aws-certification-prep).
+AWS Certification Practice Hub is designed, built, and maintained by [**Gazi Maksudur Rahman**](https://gazimaksudur.me) — a software developer passionate about developer tooling and AWS cloud technology.
 
-This project is independent and is not affiliated with, endorsed by, or sponsored by Amazon Web Services.
+- 🌐 **Portfolio:** [gazimaksudur.me](https://gazimaksudur.me)
+- 💻 **GitHub:** [gazimaksudur2](https://github.com/gazimaksudur2)
+- 📦 **Repository:** [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
+
+This project is offered as a free resource for the AWS learning community. If it helps you prepare:
+- ⭐ [Star the repository](https://github.com/gazimaksudur2/aws-certification-prep) to help others discover it
+- 🔀 [Contribute](CONTRIBUTING.md) improvements through pull requests
+- 📢 Share it with other AWS learners
+
+> This project is independent and is not affiliated with, endorsed by, or sponsored by Amazon Web Services.
 
 ---
 

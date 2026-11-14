@@ -2,13 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from '../components/ProgressBar';
 import { QuestionCard } from '../components/QuestionCard';
+import { ToastContainer } from '../components/ToastContainer';
 import { useQuiz } from '../hooks/useQuiz';
+import { useToast } from '../hooks/useToast';
 import { openLearnMore } from '../utils/learnMore';
 import { isAnswerCorrect } from '../utils/scoring';
 
 export function GuidedPractice() {
   const navigate = useNavigate();
   const { session, recordAnswer, skip, next, prev, finish } = useQuiz();
+  const { toasts, show } = useToast();
 
   const current = session?.questions[session.currentIndex] ?? null;
   const [selected, setSelected] = useState<string[]>([]);
@@ -69,6 +72,8 @@ export function GuidedPractice() {
     if (selected.length === 0) return;
     recordAnswer(current.id, selected);
     setChecked(true);
+    const correct = isAnswerCorrect(selected, current.correctAnswers);
+    show(correct ? 'correct' : 'incorrect', correct ? 'Correct answer! 🎉' : 'Incorrect — review the solution');
   };
 
   const handleSkip = () => {
@@ -183,6 +188,7 @@ export function GuidedPractice() {
           End practice now
         </button>
       </div>
+      <ToastContainer toasts={toasts} />
     </div>
   );
 }

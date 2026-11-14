@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useHistory } from '../hooks/useHistory';
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
@@ -18,6 +19,7 @@ const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { statsGlobal } = useHistory();
 
   useEffect(() => {
     setOpen(false);
@@ -62,7 +64,24 @@ export function Navbar() {
               {l.label}
             </NavLink>
           ))}
+          <a
+            href="https://gazimaksudur.me"
+            target="_blank"
+            rel="noreferrer"
+            className="ml-2 pl-3 border-l border-slate-700/60 inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-aws-orange transition-colors"
+            title="Visit developer portfolio"
+          >
+            <span>🌐</span>
+            <span className="hidden lg:inline">gazimaksudur.me</span>
+          </a>
         </nav>
+
+        {statsGlobal.totalAttempts > 0 && (
+          <div className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-xs text-slate-400">
+            <span>📊</span>
+            <span>{statsGlobal.totalAttempts} attempt{statsGlobal.totalAttempts !== 1 ? 's' : ''}</span>
+          </div>
+        )}
 
         {/* Mobile hamburger */}
         <div className="md:hidden flex items-center">

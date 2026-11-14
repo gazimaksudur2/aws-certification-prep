@@ -83,31 +83,48 @@ export function Quiz() {
     [finish, navigate],
   );
 
-  if (!session || !current) return null;
-
-  const toggleOption = (optId: string) => {
+  const toggleOption = useCallback((optId: string) => {
     setSelected((prev) => {
-      if (current.isMultiple) {
+      if (current?.isMultiple) {
         return prev.includes(optId)
           ? prev.filter((x) => x !== optId)
           : [...prev, optId];
       }
       return [optId];
     });
-  };
+  }, [current]);
 
-  const saveAndAdvance = () => {
-    if (selected.length === 0) return;
+  const saveAndAdvance = useCallback(() => {
+    if (!current || selected.length === 0) return;
     recordAnswer(current.id, selected);
     if (isLast) completeAndGoToResults('manual');
     else next();
-  };
+  }, [current, selected, isLast, recordAnswer, completeAndGoToResults, next]);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
+    if (!current) return;
     skip(current.id);
     if (isLast) completeAndGoToResults('manual');
     else next();
-  };
+  }, [current, isLast, skip, completeAndGoToResults, next]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const key = e.key.toLowerCase();
+      if (['a','b','c','d','e'].includes(key)) {
+        const idx = ['a','b','c','d','e'].indexOf(key);
+        const opt = current?.options[idx];
+        if (opt) toggleOption(opt.id);
+      }
+      if (key === 'enter' && selected.length > 0) saveAndAdvance();
+      if (key === 's') handleSkip();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [current, selected, toggleOption, saveAndAdvance, handleSkip]);
+
+  if (!session || !current) return null;
 
   return (
     <div className="space-y-6">
@@ -171,6 +188,17 @@ export function Quiz() {
         >
           End quiz now
         </button>
+      </div>
+
+      <div className="flex items-center gap-2 text-xs text-slate-600 select-none">
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">A–D</kbd>
+        <span>select option</span>
+        <span className="text-slate-700">·</span>
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">Enter</kbd>
+        <span>confirm</span>
+        <span className="text-slate-700">·</span>
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">S</kbd>
+        <span>skip</span>
       </div>
     </div>
   );
