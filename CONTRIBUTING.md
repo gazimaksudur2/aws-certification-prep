@@ -79,6 +79,16 @@ When adding or changing a question:
 
 For a new exam, follow the [Adding a new exam](README.md#adding-a-new-exam) instructions in the README.
 
+## Adding or updating learning content
+
+Learning JSON lives under [`public/data/learning/`](public/data/learning/). Prefer editing those files (or notes under `content/learning/<examId>/`) and keep claims sourced from AWS docs / Skill Builder / the official exam guide.
+
+- Use official certification codes (e.g. **AIF-C01**, not informal aliases).
+- Align domain names and `quizTopic` values with the exam guide where possible.
+- Do not paste copyrighted course dumps into learning JSON.
+- Run `npm run build:learning` (or full `npm run build`) before opening a PR.
+- Cite sources in the PR description for new or corrected study material.
+
 ## Making a pull request
 
 1. Create a focused branch from the default branch.

@@ -1,61 +1,161 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const DOMAINS_KEY = 'learning-domains-reviewed-v1';
-const CHECKLIST_KEY = 'learning-checklist-v1';
+const LEGACY_DOMAINS_KEY = 'learning-domains-reviewed-v1';
+const LEGACY_CHECKLIST_KEY = 'learning-checklist-v1';
+const LEGACY_TAB_KEY = 'learning-active-tab-v1';
+const PROGRESS_KEY = 'learning-progress-v2';
+const COMBINED_PACK_ID = 'aws-clf-saa-combined';
 
-function loadSet(key: string): Set<string> {
+export type LearningTabId = 'roadmap' | 'reference' | 'strategy' | 'checklist';
+
+interface ExamProgress {
+  reviewedDomains: string[];
+  checklist: string[];
+  activeTab?: LearningTabId;
+}
+
+interface ProgressStoreV2 {
+  schemaVersion: 2;
+  byExam: Record<string, ExamProgress>;
+}
+
+function loadSetFromLegacy(key: string): string[] {
   try {
     const raw = localStorage.getItem(key);
-    if (!raw) return new Set();
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return new Set();
-    return new Set(parsed.filter((x): x is string => typeof x === 'string'));
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((x): x is string => typeof x === 'string');
   } catch {
-    return new Set();
+    return [];
   }
 }
 
-function persistSet(key: string, set: Set<string>) {
+function isTabId(v: unknown): v is LearningTabId {
+  return (
+    v === 'roadmap' || v === 'reference' || v === 'strategy' || v === 'checklist'
+  );
+}
+
+function migrateLegacyIfNeeded(store: ProgressStoreV2): ProgressStoreV2 {
+  if (store.byExam[COMBINED_PACK_ID]) return store;
+
+  const reviewed = loadSetFromLegacy(LEGACY_DOMAINS_KEY);
+  const checklist = loadSetFromLegacy(LEGACY_CHECKLIST_KEY);
+  const tabRaw = localStorage.getItem(LEGACY_TAB_KEY);
+  const activeTab = isTabId(tabRaw) ? tabRaw : undefined;
+
+  if (!reviewed.length && !checklist.length && !activeTab) return store;
+
+  return {
+    ...store,
+    byExam: {
+      ...store.byExam,
+      [COMBINED_PACK_ID]: {
+        reviewedDomains: reviewed,
+        checklist,
+        activeTab,
+      },
+    },
+  };
+}
+
+function loadStore(): ProgressStoreV2 {
   try {
-    localStorage.setItem(key, JSON.stringify([...set]));
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as ProgressStoreV2;
+      if (parsed?.schemaVersion === 2 && parsed.byExam && typeof parsed.byExam === 'object') {
+        return migrateLegacyIfNeeded(parsed);
+      }
+    }
+  } catch {
+    // fall through
+  }
+
+  return migrateLegacyIfNeeded({ schemaVersion: 2, byExam: {} });
+}
+
+function persistStore(store: ProgressStoreV2) {
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(store));
   } catch {
     // quota / privacy mode
   }
 }
 
-export function useLearningProgress() {
-  const [reviewedDomains, setReviewedDomains] = useState<Set<string>>(() =>
-    loadSet(DOMAINS_KEY),
-  );
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(() =>
-    loadSet(CHECKLIST_KEY),
-  );
+function emptyProgress(): ExamProgress {
+  return { reviewedDomains: [], checklist: [] };
+}
+
+export function useLearningProgress(examId: string | null) {
+  const [store, setStore] = useState<ProgressStoreV2>(() => loadStore());
 
   useEffect(() => {
-    persistSet(DOMAINS_KEY, reviewedDomains);
-  }, [reviewedDomains]);
+    persistStore(store);
+  }, [store]);
 
-  useEffect(() => {
-    persistSet(CHECKLIST_KEY, checkedItems);
-  }, [checkedItems]);
+  const examProgress = useMemo(() => {
+    if (!examId) return emptyProgress();
+    return store.byExam[examId] ?? emptyProgress();
+  }, [store, examId]);
 
-  const toggleDomainReviewed = useCallback((domainId: string) => {
-    setReviewedDomains((prev) => {
-      const next = new Set(prev);
-      if (next.has(domainId)) next.delete(domainId);
-      else next.add(domainId);
-      return next;
-    });
-  }, []);
+  const reviewedDomains = useMemo(
+    () => new Set(examProgress.reviewedDomains),
+    [examProgress.reviewedDomains],
+  );
+  const checkedItems = useMemo(
+    () => new Set(examProgress.checklist),
+    [examProgress.checklist],
+  );
 
-  const toggleChecklistItem = useCallback((itemId: string) => {
-    setCheckedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemId)) next.delete(itemId);
-      else next.add(itemId);
-      return next;
-    });
-  }, []);
+  const updateExam = useCallback(
+    (mutator: (prev: ExamProgress) => ExamProgress) => {
+      if (!examId) return;
+      setStore((prev) => {
+        const current = prev.byExam[examId] ?? emptyProgress();
+        return {
+          ...prev,
+          byExam: {
+            ...prev.byExam,
+            [examId]: mutator(current),
+          },
+        };
+      });
+    },
+    [examId],
+  );
+
+  const toggleDomainReviewed = useCallback(
+    (domainId: string) => {
+      updateExam((prev) => {
+        const set = new Set(prev.reviewedDomains);
+        if (set.has(domainId)) set.delete(domainId);
+        else set.add(domainId);
+        return { ...prev, reviewedDomains: [...set] };
+      });
+    },
+    [updateExam],
+  );
+
+  const toggleChecklistItem = useCallback(
+    (itemId: string) => {
+      updateExam((prev) => {
+        const set = new Set(prev.checklist);
+        if (set.has(itemId)) set.delete(itemId);
+        else set.add(itemId);
+        return { ...prev, checklist: [...set] };
+      });
+    },
+    [updateExam],
+  );
+
+  const setActiveTab = useCallback(
+    (tab: LearningTabId) => {
+      updateExam((prev) => ({ ...prev, activeTab: tab }));
+    },
+    [updateExam],
+  );
 
   const isDomainReviewed = useCallback(
     (domainId: string) => reviewedDomains.has(domainId),
@@ -72,8 +172,10 @@ export function useLearningProgress() {
     checkedItems,
     reviewedCount: reviewedDomains.size,
     checkedCount: checkedItems.size,
+    activeTab: examProgress.activeTab,
     toggleDomainReviewed,
     toggleChecklistItem,
+    setActiveTab,
     isDomainReviewed,
     isChecklistChecked,
   };

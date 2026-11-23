@@ -56,11 +56,12 @@ export function serviceMatchesFilters(
   search: string,
   examFilter: 'all' | ExamTag,
   priorityFilter: 'all' | Priority,
+  defaultExamTags: ExamTag[] = [],
 ): boolean {
   if (priorityFilter !== 'all' && service.priority !== priorityFilter) return false;
   if (examFilter !== 'all') {
-    const tags = service.exams ?? ['CLF-C02', 'SAA-C03'];
-    if (!tags.includes(examFilter)) return false;
+    const tags = service.exams?.length ? service.exams : defaultExamTags;
+    if (tags.length && !tags.includes(examFilter)) return false;
   }
   if (!search.trim()) return true;
   return matchesSearch(
@@ -106,18 +107,16 @@ export function filterDomainContent(
   search: string,
   examFilter: 'all' | ExamTag,
   priorityFilter: 'all' | Priority,
+  defaultExamTags: ExamTag[] = [],
 ): LearningDomain {
   const hasSearch = search.trim().length > 0;
-  // A search hit on the domain name/subtitle keeps all of that domain's extras visible.
   const domainHeaderMatches =
     hasSearch && matchesSearch([domain.name, domain.subtitle], search);
 
   const services = domain.services.filter((s) =>
-    serviceMatchesFilters(s, search, examFilter, priorityFilter),
+    serviceMatchesFilters(s, search, examFilter, priorityFilter, defaultExamTags),
   );
 
-  // Card-only framework domains (CAF, WAF, HA/DR, Billing) have no services to
-  // filter by exam/priority — always allow their cards/callouts through.
   const isCardOnlyDomain = domain.services.length === 0;
   const extrasAllowed =
     isCardOnlyDomain || (examFilter === 'all' && priorityFilter === 'all');
@@ -146,15 +145,13 @@ export function domainHasVisibleContent(domain: LearningDomain): boolean {
   );
 }
 
-export function buildPracticeUrl(domainId: string, examId = 'aws-saa-c03'): string {
-  const topicMap: Record<string, string> = {
-    compute: 'Compute',
-    storage: 'Storage',
-    databases: 'Databases',
-    networking: 'Networking',
-    'ha-dr': 'DR & Availability',
-  };
-  const topic = topicMap[domainId] ?? 'All';
+export function buildPracticeUrl(
+  domain: Pick<LearningDomain, 'id' | 'quizTopic' | 'practiceExamId'>,
+  fallbackExamId?: string,
+): string | null {
+  const examId = domain.practiceExamId ?? fallbackExamId;
+  if (!examId) return null;
+  const topic = domain.quizTopic ?? 'All';
   const params = new URLSearchParams({ exam: examId, topic });
   return `/practice?${params.toString()}`;
 }

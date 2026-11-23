@@ -2,6 +2,10 @@ export type SubmissionReason = 'manual' | 'time_expired';
 
 export type QuizMode = 'timed' | 'guided';
 
+export type ExamLevel = 'Foundational' | 'Associate' | 'Professional' | 'Specialty';
+
+export type ExamStatus = 'learning' | 'practice' | 'both' | 'coming-soon';
+
 export interface Option {
   id: string;
   text: string;
@@ -40,11 +44,25 @@ export interface QuizSession {
   submittedReason?: SubmissionReason;
 }
 
+export interface ExamLearningConfig {
+  enabled: boolean;
+  dataPath: string;
+  packOf?: string[];
+}
+
+export interface ExamPracticeConfig {
+  enabled: boolean;
+}
+
 export interface ExamCatalogEntry {
   examId: string;
   code: string;
   title: string;
   description?: string;
+  level?: ExamLevel;
+  status?: ExamStatus;
+  learning?: ExamLearningConfig;
+  practice?: ExamPracticeConfig;
 }
 
 /** File shape for `src/data/exams/*.json` question banks. */

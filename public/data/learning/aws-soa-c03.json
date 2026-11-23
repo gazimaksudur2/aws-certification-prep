@@ -1,0 +1,901 @@
+{
+  "schemaVersion": 3,
+  "examId": "aws-soa-c03",
+  "code": "SOA-C03",
+  "title": "AWS Certified SysOps Administrator – Associate",
+  "source": "AWS SOA-C03 exam guide domains + service mentions (Context syllabi)",
+  "syllabus": {
+    "domains": [
+      {
+        "id": "soa-d1-monitoring",
+        "name": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization"
+      },
+      {
+        "id": "soa-d2-reliability",
+        "name": "Reliability and Business Continuity"
+      },
+      {
+        "id": "soa-d3-deployment",
+        "name": "Deployment, Provisioning, and Automation"
+      },
+      {
+        "id": "soa-d4-security",
+        "name": "Security and Compliance"
+      },
+      {
+        "id": "soa-d5-networking",
+        "name": "Networking and Content Delivery"
+      }
+    ]
+  },
+  "domains": [
+    {
+      "id": "soa-d1-monitoring",
+      "name": "Monitoring, Logging, Analysis & Performance",
+      "color": "#06b6d4",
+      "icon": "📊",
+      "subtitle": "Domain 1 — CloudWatch, remediation, performance tuning",
+      "phase": 1,
+      "quizTopic": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+      "practiceExamId": "aws-soa-c03",
+      "resources": [
+        {
+          "label": "Amazon CloudWatch docs",
+          "url": "https://docs.aws.amazon.com/cloudwatch/"
+        },
+        {
+          "label": "AWS Systems Manager docs",
+          "url": "https://docs.aws.amazon.com/systems-manager/"
+        }
+      ],
+      "services": [
+        {
+          "name": "Amazon CloudWatch",
+          "desc": "Metrics, logs, alarms, dashboards, and agent-based collection for ops visibility.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "CloudWatch agent on EC2/ECS/EKS",
+            "Alarms → EventBridge / SNS / automate remediation",
+            "Composite alarms and cross-account dashboards",
+            "Custom metrics and log metric filters"
+          ],
+          "tip": "SysOps loves alarm→automate loops. Know what an alarm can invoke."
+        },
+        {
+          "name": "AWS CloudTrail",
+          "desc": "API activity logging for audit and troubleshooting who changed what.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Trail for account activity",
+            "Pair with CloudWatch for ops investigations"
+          ]
+        },
+        {
+          "name": "Amazon EventBridge",
+          "desc": "Event bus for routing, enrichment, and triggering automated responses.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Rules that invoke Lambda/SSM/SNS",
+            "Troubleshoot failed event patterns"
+          ]
+        },
+        {
+          "name": "AWS Systems Manager",
+          "desc": "Ops hub: Session Manager, Patch Manager, Parameter Store, Automation runbooks.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Automation runbooks for remediation",
+            "Agent/ops tooling without SSH bastions (Session Manager)",
+            "Parameter Store for config/secrets patterns (with Secrets Manager)"
+          ]
+        },
+        {
+          "name": "Amazon SNS",
+          "desc": "Pub/sub notifications commonly driven by CloudWatch alarms.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Alarm actions to SNS",
+            "Fan-out operational alerts"
+          ]
+        },
+        {
+          "name": "AWS Lambda",
+          "desc": "Serverless compute for automated remediation and event-driven ops.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Alarm/EventBridge → Lambda remediation",
+            "Ops automation glue"
+          ]
+        },
+        {
+          "name": "Amazon Managed Service for Prometheus",
+          "desc": "Managed Prometheus-compatible monitoring for container/cloud-native metrics.",
+          "priority": "medium",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "When Prometheus fits vs CloudWatch-native metrics"
+          ]
+        },
+        {
+          "name": "Amazon EBS / S3 / EFS / FSx performance",
+          "desc": "Storage performance characteristics operators must tune and troubleshoot.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "EBS volume types and metrics",
+            "S3 Transfer Acceleration, multipart, lifecycle",
+            "EFS lifecycle; shared storage selection (EFS/FSx/S3 Files)"
+          ]
+        },
+        {
+          "name": "Amazon RDS Performance Insights & RDS Proxy",
+          "desc": "Database performance monitoring and connection pooling for operational efficiency.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Interpret DB metrics and tune",
+            "RDS Proxy for connection storms"
+          ]
+        },
+        {
+          "name": "Amazon EC2 performance & placement",
+          "desc": "Instance monitoring, networking/storage attachments, placement groups.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Remediate compute performance with metrics + tags",
+            "Placement groups use cases"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "tip",
+          "title": "Domain 1 mindset",
+          "items": [
+            "Detect (metrics/logs) → decide (alarms/rules) → remediate (SSM/Lambda)",
+            "Prefer automation runbooks over manual SSH fixes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "soa-d2-reliability",
+      "name": "Reliability and Business Continuity",
+      "color": "#22c55e",
+      "icon": "🔄",
+      "subtitle": "Domain 2 — scale, HA, backup/DR",
+      "phase": 1,
+      "quizTopic": "Reliability and Business Continuity",
+      "practiceExamId": "aws-soa-c03",
+      "services": [
+        {
+          "name": "Amazon EC2 Auto Scaling",
+          "desc": "Scale compute fleets on demand with health checks and policies.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Scaling policies",
+            "Health check integration with ELB"
+          ]
+        },
+        {
+          "name": "Elastic Load Balancing (ELB)",
+          "desc": "Distribute traffic; health checks for resilient front doors.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "ALB/NLB health checks",
+            "Troubleshoot unhealthy targets"
+          ]
+        },
+        {
+          "name": "Amazon Route 53 health checks",
+          "desc": "DNS failover and health-based routing for availability.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Failover routing",
+            "Health check misconfig symptoms"
+          ]
+        },
+        {
+          "name": "Multi-AZ deployments",
+          "desc": "Fault-tolerant patterns across Availability Zones for compute and data stores.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "RDS Multi-AZ",
+            "Spread workloads across AZs"
+          ]
+        },
+        {
+          "name": "Amazon CloudFront & ElastiCache",
+          "desc": "Caching layers that improve scalability and offload origins.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Cache for elasticity",
+            "ElastiCache for dynamic data acceleration"
+          ]
+        },
+        {
+          "name": "Amazon RDS / DynamoDB scaling",
+          "desc": "Managed database scaling and capacity modes operators configure.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "RDS scaling options",
+            "DynamoDB on-demand vs provisioned"
+          ]
+        },
+        {
+          "name": "AWS Backup",
+          "desc": "Centralized backup policies across AWS resources.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Automate snapshots for EC2/EBS/RDS/DynamoDB/S3/FSx",
+            "Restore to meet RTO/RPO",
+            "S3/FSx versioning as part of recovery"
+          ]
+        },
+        {
+          "name": "Disaster recovery strategies",
+          "desc": "Backup/restore, pilot light, warm standby, active/active — cost vs RTO/RPO.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Match DR pattern to RTO/RPO",
+            "Point-in-time restore for databases"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "DR patterns",
+          "cards": [
+            {
+              "title": "Backup & restore",
+              "rows": [
+                {
+                  "key": "RTO/RPO",
+                  "val": "Highest"
+                },
+                {
+                  "key": "Cost",
+                  "val": "Lowest"
+                }
+              ]
+            },
+            {
+              "title": "Pilot light",
+              "rows": [
+                {
+                  "key": "RTO/RPO",
+                  "val": "Medium"
+                },
+                {
+                  "key": "Cost",
+                  "val": "Low–medium"
+                }
+              ]
+            },
+            {
+              "title": "Warm standby",
+              "rows": [
+                {
+                  "key": "RTO/RPO",
+                  "val": "Lower"
+                },
+                {
+                  "key": "Cost",
+                  "val": "Higher"
+                }
+              ]
+            },
+            {
+              "title": "Active/active",
+              "rows": [
+                {
+                  "key": "RTO/RPO",
+                  "val": "Lowest"
+                },
+                {
+                  "key": "Cost",
+                  "val": "Highest"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "soa-d3-deployment",
+      "name": "Deployment, Provisioning, and Automation",
+      "color": "#f59e0b",
+      "icon": "🚀",
+      "subtitle": "Domain 3 — IaC, images, StackSets, event-driven ops",
+      "phase": 2,
+      "quizTopic": "Deployment, Provisioning, and Automation",
+      "practiceExamId": "aws-soa-c03",
+      "services": [
+        {
+          "name": "AWS CloudFormation & AWS CDK",
+          "desc": "Infrastructure as code for repeatable provisioning and drift-aware stacks.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Troubleshoot failed stacks (IAM, subnet sizing)",
+            "StackSets for multi-account/Region",
+            "CDK as IaC authoring layer over CloudFormation"
+          ]
+        },
+        {
+          "name": "EC2 Image Builder",
+          "desc": "Automate AMI and container image pipelines with tests and distribution.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Golden AMIs",
+            "Image pipelines and hardening"
+          ]
+        },
+        {
+          "name": "AWS Resource Access Manager (RAM)",
+          "desc": "Share resources across accounts safely.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Share subnets/resources cross-account",
+            "Pair with Organizations"
+          ]
+        },
+        {
+          "name": "Deployment strategies",
+          "desc": "Rolling, blue/green, canary-style operational deployments.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Minimize downtime",
+            "Rollback awareness"
+          ]
+        },
+        {
+          "name": "Event-driven automation",
+          "desc": "S3 Event Notifications, EventBridge, Lambda, DevOps Agent patterns for ops.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Automate reactions to infra events",
+            "SSM Automation as runbook target"
+          ]
+        },
+        {
+          "name": "Terraform / Git (third-party)",
+          "desc": "External IaC and VCS workflows operators may use alongside AWS-native tools.",
+          "priority": "medium",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Recognize third-party automation in exam scenarios"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "Provisioning traps",
+          "items": [
+            "Subnet CIDR too small for scale-out",
+            "Missing IAM permissions on deployment roles",
+            "Manual console drift vs IaC source of truth"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "soa-d4-security",
+      "name": "Security and Compliance",
+      "color": "#ef4444",
+      "icon": "🛡️",
+      "subtitle": "Domain 4 — IAM, encryption, multi-account, findings",
+      "phase": 2,
+      "quizTopic": "Security and Compliance",
+      "practiceExamId": "aws-soa-c03",
+      "services": [
+        {
+          "name": "IAM (policies, MFA, federation, roles)",
+          "desc": "Identity foundation: password policies, MFA, roles, resource policies, conditions.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Troubleshoot access with Access Analyzer & policy simulator",
+            "Federation and role assumption patterns"
+          ]
+        },
+        {
+          "name": "AWS Organizations & IAM Identity Center",
+          "desc": "Multi-account governance with SCPs and centralized workforce access.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "SCPs as guardrails",
+            "Identity Center for SSO into accounts"
+          ]
+        },
+        {
+          "name": "AWS Config",
+          "desc": "Configuration recording, rules, and conformance packs for continuous compliance.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Conformance packs",
+            "Remediate noncompliant resources"
+          ]
+        },
+        {
+          "name": "AWS KMS & ACM",
+          "desc": "Encryption at rest (KMS) and in transit certificates (ACM).",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "CMK policies and grants",
+            "ACM certs on ELB/CloudFront",
+            "Secrets storage services"
+          ]
+        },
+        {
+          "name": "AWS Security Hub / GuardDuty / Inspector / Trusted Advisor",
+          "desc": "Findings and checks operators triage and remediate.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Security Hub as findings aggregator",
+            "GuardDuty threat findings",
+            "Inspector vulnerability findings",
+            "Trusted Advisor security checks → remediate"
+          ]
+        },
+        {
+          "name": "CloudTrail (audit access)",
+          "desc": "Investigate access issues and unauthorized API use.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Correlate denied calls and actor identity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "soa-d5-networking",
+      "name": "Networking and Content Delivery",
+      "color": "#8b5cf6",
+      "icon": "🌐",
+      "subtitle": "Domain 5 — VPC, DNS, CDN, troubleshooting",
+      "phase": 3,
+      "quizTopic": "Networking and Content Delivery",
+      "practiceExamId": "aws-soa-c03",
+      "services": [
+        {
+          "name": "Amazon VPC",
+          "desc": "Subnets, route tables, NACLs, security groups, IGW/NAT/egress-only gateways.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "SG vs NACL troubleshooting",
+            "NAT vs IGW connectivity failures",
+            "VPC endpoints / PrivateLink / peering"
+          ],
+          "tip": "Draw the path: source SG → route table → NACL → gateway/endpoint."
+        },
+        {
+          "name": "AWS PrivateLink & VPC endpoints",
+          "desc": "Private service connectivity without public IPs.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Interface vs gateway endpoints",
+            "Hybrid/private connectivity issues"
+          ]
+        },
+        {
+          "name": "AWS WAF / Shield / Network Firewall / DNS Firewall",
+          "desc": "Edge and network protection controls operators audit and configure.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Where each control sits in the path",
+            "Log analysis for WAF/Network Firewall"
+          ]
+        },
+        {
+          "name": "Amazon Route 53",
+          "desc": "DNS hosting, routing policies, Resolver, and query logging.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Routing policies",
+            "Resolver DNS Firewall",
+            "Query logging for troubleshooting"
+          ]
+        },
+        {
+          "name": "Amazon CloudFront & Global Accelerator",
+          "desc": "Content and traffic distribution with caching and anycast acceleration.",
+          "priority": "very-high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Cache troubleshooting",
+            "CloudFront logs",
+            "Global Accelerator vs CloudFront roles"
+          ]
+        },
+        {
+          "name": "VPC Flow Logs & ELB access logs",
+          "desc": "Primary evidence for connectivity and load balancer troubleshooting.",
+          "priority": "critical",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "Interpret REJECT/ACCEPT flows",
+            "ELB 4xx/5xx and target health"
+          ]
+        },
+        {
+          "name": "Transit Gateway & hybrid connectivity",
+          "desc": "Hub-and-spoke networking and hybrid link troubleshooting themes.",
+          "priority": "high",
+          "exams": [
+            "SOA-C03"
+          ],
+          "examTopics": [
+            "TGW route issues",
+            "VPN/Direct Connect symptom patterns"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "tip",
+          "title": "Networking debug order",
+          "items": [
+            "Security group → NACL → route table → gateway/endpoint",
+            "Confirm DNS resolution before blaming the app",
+            "Use flow logs + load balancer logs together"
+          ]
+        }
+      ]
+    }
+  ],
+  "strategy": [
+    {
+      "id": "soa-ops-loop",
+      "title": "Think like an operator",
+      "ordered": true,
+      "items": [
+        "What metric/log detects the issue?",
+        "What alarm/event triggers response?",
+        "What automation remediates safely?",
+        "How do you verify recovery (RTO/RPO, health checks)?"
+      ]
+    },
+    {
+      "id": "soa-traps",
+      "title": "Common SysOps traps",
+      "ordered": false,
+      "items": [
+        "Fixing symptoms in the console instead of IaC/automation",
+        "Confusing SG (stateful) vs NACL (stateless)",
+        "Ignoring Multi-AZ / health checks in HA questions",
+        "Backup without tested restore / unclear RTO-RPO"
+      ]
+    },
+    {
+      "id": "soa-week-plan",
+      "title": "Study emphasis",
+      "ordered": true,
+      "items": [
+        "Monitoring + remediation loops (Domain 1)",
+        "VPC + DNS + CDN troubleshooting (Domain 5)",
+        "IAM / Organizations / Config / KMS (Domain 4)",
+        "ASG/ELB/Backup/DR (Domain 2) and CloudFormation/SSM (Domain 3)"
+      ]
+    }
+  ],
+  "checklist": [
+    {
+      "id": "soa-c01",
+      "text": "Configure CloudWatch agent, alarms, and dashboards (incl. composite)",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c02",
+      "text": "Wire alarm → SNS / EventBridge / Lambda / SSM Automation",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c03",
+      "text": "Use CloudTrail in an access or change investigation",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c04",
+      "text": "Tune EBS/S3/EFS/RDS performance from metrics",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c05",
+      "text": "Configure ASG scaling with ELB health checks",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c06",
+      "text": "Set Route 53 health checks and failover routing",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c07",
+      "text": "Implement Multi-AZ for applicable data stores",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c08",
+      "text": "Automate backups with AWS Backup and test restore (RTO/RPO)",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c09",
+      "text": "Map DR patterns: backup/restore, pilot light, warm standby, active/active",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c10",
+      "text": "Build/troubleshoot CloudFormation stacks and StackSets",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c11",
+      "text": "Produce AMIs/images with EC2 Image Builder",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c12",
+      "text": "Share resources cross-account with RAM",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c13",
+      "text": "Run SSM Automation for operational tasks",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c14",
+      "text": "Apply IAM MFA, roles, and policy condition troubleshooting",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c15",
+      "text": "Use Organizations SCPs + IAM Identity Center patterns",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c16",
+      "text": "Enforce Config rules / conformance packs",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c17",
+      "text": "Configure KMS encryption and ACM certificates",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c18",
+      "text": "Triage Security Hub / GuardDuty / Inspector / Trusted Advisor findings",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c19",
+      "text": "Troubleshoot VPC SG/NACL/route/NAT paths",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c20",
+      "text": "Configure VPC endpoints / PrivateLink / peering correctly",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c21",
+      "text": "Use Route 53 routing policies and Resolver logging",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c22",
+      "text": "Debug CloudFront caching and distribution issues",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c23",
+      "text": "Read VPC Flow Logs and ELB access logs to isolate failures",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c24",
+      "text": "Audit WAF / Shield / Network Firewall placement",
+      "exams": [
+        "SOA-C03"
+      ]
+    },
+    {
+      "id": "soa-c25",
+      "text": "Optimize network cost (NAT, data transfer, endpoints)",
+      "exams": [
+        "SOA-C03"
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "week": 1,
+      "title": "Observe & remediate",
+      "focus": "Domain 1 monitoring/logging plus Domain 2 HA/backup foundations",
+      "domainIds": [
+        "soa-d1-monitoring",
+        "soa-d2-reliability"
+      ]
+    },
+    {
+      "week": 2,
+      "title": "Deploy & secure",
+      "focus": "Domain 3 IaC/automation and Domain 4 identity/compliance/encryption",
+      "domainIds": [
+        "soa-d3-deployment",
+        "soa-d4-security"
+      ]
+    },
+    {
+      "week": 3,
+      "title": "Network mastery",
+      "focus": "Domain 5 VPC, DNS, CDN, and log-driven troubleshooting drills",
+      "domainIds": [
+        "soa-d5-networking"
+      ]
+    },
+    {
+      "week": 4,
+      "title": "Integrated ops scenarios",
+      "focus": "Cross-domain scenarios: alarm→fixbook, failed deploy, hybrid connectivity, DR restore",
+      "domainIds": [
+        "soa-d1-monitoring",
+        "soa-d2-reliability",
+        "soa-d3-deployment",
+        "soa-d4-security",
+        "soa-d5-networking"
+      ]
+    }
+  ]
+}

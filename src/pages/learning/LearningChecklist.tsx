@@ -5,14 +5,19 @@ export function LearningChecklist({
   checkedCount,
   isChecked,
   onToggle,
+  examCode,
 }: {
   items: ChecklistItem[];
   checkedCount: number;
   isChecked: (id: string) => boolean;
   onToggle: (id: string) => void;
+  examCode?: string | null;
 }) {
   const total = items.length;
   const pct = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
+  const subtitle = examCode
+    ? `Top ${total} topics for ${examCode} — click to mark reviewed.`
+    : `Top ${total} topics — click to mark reviewed.`;
 
   return (
     <div className="space-y-6">
@@ -20,9 +25,7 @@ export function LearningChecklist({
         <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
           <div>
             <h3 className="text-lg font-bold">Must master before exam</h3>
-            <p className="text-sm text-slate-400 mt-1">
-              Top {total} topics for CLF-C02 & SAA-C03 — click to mark reviewed.
-            </p>
+            <p className="text-sm text-slate-400 mt-1">{subtitle}</p>
           </div>
           <div className="text-right">
             <div className="text-2xl font-extrabold text-aws-orange tabular-nums">

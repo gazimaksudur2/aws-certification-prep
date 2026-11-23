@@ -1,8 +1,14 @@
 export type Priority = 'critical' | 'very-high' | 'high' | 'medium' | 'low';
 
-export type ExamTag = 'CLF-C02' | 'SAA-C03';
+/** Exam code string (e.g. CLF-C02, AIF-C01) — no longer a closed union. */
+export type ExamTag = string;
 
 export type CalloutKind = 'trap' | 'tip' | 'info';
+
+export interface LearningResource {
+  label: string;
+  url: string;
+}
 
 export interface LearningService {
   name: string;
@@ -15,6 +21,7 @@ export interface LearningService {
   /** @deprecated use priority === 'critical' */
   exam?: boolean;
   exams?: ExamTag[];
+  resources?: LearningResource[];
 }
 
 export interface ComparisonRow {
@@ -52,10 +59,16 @@ export interface LearningDomain {
   icon?: string;
   subtitle?: string;
   phase?: number;
+  weightPercent?: number;
+  /** Topic string used when deep-linking to Practice for this domain. */
+  quizTopic?: string;
+  /** Override which exam bank Practice should open (defaults to content.examId). */
+  practiceExamId?: string;
   services: LearningService[];
   comparisons?: Comparison[];
   callouts?: Callout[];
   cards?: InfoCard[];
+  resources?: LearningResource[];
 }
 
 /** @deprecated use LearningDomain */
@@ -82,9 +95,19 @@ export interface StudyPhase {
   domainIds: string[];
 }
 
+export interface SyllabusDomainMeta {
+  id: string;
+  name: string;
+  weightPercent?: number;
+}
+
 export interface LearningContent {
-  schemaVersion: 2;
+  schemaVersion: 2 | 3;
+  examId?: string;
+  code?: string;
+  title?: string;
   source: string;
+  syllabus?: { domains: SyllabusDomainMeta[] };
   domains: LearningDomain[];
   strategy: StrategyCard[];
   checklist: ChecklistItem[];
@@ -105,18 +128,4 @@ export const PRIORITY_LABELS: Record<Priority, string> = {
   high: 'High',
   medium: 'Medium',
   low: 'Low',
-};
-
-/** Maps learning domain ids to SAA question-bank topic filters. */
-export const DOMAIN_TO_QUIZ_TOPIC: Record<string, string> = {
-  compute: 'Compute',
-  storage: 'Storage',
-  databases: 'Databases',
-  networking: 'Networking',
-  'ha-dr': 'DR & Availability',
-};
-
-export const DOMAIN_TO_EXAM_ID: Record<string, string> = {
-  'clf-c02': 'aws-clf-c02',
-  'saa-c03': 'aws-saa-c03',
 };

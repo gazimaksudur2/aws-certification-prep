@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Modal } from '../components/Modal';
 import { useLearningContent } from '../hooks/useLearningClusters';
 import { useLearningProgress } from '../hooks/useLearningProgress';
@@ -9,6 +10,11 @@ import type {
   Priority,
 } from '../types/learning';
 import { PRIORITY_LABELS, PRIORITY_ORDER } from '../types/learning';
+import {
+  collectExamTagsFromDomains,
+  getCatalogEntry,
+  listLearningCatalog,
+} from '../utils/exams';
 import { LearningChecklist } from './learning/LearningChecklist';
 import { LearningClusterPills } from './learning/LearningClusterPills';
 import { LearningClusterSidebar } from './learning/LearningClusterSidebar';
@@ -35,30 +41,62 @@ import {
   Layers,
   TrendingUp,
   X,
+  ChevronLeft,
+  Award,
 } from 'lucide-react';
 
 type TabId = 'roadmap' | 'reference' | 'strategy' | 'checklist';
 type DomainId = 'all' | string;
 
-const TAB_KEY = 'learning-active-tab-v1';
+const LAST_EXAM_KEY = 'learning-last-exam-v1';
 
 function sectionIdForDomain(domainId: string) {
   return `domain-${domainId}`;
 }
 
 export function Learning() {
-  const { domains, strategy, checklist, phases, error, loading } =
-    useLearningContent();
-  const progress = useLearningProgress();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const learningCatalog = useMemo(() => listLearningCatalog(), []);
 
-  const [tab, setTab] = useState<TabId>(() => {
-    const saved = localStorage.getItem(TAB_KEY);
-    if (saved === 'roadmap' || saved === 'reference' || saved === 'strategy' || saved === 'checklist') {
-      return saved;
+  const examFromUrl = searchParams.get('exam');
+  const selectedExamId = useMemo(() => {
+    if (examFromUrl && learningCatalog.some((e) => e.examId === examFromUrl)) {
+      return examFromUrl;
     }
-    return 'roadmap';
-  });
+    return null;
+  }, [examFromUrl, learningCatalog]);
 
+  useEffect(() => {
+    if (selectedExamId) {
+      localStorage.setItem(LAST_EXAM_KEY, selectedExamId);
+      return;
+    }
+    if (examFromUrl) return;
+    const saved = localStorage.getItem(LAST_EXAM_KEY);
+    if (saved && learningCatalog.some((e) => e.examId === saved)) {
+      setSearchParams({ exam: saved }, { replace: true });
+    }
+  }, [selectedExamId, examFromUrl, learningCatalog, setSearchParams]);
+
+  const { domains, strategy, checklist, phases, examCode, examTitle, error, loading } =
+    useLearningContent(selectedExamId);
+
+  const progress = useLearningProgress(selectedExamId);
+  const catalogEntry = selectedExamId ? getCatalogEntry(selectedExamId) : null;
+
+  const defaultExamTags = useMemo(() => {
+    if (examCode) return [examCode];
+    if (catalogEntry?.code) return [catalogEntry.code];
+    return [];
+  }, [examCode, catalogEntry]);
+
+  const examFilterOptions = useMemo(() => {
+    const tags = collectExamTagsFromDomains(domains ?? [], defaultExamTags);
+    return tags;
+  }, [domains, defaultExamTags]);
+
+  const [tab, setTab] = useState<TabId>('roadmap');
   const [search, setSearch] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<DomainId>('all');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
@@ -74,19 +112,25 @@ export function Learning() {
   selectedDomainRef.current = selectedDomain;
 
   useEffect(() => {
-    localStorage.setItem(TAB_KEY, tab);
-  }, [tab]);
+    if (!selectedExamId) return;
+    if (progress.activeTab) setTab(progress.activeTab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only rehydrate when exam changes
+  }, [selectedExamId]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('learning-last-cluster');
-    if (saved && saved !== 'all') setSelectedDomain(saved);
-  }, []);
+    if (!selectedExamId) return;
+    progress.setActiveTab(tab);
+    // intentionally omit progress identity
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, selectedExamId]);
 
   useEffect(() => {
-    if (selectedDomain !== 'all') {
-      localStorage.setItem('learning-last-cluster', selectedDomain);
-    }
-  }, [selectedDomain]);
+    setSearch('');
+    setSelectedDomain('all');
+    setExamFilter('all');
+    setPriorityFilter('all');
+    setDetail(null);
+  }, [selectedExamId]);
 
   const goToReference = useCallback((domainId?: string) => {
     setTab('reference');
@@ -109,7 +153,13 @@ export function Learning() {
     return domains
       .filter((d) => selectedDomain === 'all' || d.id === selectedDomain)
       .map((d) => {
-        const filtered = filterDomainContent(d, search, examFilter, priorityFilter);
+        const filtered = filterDomainContent(
+          d,
+          search,
+          examFilter,
+          priorityFilter,
+          defaultExamTags,
+        );
         return {
           ...filtered,
           services: [...filtered.services].sort(
@@ -120,7 +170,14 @@ export function Learning() {
         };
       })
       .filter(domainHasVisibleContent);
-  }, [domains, search, selectedDomain, examFilter, priorityFilter]);
+  }, [
+    domains,
+    search,
+    selectedDomain,
+    examFilter,
+    priorityFilter,
+    defaultExamTags,
+  ]);
 
   const domainResultCount = (d: LearningDomain) =>
     d.services.length +
@@ -192,6 +249,60 @@ export function Learning() {
     setPriorityFilter('all');
   };
 
+  const pickLearningExam = (examId: string) => {
+    setSearchParams({ exam: examId });
+  };
+
+  if (!selectedExamId) {
+    return (
+      <div className="space-y-6 pb-12 animate-fadeIn">
+        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 md:p-8 border border-slate-700/50 shadow-xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-aws-orange/5 via-transparent to-aws-blue/5" />
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-aws-orange/10 border border-aws-orange/20 text-aws-orange text-xs font-semibold tracking-wider uppercase">
+              <BookOpen className="w-3 h-3" />
+              Learning Section
+            </div>
+            <h1 className="mt-3 text-2xl md:text-3xl font-extrabold">
+              Choose a certification path
+            </h1>
+            <p className="mt-1 text-sm text-slate-400 max-w-2xl">
+              Per-exam roadmaps with services, traps, strategy, and checklist progress —
+              including AIF-C01 and SOA-C03 learning paths.
+            </p>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {learningCatalog.map((e) => (
+            <button
+              key={e.examId}
+              type="button"
+              onClick={() => pickLearningExam(e.examId)}
+              className="card p-6 text-left hover:border-aws-orange/50 transition-all hover:-translate-y-0.5"
+            >
+              <div className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-aws-orange" />
+                <span className="text-[10px] font-bold tracking-wider text-aws-orange uppercase bg-aws-orange/10 px-2 py-0.5 rounded">
+                  {e.code}
+                </span>
+                {e.level && (
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider">
+                    {e.level}
+                  </span>
+                )}
+              </div>
+              <div className="mt-3 text-lg font-bold text-slate-100">{e.title}</div>
+              {e.description && (
+                <p className="mt-2 text-sm text-slate-400 line-clamp-3">{e.description}</p>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="card p-8 border-rose-500/20 bg-rose-500/5 animate-fadeIn">
@@ -203,8 +314,21 @@ export function Learning() {
             <div className="text-xs font-semibold tracking-widest text-rose-400 uppercase">
               Learning section error
             </div>
-            <div className="mt-1 text-lg font-bold text-white">Couldn't load learning resources.</div>
+            <div className="mt-1 text-lg font-bold text-white">
+              Couldn&apos;t load learning resources.
+            </div>
             <div className="mt-1 text-sm text-slate-400">{error}</div>
+            <button
+              type="button"
+              className="mt-4 btn-secondary text-xs"
+              onClick={() => {
+                localStorage.removeItem(LAST_EXAM_KEY);
+                navigate('/learning');
+                setSearchParams({});
+              }}
+            >
+              Back to path picker
+            </button>
           </div>
         </div>
       </div>
@@ -223,29 +347,38 @@ export function Learning() {
   }
 
   const allDomains = domains;
+  const displayCode = examCode ?? catalogEntry?.code ?? selectedExamId;
+  const displayTitle = examTitle ?? catalogEntry?.title ?? 'Study hub';
 
   return (
     <div className="space-y-6 pb-12 animate-fadeIn">
-      {/* Header */}
       <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 md:p-8 border border-slate-700/50 shadow-xl animate-slideUp">
         <div className="absolute inset-0 bg-gradient-to-br from-aws-orange/5 via-transparent to-aws-blue/5" />
         <div className="absolute -top-20 -right-20 w-48 h-48 bg-aws-orange/5 rounded-full blur-2xl" />
-        
+
         <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.removeItem(LAST_EXAM_KEY);
+                setSearchParams({});
+              }}
+              className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-aws-orange transition-colors mb-2"
+            >
+              <ChevronLeft className="w-3 h-3" />
+              All learning paths
+            </button>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-aws-orange/10 border border-aws-orange/20 text-aws-orange text-xs font-semibold tracking-wider uppercase">
               <BookOpen className="w-3 h-3" />
-              Learning Section
+              {displayCode}
             </div>
-            <h1 className="mt-3 text-2xl md:text-3xl font-extrabold">
-              AWS certification study hub
-            </h1>
+            <h1 className="mt-3 text-2xl md:text-3xl font-extrabold">{displayTitle}</h1>
             <p className="mt-1 text-sm text-slate-400">
-              CLF-C02 & SAA-C03 combined roadmap — services, exam traps, strategy, and
-              progress tracking.
+              Services, exam traps, strategy, and progress tracking for this certification.
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700/50">
               <Target className="w-4 h-4 text-aws-orange" />
@@ -256,14 +389,13 @@ export function Learning() {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="relative mt-6 flex flex-wrap gap-1 bg-slate-900/50 border border-slate-700/50 rounded-lg p-1">
           {(
             [
               ['roadmap', 'Roadmap', MapPin],
               ['reference', 'Service reference', Layers],
               ['strategy', 'Exam strategy', Target],
-              ['checklist', 'Top 50 checklist', CheckCircle2],
+              ['checklist', 'Checklist', CheckCircle2],
             ] as const
           ).map(([id, label, Icon]) => (
             <button
@@ -283,7 +415,6 @@ export function Learning() {
         </div>
       </header>
 
-      {/* Tab Content */}
       <div className="animate-slideUp">
         {tab === 'roadmap' && (
           <LearningOverview
@@ -292,6 +423,8 @@ export function Learning() {
             reviewedCount={progress.reviewedCount}
             checkedCount={progress.checkedCount}
             checklistTotal={checklist.length}
+            examCode={displayCode}
+            examTitle={displayTitle}
             onGoToReference={goToReference}
             onGoToChecklist={() => setTab('checklist')}
           />
@@ -305,12 +438,12 @@ export function Learning() {
             checkedCount={progress.checkedCount}
             isChecked={progress.isChecklistChecked}
             onToggle={progress.toggleChecklistItem}
+            examCode={displayCode}
           />
         )}
 
         {tab === 'reference' && (
           <>
-            {/* Search and Filters */}
             <div className="card p-4 md:p-6 space-y-4 bg-gradient-to-br from-slate-800/30 to-slate-900/30 border-slate-700/50">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -333,16 +466,17 @@ export function Learning() {
 
               <div className="flex flex-wrap items-center gap-3">
                 <Filter className="w-4 h-4 text-slate-500" />
-                <FilterSelect
-                  label="Exam"
-                  value={examFilter}
-                  onChange={(v) => setExamFilter(v as 'all' | ExamTag)}
-                  options={[
-                    ['all', 'Both exams'],
-                    ['CLF-C02', 'CLF-C02'],
-                    ['SAA-C03', 'SAA-C03'],
-                  ]}
-                />
+                {examFilterOptions.length > 1 && (
+                  <FilterSelect
+                    label="Exam"
+                    value={examFilter}
+                    onChange={(v) => setExamFilter(v as 'all' | ExamTag)}
+                    options={[
+                      ['all', 'All exams'],
+                      ...examFilterOptions.map((t) => [t, t] as const),
+                    ]}
+                  />
+                )}
                 <FilterSelect
                   label="Priority"
                   value={priorityFilter}
@@ -371,7 +505,6 @@ export function Learning() {
               />
             </div>
 
-            {/* Results count */}
             <div className="flex items-center justify-between text-sm">
               <div className="text-slate-400">
                 {anyFilterActive ? (
@@ -386,17 +519,8 @@ export function Learning() {
                   </span>
                 )}
               </div>
-              {anyFilterActive && totalMatches === 0 && (
-                <button
-                  onClick={clearFilters}
-                  className="text-xs text-aws-orange hover:text-aws-orange/80 transition-colors"
-                >
-                  Clear all filters
-                </button>
-              )}
             </div>
 
-            {/* Main Content */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               <LearningClusterSidebar
                 clusters={allDomains.map((d) => ({
@@ -420,10 +544,7 @@ export function Learning() {
                     <p className="mt-2 text-sm text-slate-400">
                       Try adjusting your search or filters
                     </p>
-                    <button
-                      onClick={clearFilters}
-                      className="mt-4 btn-secondary text-sm"
-                    >
+                    <button onClick={clearFilters} className="mt-4 btn-secondary text-sm">
                       Clear all filters
                     </button>
                   </div>
@@ -453,6 +574,11 @@ export function Learning() {
                           <span className="text-xs font-normal text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
                             {domain.services.length} services
                           </span>
+                          {domain.weightPercent != null && (
+                            <span className="text-xs font-normal text-aws-orange/80">
+                              {domain.weightPercent}%
+                            </span>
+                          )}
                         </h2>
                         {domain.subtitle && (
                           <p className="text-xs text-slate-400 mt-0.5">{domain.subtitle}</p>
@@ -477,7 +603,10 @@ export function Learning() {
                             'Mark reviewed'
                           )}
                         </button>
-                        <DomainPracticeLink domainId={domain.id} />
+                        <DomainPracticeLink
+                          domain={domain}
+                          fallbackExamId={selectedExamId}
+                        />
                       </div>
                     </div>
 
@@ -507,89 +636,110 @@ export function Learning() {
         )}
       </div>
 
-      {/* Service Detail Modal */}
-<Modal
-  open={!!detail}
-  title={detail ? detail.service.name : undefined}
-  onClose={() => setDetail(null)}
->
-  {detail && (
-    <div className="space-y-6 animate-slideUp">
-      <div className="flex flex-wrap items-center gap-2">
-        <span
-          className="text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1.5"
-          style={{
-            background: `${detail.domain.color}22`,
-            color: detail.domain.color,
-            border: `1px solid ${detail.domain.color}44`,
-          }}
-        >
-          <span className="text-base">{detail.domain.icon}</span>
-          {detail.domain.name}
-        </span>
-        <PriorityBadge priority={detail.service.priority} />
-      </div>
+      <Modal
+        open={!!detail}
+        title={detail ? detail.service.name : undefined}
+        onClose={() => setDetail(null)}
+      >
+        {detail && (
+          <div className="space-y-6 animate-slideUp">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className="text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1.5"
+                style={{
+                  background: `${detail.domain.color}22`,
+                  color: detail.domain.color,
+                  border: `1px solid ${detail.domain.color}44`,
+                }}
+              >
+                <span className="text-base">{detail.domain.icon}</span>
+                {detail.domain.name}
+              </span>
+              <PriorityBadge priority={detail.service.priority} />
+            </div>
 
-      <p className="text-slate-300 leading-relaxed text-lg">
-        {detail.service.desc}
-      </p>
+            <p className="text-slate-300 leading-relaxed text-lg">{detail.service.desc}</p>
 
-      {detail.service.uses && (
-        <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
-          <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3 flex items-center gap-2">
-            <TrendingUp className="w-3 h-3" />
-            Real-world use cases
-          </div>
-          <ul className="space-y-2 text-sm text-slate-200">
-            {detail.service.uses.map((u) => (
-              <li key={u} className="flex gap-2 items-start">
-                <span style={{ color: detail.domain.color }} className="mt-0.5">▸</span>
-                <span>{u}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {detail.service.examTopics.length > 0 && (
-        <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
-          <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3 flex items-center gap-2">
-            <Target className="w-3 h-3" />
-            Key exam topics
-          </div>
-          <ul className="space-y-2 text-sm text-slate-200">
-            {detail.service.examTopics.map((t, idx) => (
-              <li key={idx} className="flex gap-2 items-start">
-                <span className="text-aws-orange mt-0.5">•</span>
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {detail.service.tip && (
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
-          <div className="flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
-            <div>
-              <div className="text-xs uppercase tracking-wider font-semibold text-amber-300">
-                Exam tip
+            {detail.service.uses && (
+              <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3 flex items-center gap-2">
+                  <TrendingUp className="w-3 h-3" />
+                  Real-world use cases
+                </div>
+                <ul className="space-y-2 text-sm text-slate-200">
+                  {detail.service.uses.map((u) => (
+                    <li key={u} className="flex gap-2 items-start">
+                      <span style={{ color: detail.domain.color }} className="mt-0.5">
+                        ▸
+                      </span>
+                      <span>{u}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="mt-1 text-sm text-amber-100 leading-relaxed">
-                {detail.service.tip}
+            )}
+
+            {detail.service.examTopics.length > 0 && (
+              <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3 flex items-center gap-2">
+                  <Target className="w-3 h-3" />
+                  Key exam topics
+                </div>
+                <ul className="space-y-2 text-sm text-slate-200">
+                  {detail.service.examTopics.map((t, idx) => (
+                    <li key={idx} className="flex gap-2 items-start">
+                      <span className="text-aws-orange mt-0.5">•</span>
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            )}
+
+            {detail.service.tip && (
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
+                <div className="flex items-start gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <div className="text-xs uppercase tracking-wider font-semibold text-amber-300">
+                      Exam tip
+                    </div>
+                    <div className="mt-1 text-sm text-amber-100 leading-relaxed">
+                      {detail.service.tip}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {detail.service.resources && detail.service.resources.length > 0 && (
+              <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">
+                  Resources
+                </div>
+                <ul className="space-y-2 text-sm">
+                  {detail.service.resources.map((r) => (
+                    <li key={r.url}>
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-aws-orange hover:underline"
+                      >
+                        {r.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="pt-4 border-t border-slate-700/50 flex justify-end">
+              <DomainPracticeLink domain={detail.domain} fallbackExamId={selectedExamId} />
             </div>
           </div>
-        </div>
-      )}
-
-      <div className="pt-4 border-t border-slate-700/50 flex justify-end">
-        <DomainPracticeLink domainId={detail.domain.id} />
-      </div>
-    </div>
-  )}
-</Modal>
+        )}
+      </Modal>
     </div>
   );
 }

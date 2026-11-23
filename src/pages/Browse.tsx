@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getQuestionsForExam, getTopicsForExam, listCatalog } from '../utils/exams';
+import { getQuestionsForExam, getTopicsForExam, listPracticeCatalog } from '../utils/exams';
 import { 
   Search, 
   Filter, 
@@ -22,7 +22,7 @@ type Filter = 'all' | 'single' | 'multi';
 export function Browse() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const catalog = useMemo(() => listCatalog(), []);
+  const catalog = useMemo(() => listPracticeCatalog(), []);
 
   const examParam = searchParams.get('exam');
   const catalogEntry =
