@@ -1,6 +1,7 @@
 // Cross-platform build script:
-//   1. Run TypeScript project references build (`tsc -b`)
-//   2. Run Vite production build
+//   1. Validate / sync learning JSON
+//   2. Run TypeScript project references build (`tsc -b`)
+//   3. Run Vite production build
 //
 // Used instead of `tsc -b && vite build` because Windows PowerShell 5.1
 // (the default `powershell.exe`) does not support `&&` as a statement
@@ -17,7 +18,7 @@ const projectRoot = resolve(__dirname, '..');
 
 const tsc = resolve(projectRoot, 'node_modules', 'typescript', 'bin', 'tsc');
 const vite = resolve(projectRoot, 'node_modules', 'vite', 'bin', 'vite.js');
-const genLearning = resolve(projectRoot, 'scripts', 'generate-learning-json.mjs');
+const buildLearning = resolve(projectRoot, 'scripts', 'build-learning.mjs');
 
 function run(label, args) {
   console.log(`\n▶ ${label}`);
@@ -31,7 +32,7 @@ function run(label, args) {
   }
 }
 
-run('Generate learning JSON', [genLearning]);
+run('Validate learning JSON', [buildLearning]);
 run('Type-check (tsc -b)', [tsc, '-b']);
 run('Vite build', [vite, 'build']);
 

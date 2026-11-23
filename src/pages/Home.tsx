@@ -8,6 +8,9 @@ import {
   getQuestionsForExam,
   getTopicsForExam,
   listCatalog,
+  listPracticeCatalog,
+  isPracticeEnabled,
+  isLearningEnabled,
 } from '../utils/exams';
 import { PASS_THRESHOLD_PERCENT } from '../utils/scoring';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,6 +37,14 @@ export function Home() {
   const { startQuiz } = useQuiz();
 
   const catalog = useMemo(() => listCatalog(), []);
+  const practiceCatalog = useMemo(() => listPracticeCatalog(), []);
+  const learningOnlyCatalog = useMemo(
+    () =>
+      catalog.filter(
+        (e) => isLearningEnabled(e) && !isPracticeEnabled(e) && !e.learning?.packOf?.length,
+      ),
+    [catalog],
+  );
   const {
     statsGlobal,
     statsForExam,
@@ -42,7 +53,7 @@ export function Home() {
   } = useHistory();
 
   const [examId, setExamId] = useState<string | null>(null);
-  const selectedExam = catalog.find((e) => e.examId === examId) ?? null;
+  const selectedExam = practiceCatalog.find((e) => e.examId === examId) ?? null;
 
   const allQuestions = useMemo(
     () => (examId ? getQuestionsForExam(examId) : []),
@@ -75,7 +86,7 @@ export function Home() {
     const topicParam = searchParams.get('topic');
     if (!examParam) return;
 
-    const validExam = catalog.find((e) => e.examId === examParam);
+    const validExam = practiceCatalog.find((e) => e.examId === examParam);
     if (!validExam) return;
 
     setExamId(examParam);
@@ -92,7 +103,7 @@ export function Home() {
       1,
     );
     setCount(Math.min(20, poolSize));
-  }, [searchParams, catalog]);
+  }, [searchParams, practiceCatalog]);
 
   function handleExamPick(id: string) {
     setExamId(id);
@@ -153,7 +164,10 @@ export function Home() {
               <div>
                 <div className="text-xs text-slate-400">Total Questions</div>
                 <div className="text-2xl font-bold text-white">
-                  {catalog.reduce((acc, e) => acc + getQuestionsForExam(e.examId).length, 0)}
+                  {practiceCatalog.reduce(
+                    (acc, e) => acc + getQuestionsForExam(e.examId).length,
+                    0,
+                  )}
                 </div>
               </div>
             </div>
@@ -173,11 +187,13 @@ export function Home() {
               <BookOpen className="w-6 h-6 text-aws-orange" />
               Choose your certification
             </h2>
-            <span className="text-sm text-slate-400">{catalog.length} available</span>
+            <span className="text-sm text-slate-400">
+              {practiceCatalog.length} with practice banks
+            </span>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {catalog.map((e, index) => {
+            {practiceCatalog.map((e, index) => {
               const total = getQuestionsForExam(e.examId).length;
               const st = statsForExam(e.examId);
               return (
@@ -228,6 +244,41 @@ export function Home() {
               );
             })}
           </div>
+
+          {learningOnlyCatalog.length > 0 && (
+            <div className="space-y-3 pt-4">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
+                Learning ready · practice coming soon
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {learningOnlyCatalog.map((e) => (
+                  <div
+                    key={e.examId}
+                    className="card p-6 border-dashed border-slate-700/80 bg-slate-900/40"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-bold tracking-wider text-sky-400/80 uppercase bg-sky-500/10 px-2 py-0.5 rounded">
+                        {e.code}
+                      </span>
+                      <span className="text-[10px] text-slate-500 uppercase">Coming soon</span>
+                    </div>
+                    <div className="mt-2 text-lg font-bold text-slate-200">{e.title}</div>
+                    {e.description && (
+                      <p className="mt-2 text-sm text-slate-500 line-clamp-2">{e.description}</p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/learning?exam=${e.examId}`)}
+                      className="mt-4 btn-secondary text-xs inline-flex items-center gap-1"
+                    >
+                      Open learning path
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </motion.section>
       )}
 

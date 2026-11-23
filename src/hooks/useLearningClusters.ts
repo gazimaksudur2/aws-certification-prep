@@ -1,18 +1,31 @@
 import { useEffect, useState } from 'react';
 import type { LearningContent } from '../types/learning';
+import { getLearningDataPath } from '../utils/exams';
 
-const LEARNING_JSON_URL = '/data/aws-learning-roadmap.json';
+const LEGACY_LEARNING_URL = '/data/aws-learning-roadmap.json';
 
-export function useLearningContent() {
+export function useLearningContent(examId: string | null) {
   const [content, setContent] = useState<LearningContent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
-    setLoading(true);
 
-    fetch(LEARNING_JSON_URL, { cache: 'no-store' })
+    if (!examId) {
+      setContent(null);
+      setError(null);
+      setLoading(false);
+      return () => {
+        alive = false;
+      };
+    }
+
+    const dataPath = getLearningDataPath(examId) ?? LEGACY_LEARNING_URL;
+    setLoading(true);
+    setError(null);
+
+    fetch(dataPath, { cache: 'no-store' })
       .then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed to load learning content (${res.status}).`);
@@ -40,7 +53,7 @@ export function useLearningContent() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [examId]);
 
   return {
     content,
@@ -48,6 +61,8 @@ export function useLearningContent() {
     strategy: content?.strategy ?? [],
     checklist: content?.checklist ?? [],
     phases: content?.phases ?? [],
+    examCode: content?.code ?? null,
+    examTitle: content?.title ?? null,
     error,
     loading,
   };
@@ -55,6 +70,6 @@ export function useLearningContent() {
 
 /** @deprecated use useLearningContent */
 export function useLearningClusters() {
-  const { domains, error, loading } = useLearningContent();
+  const { domains, error, loading } = useLearningContent('aws-clf-saa-combined');
   return { clusters: domains, error, loading };
 }

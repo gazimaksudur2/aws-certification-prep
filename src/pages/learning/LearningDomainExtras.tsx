@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import type { Callout, Comparison, InfoCard } from '../../types/learning';
+import type { Callout, Comparison, InfoCard, LearningDomain } from '../../types/learning';
+import { hasPracticeBank } from '../../utils/exams';
+import { buildPracticeUrl } from './learningUtils';
 
 export function LearningDomainExtras({
   comparisons,
@@ -99,28 +101,32 @@ export function LearningDomainExtras({
   );
 }
 
-export function DomainPracticeLink({ domainId }: { domainId: string }) {
-  const topicMap: Record<string, string> = {
-    compute: 'Compute',
-    storage: 'Storage',
-    databases: 'Databases',
-    networking: 'Networking',
-    'ha-dr': 'DR & Availability',
-  };
-  const topic = topicMap[domainId];
-  if (!topic) return null;
+export function DomainPracticeLink({
+  domain,
+  fallbackExamId,
+}: {
+  domain: Pick<LearningDomain, 'id' | 'quizTopic' | 'practiceExamId' | 'name'>;
+  fallbackExamId?: string;
+}) {
+  const examId = domain.practiceExamId ?? fallbackExamId;
+  if (!examId || !hasPracticeBank(examId)) {
+    if (domain.quizTopic || domain.practiceExamId) {
+      return (
+        <span className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-slate-500 inline-flex items-center gap-1">
+          Practice coming soon
+        </span>
+      );
+    }
+    return null;
+  }
 
-  const params = new URLSearchParams({
-    exam: 'aws-saa-c03',
-    topic,
-  });
+  const href = buildPracticeUrl(domain, fallbackExamId);
+  if (!href) return null;
 
+  const label = domain.quizTopic ?? 'questions';
   return (
-    <Link
-      to={`/practice?${params.toString()}`}
-      className="btn-secondary text-xs inline-flex items-center gap-1"
-    >
-      Practice {topic} questions →
+    <Link to={href} className="btn-secondary text-xs inline-flex items-center gap-1">
+      Practice {label} →
     </Link>
   );
 }

@@ -7,6 +7,8 @@ export function LearningOverview({
   reviewedCount,
   checkedCount,
   checklistTotal,
+  examCode,
+  examTitle,
   onGoToReference,
   onGoToChecklist,
 }: {
@@ -15,6 +17,8 @@ export function LearningOverview({
   reviewedCount: number;
   checkedCount: number;
   checklistTotal: number;
+  examCode?: string | null;
+  examTitle?: string | null;
   onGoToReference: (domainId?: string) => void;
   onGoToChecklist: () => void;
 }) {
@@ -24,21 +28,26 @@ export function LearningOverview({
   const checklistPct =
     checklistTotal > 0 ? Math.round((checkedCount / checklistTotal) * 100) : 0;
 
+  const eyebrow = examCode ? `${examCode} · Study roadmap` : 'Study roadmap';
+  const planLabel =
+    phases.length === 1
+      ? '1-week study plan'
+      : `${phases.length}-week study plan`;
+
   return (
     <div className="space-y-6">
       <section className="card p-6 md:p-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-aws-orange/10 via-transparent to-aws-blue/10 pointer-events-none" />
         <div className="relative">
           <div className="text-xs font-semibold tracking-widest text-aws-orange uppercase">
-            CLF-C02 & SAA-C03 · Master roadmap
+            {eyebrow}
           </div>
           <h2 className="mt-2 text-2xl md:text-3xl font-extrabold">
-            Learn services. Master exam traps. Track progress.
+            {examTitle ?? 'Learn services. Master exam traps. Track progress.'}
           </h2>
           <p className="mt-2 text-sm text-slate-400 max-w-2xl">
-            Combined study guide covering {domains.length} domains, {totalServices}+
-            services, comparisons, exam traps, and a Top-50 checklist — both
-            certifications in one place.
+            {domains.length} domains, {totalServices}+ services/topics, comparisons,
+            exam traps, and a checklist — progress saved locally for this path.
           </p>
           <div className="mt-5 flex flex-wrap gap-3 text-xs">
             <StatPill label="Domains" value={String(domains.length)} />
@@ -85,7 +94,7 @@ export function LearningOverview({
       </section>
 
       <section className="space-y-4">
-        <h3 className="text-lg font-bold">4-week study plan</h3>
+        <h3 className="text-lg font-bold">{planLabel}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {phases.map((phase) => (
             <div key={phase.week} className="card p-5 border-l-4 border-aws-orange">

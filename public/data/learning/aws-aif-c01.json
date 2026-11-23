@@ -1,0 +1,943 @@
+{
+  "schemaVersion": 3,
+  "examId": "aws-aif-c01",
+  "code": "AIF-C01",
+  "title": "AWS Certified AI Practitioner",
+  "source": "AWS AIF-C01 exam guide domains + in-scope services (Context syllabi)",
+  "syllabus": {
+    "domains": [
+      {
+        "id": "aif-d1-fundamentals",
+        "name": "Fundamentals of AI and ML",
+        "weightPercent": 20
+      },
+      {
+        "id": "aif-d2-genai",
+        "name": "Fundamentals of GenAI",
+        "weightPercent": 24
+      },
+      {
+        "id": "aif-d3-fm-apps",
+        "name": "Applications of Foundation Models",
+        "weightPercent": 28
+      },
+      {
+        "id": "aif-d4-responsible",
+        "name": "Guidelines for Responsible AI",
+        "weightPercent": 14
+      },
+      {
+        "id": "aif-d5-security",
+        "name": "Security, Compliance, and Governance for AI Solutions",
+        "weightPercent": 14
+      }
+    ]
+  },
+  "domains": [
+    {
+      "id": "aif-d1-fundamentals",
+      "name": "Fundamentals of AI and ML",
+      "color": "#f59e0b",
+      "icon": "🧠",
+      "subtitle": "Domain 1 · 20% — concepts, use cases, ML lifecycle",
+      "phase": 1,
+      "weightPercent": 20,
+      "quizTopic": "Fundamentals of AI and ML",
+      "practiceExamId": "aws-aif-c01",
+      "resources": [
+        {
+          "label": "AIF-C01 exam page",
+          "url": "https://aws.amazon.com/certification/certified-ai-practitioner/"
+        },
+        {
+          "label": "Amazon SageMaker AI docs",
+          "url": "https://docs.aws.amazon.com/sagemaker/"
+        }
+      ],
+      "services": [
+        {
+          "name": "Amazon SageMaker AI",
+          "desc": "Managed platform to build, train, tune, and deploy ML models end-to-end.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Stages of the AI/ML lifecycle: data prep → train → evaluate → deploy → monitor",
+            "Managed APIs vs self-hosted model serving tradeoffs",
+            "When custom ML is better than a foundation model (explainability, regulation, cost)",
+            "JumpStart for pre-trained models (also covered under GenAI)"
+          ],
+          "tip": "Map each lifecycle stage to an AWS capability — SageMaker is the backbone for custom ML.",
+          "resources": [
+            {
+              "label": "SageMaker Developer Guide",
+              "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html"
+            }
+          ]
+        },
+        {
+          "name": "Amazon Transcribe",
+          "desc": "Speech-to-text service for converting audio into text.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Speech recognition use cases",
+            "Batch vs streaming transcription",
+            "Pair with Comprehend/Translate in pipelines"
+          ]
+        },
+        {
+          "name": "Amazon Translate",
+          "desc": "Neural machine translation between supported languages.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "NLP translation use cases",
+            "When managed AI services beat custom models"
+          ]
+        },
+        {
+          "name": "Amazon Comprehend",
+          "desc": "NLP for sentiment, entities, key phrases, PII detection, and classification.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Entity recognition and sentiment",
+            "PII detection for governance",
+            "Classification vs generative approaches"
+          ]
+        },
+        {
+          "name": "Amazon Lex",
+          "desc": "Conversational bots with ASR and NLU for chat/voice interfaces.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Chatbot / IVR use cases",
+            "Intent and slot concepts at a high level"
+          ]
+        },
+        {
+          "name": "Amazon Polly",
+          "desc": "Text-to-speech synthesis for natural-sounding audio.",
+          "priority": "medium",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Speech synthesis use cases",
+            "Complements Transcribe in voice apps"
+          ]
+        },
+        {
+          "name": "Amazon Quick",
+          "desc": "Business intelligence and analytics experiences referenced for AI pipelines and insights.",
+          "priority": "medium",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Analytics + AI workflow touchpoints",
+            "Visualizing model/business metrics"
+          ]
+        },
+        {
+          "name": "Amazon Rekognition",
+          "desc": "Computer vision for images and video (objects, faces, text, unsafe content).",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "CV use cases vs building custom vision models",
+            "Content moderation patterns"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "tip",
+          "title": "Core vocabulary to lock in",
+          "items": [
+            "AI vs ML vs deep learning vs GenAI vs agentic AI",
+            "Supervised / unsupervised / reinforcement learning",
+            "Labeled vs unlabeled; structured vs unstructured data",
+            "Batch, real-time, asynchronous, and serverless inference"
+          ]
+        },
+        {
+          "kind": "trap",
+          "title": "Exam traps",
+          "items": [
+            "Picking GenAI when a deterministic rule or classic ML model is enough",
+            "Ignoring cost/latency when choosing real-time vs batch inference",
+            "Assuming every problem needs a custom-trained model"
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "Task map (Domain 1)",
+          "intro": "Align study to official task statements.",
+          "items": [
+            "1.1 Explain basic AI concepts and terminologies",
+            "1.2 Identify practical use cases for AI (and when not to use AI)",
+            "1.3 Describe the AI/ML development lifecycle and AWS touchpoints"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aif-d2-genai",
+      "name": "Fundamentals of GenAI",
+      "color": "#8b5cf6",
+      "icon": "✨",
+      "subtitle": "Domain 2 · 24% — GenAI concepts, limits, AWS GenAI stack",
+      "phase": 1,
+      "weightPercent": 24,
+      "quizTopic": "Fundamentals of GenAI",
+      "practiceExamId": "aws-aif-c01",
+      "resources": [
+        {
+          "label": "Amazon Bedrock User Guide",
+          "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html"
+        }
+      ],
+      "services": [
+        {
+          "name": "Amazon Bedrock",
+          "desc": "Fully managed access to foundation models via APIs, with tooling for apps, agents, and knowledge bases.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "FM access without managing infrastructure",
+            "Token-based pricing implications for cost and latency",
+            "Provisioned throughput vs on-demand",
+            "Bedrock as the primary GenAI application platform on AWS"
+          ],
+          "tip": "Know Bedrock vs SageMaker: Bedrock = consume/customize FMs; SageMaker = build/train/host broadly."
+        },
+        {
+          "name": "Amazon SageMaker JumpStart",
+          "desc": "Hub of pre-trained models and solutions you can deploy and fine-tune.",
+          "priority": "very-high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Pre-trained model selection",
+            "Fine-tuning starting points",
+            "Overlap with Bedrock model choice questions"
+          ]
+        },
+        {
+          "name": "Amazon Bedrock AgentCore",
+          "desc": "Agent runtime capabilities for tool use, identity, and orchestration patterns on Bedrock.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Agentic AI patterns",
+            "Tool usage and workflow orchestration",
+            "Multi-agent communication concepts"
+          ]
+        },
+        {
+          "name": "Strands Agents",
+          "desc": "Agent framework referenced for building multi-agent GenAI applications on AWS.",
+          "priority": "medium",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Multi-agent system patterns",
+            "When agents add value vs single-prompt apps"
+          ]
+        },
+        {
+          "name": "Kiro",
+          "desc": "AWS AI-assisted development tooling referenced in AI lifecycle and GenAI app contexts.",
+          "priority": "medium",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Developer productivity use cases for GenAI",
+            "Where AI assists the ML/app lifecycle"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "Bedrock vs SageMaker for GenAI",
+          "cards": [
+            {
+              "title": "Amazon Bedrock",
+              "rows": [
+                {
+                  "key": "Best for",
+                  "val": "Consuming FMs via API, RAG, agents, Guardrails"
+                },
+                {
+                  "key": "Ops burden",
+                  "val": "Low — managed model access"
+                },
+                {
+                  "key": "Customization",
+                  "val": "Prompts, RAG, fine-tuning/custom models where offered"
+                }
+              ]
+            },
+            {
+              "title": "SageMaker AI / JumpStart",
+              "rows": [
+                {
+                  "key": "Best for",
+                  "val": "Training custom models, full MLOps control"
+                },
+                {
+                  "key": "Ops burden",
+                  "val": "Higher — you own more of the pipeline"
+                },
+                {
+                  "key": "Customization",
+                  "val": "Full training/fine-tuning flexibility"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "GenAI limitations to remember",
+          "items": [
+            "Hallucinations, nondeterminism, weak interpretability",
+            "IP / trust / accuracy risks for business use",
+            "Token cost scales with context length and output"
+          ]
+        },
+        {
+          "kind": "tip",
+          "title": "Must-know GenAI vocabulary",
+          "items": [
+            "Tokens, embeddings, vectors, chunking, transformers/LLMs",
+            "Foundation models, multimodal, diffusion models",
+            "Prompt engineering and context engineering",
+            "MCP (Model Context Protocol) for connecting agents to tools"
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "Task map (Domain 2)",
+          "items": [
+            "2.1 Explain basic GenAI concepts",
+            "2.2 Capabilities and limitations for business problems",
+            "2.3 AWS infrastructure and technologies for GenAI apps"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aif-d3-fm-apps",
+      "name": "Applications of Foundation Models",
+      "color": "#06b6d4",
+      "icon": "🧩",
+      "subtitle": "Domain 3 · 28% — design, prompts, fine-tuning, evaluation",
+      "phase": 2,
+      "weightPercent": 28,
+      "quizTopic": "Applications of Foundation Models",
+      "practiceExamId": "aws-aif-c01",
+      "resources": [
+        {
+          "label": "Bedrock Knowledge Bases",
+          "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
+        },
+        {
+          "label": "Bedrock Guardrails",
+          "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
+        }
+      ],
+      "services": [
+        {
+          "name": "Amazon Bedrock Knowledge Bases",
+          "desc": "Managed RAG: connect enterprise data to FMs with retrieval and grounding.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "RAG vs fine-tuning vs in-context learning vs distillation",
+            "Embeddings stored in vector databases",
+            "Grounding to reduce hallucinations"
+          ],
+          "tip": "If the question emphasizes private/company data without full retraining → RAG."
+        },
+        {
+          "name": "Amazon OpenSearch Service",
+          "desc": "Search and analytics engine commonly used as a vector store for embeddings.",
+          "priority": "very-high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Vector search for RAG",
+            "Tradeoffs vs other vector stores"
+          ]
+        },
+        {
+          "name": "Amazon Aurora",
+          "desc": "Managed relational database; pgvector-style patterns for embeddings storage.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Embeddings in relational engines",
+            "When Aurora fits RAG architecture"
+          ]
+        },
+        {
+          "name": "Amazon RDS for PostgreSQL",
+          "desc": "Managed PostgreSQL suitable for vector/embedding workloads in RAG designs.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Vector extensions for embeddings",
+            "Operational familiarity vs purpose-built search"
+          ]
+        },
+        {
+          "name": "Amazon Neptune",
+          "desc": "Graph database option for connected knowledge and some embedding/graph hybrid patterns.",
+          "priority": "medium",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Graph relationships vs pure vector similarity"
+          ]
+        },
+        {
+          "name": "Prompt engineering patterns",
+          "desc": "Techniques to steer FM behavior without changing model weights.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Zero-shot, few-shot, chain-of-thought style prompting",
+            "Temperature and max tokens effects",
+            "Prompt caching / input-output length tradeoffs",
+            "Context engineering for agentic apps"
+          ],
+          "tip": "Temperature ↑ → more creative/varied; ↓ → more deterministic."
+        }
+      ],
+      "comparisons": [
+        {
+          "title": "Customization approaches",
+          "cards": [
+            {
+              "title": "RAG",
+              "rows": [
+                {
+                  "key": "Changes weights?",
+                  "val": "No"
+                },
+                {
+                  "key": "Best when",
+                  "val": "Fresh/private knowledge must ground answers"
+                },
+                {
+                  "key": "Cost profile",
+                  "val": "Retrieval + tokens; no full retrain"
+                }
+              ]
+            },
+            {
+              "title": "Fine-tuning",
+              "rows": [
+                {
+                  "key": "Changes weights?",
+                  "val": "Yes (adapted model)"
+                },
+                {
+                  "key": "Best when",
+                  "val": "Style/domain behavior must stick without huge context"
+                },
+                {
+                  "key": "Cost profile",
+                  "val": "Training + hosting; higher upfront"
+                }
+              ]
+            },
+            {
+              "title": "In-context learning",
+              "rows": [
+                {
+                  "key": "Changes weights?",
+                  "val": "No"
+                },
+                {
+                  "key": "Best when",
+                  "val": "Few examples fit in the prompt"
+                },
+                {
+                  "key": "Cost profile",
+                  "val": "Token-heavy prompts"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "tip",
+          "title": "Evaluation themes",
+          "items": [
+            "Human eval, benchmark metrics, business KPIs (ROI, conversion, accuracy)",
+            "Latency, cost, and quality tradeoffs together",
+            "Detect hallucinations; validate grounded outputs"
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "Task map (Domain 3)",
+          "items": [
+            "3.1 Design considerations for FM applications",
+            "3.2 Effective prompt engineering",
+            "3.3 Training and fine-tuning process",
+            "3.4 Methods to evaluate FM performance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aif-d4-responsible",
+      "name": "Guidelines for Responsible AI",
+      "color": "#10b981",
+      "icon": "⚖️",
+      "subtitle": "Domain 4 · 14% — fairness, transparency, legal risk",
+      "phase": 3,
+      "weightPercent": 14,
+      "quizTopic": "Guidelines for Responsible AI",
+      "practiceExamId": "aws-aif-c01",
+      "services": [
+        {
+          "name": "Amazon Bedrock Guardrails",
+          "desc": "Controls to filter harmful content, constrain topics, and apply safety policies to FM apps.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Bias, fairness, inclusivity, robustness, safety, veracity",
+            "Content filters and denied topics",
+            "Legal risks: IP claims, biased outputs, customer trust, hallucinations"
+          ],
+          "tip": "Responsible AI questions often pair Guardrails with governance narratives.",
+          "resources": [
+            {
+              "label": "Guardrails docs",
+              "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
+            }
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "info",
+          "title": "Responsible AI checklist",
+          "items": [
+            "Dataset diversity, balance, and curated sources",
+            "Bias vs variance effects (overfit/underfit, demographic harm)",
+            "Transparency and explainability expectations",
+            "Environmental / sustainability considerations in model choice"
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "Task map (Domain 4)",
+          "items": [
+            "4.1 Explain development of responsible AI systems",
+            "4.2 Recognize importance of transparent and explainable models"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aif-d5-security",
+      "name": "Security, Compliance, and Governance for AI",
+      "color": "#ef4444",
+      "icon": "🔐",
+      "subtitle": "Domain 5 · 14% — secure AI systems and compliance",
+      "phase": 3,
+      "weightPercent": 14,
+      "quizTopic": "Security, Compliance, and Governance for AI Solutions",
+      "practiceExamId": "aws-aif-c01",
+      "services": [
+        {
+          "name": "AWS Identity and Access Management (IAM)",
+          "desc": "Identities, roles, and policies controlling access to AI services and data.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Least privilege for model invoke and data access",
+            "Roles for Bedrock / SageMaker execution"
+          ]
+        },
+        {
+          "name": "Amazon Macie",
+          "desc": "Discovers and protects sensitive data (e.g., PII) in S3 — relevant to AI training data governance.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Sensitive data in training corpora",
+            "Privacy-enhancing practices"
+          ]
+        },
+        {
+          "name": "AWS PrivateLink",
+          "desc": "Private connectivity to AWS services without traversing the public internet.",
+          "priority": "high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Private access paths for AI APIs and data planes"
+          ]
+        },
+        {
+          "name": "Amazon SageMaker Model Cards",
+          "desc": "Document model details, intended use, and evaluation for governance and lineage.",
+          "priority": "very-high",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Model documentation and lineage",
+            "Source citation / data cataloging concepts"
+          ]
+        },
+        {
+          "name": "Encryption & shared responsibility",
+          "desc": "Protect data at rest and in transit; understand AWS vs customer responsibilities for AI workloads.",
+          "priority": "critical",
+          "exams": [
+            "AIF-C01"
+          ],
+          "examTopics": [
+            "Encryption at rest / in transit",
+            "Prompt injection and data leakage risks",
+            "Audit trails for AI interactions",
+            "Output filtering and validation"
+          ]
+        }
+      ],
+      "callouts": [
+        {
+          "kind": "trap",
+          "title": "Security traps",
+          "items": [
+            "Training on sensitive data without classification/controls",
+            "Exposing model endpoints publicly without authz",
+            "Ignoring prompt injection / tool-abuse in agents"
+          ]
+        }
+      ],
+      "cards": [
+        {
+          "title": "Task map (Domain 5)",
+          "items": [
+            "5.1 Methods to secure AI systems",
+            "5.2 Governance and compliance regulations for AI systems"
+          ]
+        }
+      ]
+    }
+  ],
+  "strategy": [
+    {
+      "id": "aif-vocab",
+      "title": "Lock the vocabulary first",
+      "ordered": true,
+      "items": [
+        "Write one-line definitions for AI, ML, DL, GenAI, FM, LLM, RAG, fine-tuning, embeddings, tokens, agents.",
+        "For each term, note one AWS service that maps to it.",
+        "Drill differences: RAG vs fine-tune vs prompt-only."
+      ]
+    },
+    {
+      "id": "aif-scenario",
+      "title": "Scenario technique",
+      "ordered": true,
+      "items": [
+        "Identify: custom ML vs FM vs managed AI API.",
+        "Check constraints: latency, cost, private data, explainability, safety.",
+        "Prefer simplest compliant option (managed API → Bedrock/RAG → fine-tune/custom)."
+      ]
+    },
+    {
+      "id": "aif-traps",
+      "title": "High-frequency traps",
+      "ordered": false,
+      "items": [
+        "Hallucinations → grounding/RAG/Guardrails, not “just raise temperature”.",
+        "Private enterprise knowledge → Knowledge Bases / vector store, not only longer prompts.",
+        "Responsible AI is scored — do not skip Domains 4–5."
+      ]
+    },
+    {
+      "id": "aif-roi",
+      "title": "High-ROI study order",
+      "ordered": true,
+      "items": [
+        "Domain 3 (28%) applications of FMs",
+        "Domain 2 (24%) GenAI fundamentals + Bedrock",
+        "Domain 1 (20%) AI/ML basics + managed AI services",
+        "Domains 4–5 (14% each) responsible AI + security"
+      ]
+    }
+  ],
+  "checklist": [
+    {
+      "id": "aif-c01",
+      "text": "Define AI, ML, DL, GenAI, agentic AI and give an example of each",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c02",
+      "text": "Contrast supervised, unsupervised, and reinforcement learning",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c03",
+      "text": "Explain batch vs real-time vs asynchronous vs serverless inference",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c04",
+      "text": "Map ML lifecycle stages to SageMaker AI capabilities",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c05",
+      "text": "Know when NOT to use AI/ML (determinism, cost-benefit)",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c06",
+      "text": "Define tokens, embeddings, vectors, chunking, transformers",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c07",
+      "text": "Describe FM lifecycle from selection through feedback",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c08",
+      "text": "Explain token-based pricing impact on cost/latency",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c09",
+      "text": "List GenAI limitations: hallucination, nondeterminism, interpretability",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c10",
+      "text": "Position Amazon Bedrock vs SageMaker JumpStart",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c11",
+      "text": "Choose FM by modality, latency, cost, context length, customization",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c12",
+      "text": "Explain temperature and max token effects on outputs",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c13",
+      "text": "Describe RAG and Bedrock Knowledge Bases business use",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c14",
+      "text": "Name embeddings storage options: OpenSearch, Aurora, RDS, Neptune",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c15",
+      "text": "Compare RAG, fine-tuning, in-context learning, distillation costs",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c16",
+      "text": "Apply zero-shot / few-shot / structured prompt patterns",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c17",
+      "text": "Describe agent tool-use and multi-agent patterns at a high level",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c18",
+      "text": "List FM evaluation approaches (human, metrics, business KPIs)",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c19",
+      "text": "Name responsible AI dimensions and Bedrock Guardrails role",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c20",
+      "text": "Identify legal/IP and trust risks of GenAI deployments",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c21",
+      "text": "Explain bias/variance and dataset diversity impacts",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c22",
+      "text": "Apply IAM least privilege to model invoke and data access",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c23",
+      "text": "Describe encryption, PrivateLink, and Macie in AI data paths",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c24",
+      "text": "Use Model Cards / lineage for governance documentation",
+      "exams": [
+        "AIF-C01"
+      ]
+    },
+    {
+      "id": "aif-c25",
+      "text": "Mitigate prompt injection, leakage, and missing audit trails",
+      "exams": [
+        "AIF-C01"
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "week": 1,
+      "title": "GenAI core + FM apps",
+      "focus": "Domain 2–3: Bedrock, tokens/embeddings, RAG vs fine-tune, prompts, evaluation",
+      "domainIds": [
+        "aif-d2-genai",
+        "aif-d3-fm-apps"
+      ]
+    },
+    {
+      "week": 2,
+      "title": "AI/ML fundamentals",
+      "focus": "Domain 1: vocabulary, use cases, lifecycle, managed AI services (Transcribe, Comprehend, Lex, etc.)",
+      "domainIds": [
+        "aif-d1-fundamentals"
+      ]
+    },
+    {
+      "week": 3,
+      "title": "Responsible AI + security",
+      "focus": "Domains 4–5: Guardrails, fairness, IAM, encryption, Model Cards, prompt injection",
+      "domainIds": [
+        "aif-d4-responsible",
+        "aif-d5-security"
+      ]
+    },
+    {
+      "week": 4,
+      "title": "Review & weak spots",
+      "focus": "Revisit Domain 3 scenarios, checklist mastery, Skill Builder practice if available",
+      "domainIds": [
+        "aif-d3-fm-apps",
+        "aif-d2-genai",
+        "aif-d1-fundamentals",
+        "aif-d4-responsible",
+        "aif-d5-security"
+      ]
+    }
+  ]
+}
