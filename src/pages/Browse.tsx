@@ -284,7 +284,9 @@ export function Browse() {
                       </span>
                     </div>
                     <div className="font-medium text-slate-100 group-hover:text-white transition-colors line-clamp-2">
-                      {q.question}
+                      {q.question.includes('\n\n')
+                        ? q.question.split('\n\n')[1]
+                        : q.question}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-slate-500 mt-1">
@@ -299,44 +301,70 @@ export function Browse() {
                   </div>
                 </button>
                 
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-2 border-t border-slate-700/30 space-y-2 animate-slideUp">
-                    <div className="text-xs text-slate-500 font-medium mb-2 flex items-center gap-2">
+                {isOpen && (() => {
+                  const hasScenario = q.question.includes('\n\n');
+                  const [scenarioPart, questionPart] = hasScenario
+                    ? q.question.split('\n\n')
+                    : [null, q.question];
+                  return (
+                  <div className="px-5 pb-5 pt-3 border-t border-slate-700/30 space-y-3 animate-slideUp">
+                    {/* Full question with scenario break */}
+                    {hasScenario && scenarioPart && (
+                      <p className="text-sm text-slate-300 leading-relaxed p-3 rounded-lg bg-slate-800/40 border border-slate-700/40 whitespace-pre-line">
+                        {scenarioPart}
+                      </p>
+                    )}
+                    <p className="text-sm font-semibold text-slate-100 leading-snug">
+                      {questionPart}
+                    </p>
+
+                    <div className="text-xs text-slate-500 font-medium flex items-center gap-2 pt-1">
                       <Sparkles className="w-3 h-3 text-aws-orange" />
                       Answer Options
                     </div>
+                    <div className="space-y-2">
                     {q.options.map((opt) => {
                       const correct = q.correctAnswers.includes(opt.id);
                       return (
                         <div
                           key={opt.id}
-                          className={`px-4 py-2.5 rounded-lg border flex items-center gap-3 text-sm transition-all ${
+                          className={`px-4 py-2.5 rounded-lg border text-sm transition-all ${
                             correct
                               ? 'border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10'
                               : 'border-slate-700/50 bg-slate-900/30 hover:bg-slate-800/30'
                           }`}
                         >
-                          <span
-                            className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                              correct
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                                : 'bg-slate-800 text-slate-300'
-                            }`}
-                          >
-                            {opt.id}
-                          </span>
-                          <span className="flex-1 text-slate-200">{opt.text}</span>
-                          {correct && (
-                            <span className="flex items-center gap-1 text-emerald-400 text-xs font-semibold">
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              Correct
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                                correct
+                                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                                  : 'bg-slate-800 text-slate-300'
+                              }`}
+                            >
+                              {opt.id}
                             </span>
+                            <span className="flex-1 text-slate-200">{opt.text}</span>
+                            {correct && (
+                              <span className="flex items-center gap-1 text-emerald-400 text-xs font-semibold">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                Correct
+                              </span>
+                            )}
+                          </div>
+                          {/* Rationale (SOA-C03) */}
+                          {opt.rationale && (
+                            <p className={`mt-2 ml-10 text-xs leading-relaxed ${correct ? 'text-slate-300' : 'text-slate-500'}`}>
+                              {opt.rationale}
+                            </p>
                           )}
                         </div>
                       );
                     })}
+                    </div>
                   </div>
-                )}
+                  );
+                })()}
               </li>
             );
           })}

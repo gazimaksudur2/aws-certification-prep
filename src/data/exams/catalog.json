@@ -11,6 +11,12 @@
       "code": "SAA-C03",
       "title": "AWS Certified Solutions Architect – Associate",
       "description": "Architecture-focused scenario questions (practice set)."
+    },
+    {
+      "examId": "aws-soa-c03",
+      "code": "SOA-C03",
+      "title": "AWS Certified SysOps Administrator – Associate",
+      "description": "Scenario-based questions across all five SysOps administrator exam domains."
     }
   ]
 }

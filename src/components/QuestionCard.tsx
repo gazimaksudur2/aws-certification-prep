@@ -15,6 +15,16 @@ export function QuestionCard({
   showSolution,
   onToggleOption,
 }: Props) {
+  // Questions with a double newline have a scenario prefix (e.g. SOA-C03).
+  // Split it so the scenario renders as a distinct paragraph.
+  const hasScenario = question.question.includes('\n\n');
+  const [scenarioPart, questionPart] = hasScenario
+    ? question.question.split('\n\n')
+    : [null, question.question];
+
+  // Rationales are present on SOA-C03 options. Only shown after solution is revealed.
+  const hasRationales = showSolution && question.options.some((o) => o.rationale);
+
   return (
     <div className="card p-6 md:p-8 animate-fade-in">
       <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -32,8 +42,15 @@ export function QuestionCard({
         <span className="ml-auto text-xs text-slate-500">#{question.id}</span>
       </div>
 
+      {/* Scenario prefix (SOA-C03 and similar multi-paragraph stems) */}
+      {hasScenario && scenarioPart && (
+        <p className="text-sm text-slate-300 leading-relaxed mb-4 p-3 rounded-lg bg-slate-800/40 border border-slate-700/40 whitespace-pre-line">
+          {scenarioPart}
+        </p>
+      )}
+
       <h2 className="text-lg md:text-xl font-semibold leading-snug mb-6">
-        {question.question}
+        {questionPart}
       </h2>
 
       <div className="space-y-2.5">
@@ -57,6 +74,40 @@ export function QuestionCard({
           );
         })}
       </div>
+
+      {/* Per-option rationales (SOA-C03 only, shown after solution is revealed) */}
+      {hasRationales && (
+        <div className="mt-5 space-y-2 border-t border-slate-700/40 pt-4">
+          <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+            Explanations
+          </p>
+          {question.options.map((opt) => {
+            if (!opt.rationale) return null;
+            const isCorrect = question.correctAnswers.includes(opt.id);
+            return (
+              <div
+                key={opt.id}
+                className={`flex gap-3 text-sm rounded-lg px-3 py-2.5 border ${
+                  isCorrect
+                    ? 'border-emerald-500/30 bg-emerald-500/5'
+                    : 'border-slate-700/30 bg-slate-900/30'
+                }`}
+              >
+                <span
+                  className={`shrink-0 w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold mt-0.5 ${
+                    isCorrect ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-400'
+                  }`}
+                >
+                  {opt.id}
+                </span>
+                <p className={`leading-relaxed ${isCorrect ? 'text-slate-200' : 'text-slate-400'}`}>
+                  {opt.rationale}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

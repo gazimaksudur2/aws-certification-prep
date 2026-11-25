@@ -5,6 +5,8 @@ export type QuizMode = 'timed' | 'guided';
 export interface Option {
   id: string;
   text: string;
+  /** Optional per-option explanation. Present on SOA-C03 questions, absent on CLF/SAA. */
+  rationale?: string;
 }
 
 export interface Question {

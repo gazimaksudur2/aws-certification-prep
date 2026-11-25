@@ -427,7 +427,9 @@ export function Results() {
                       </span>
                     </div>
                     <p className="font-semibold text-slate-100 group-hover:text-white transition-colors line-clamp-2">
-                      {row.q.question}
+                      {row.q.question.includes('\n\n')
+                        ? row.q.question.split('\n\n')[1]
+                        : row.q.question}
                     </p>
                   </div>
                   <div className="text-slate-500 mt-1">
@@ -439,25 +441,48 @@ export function Results() {
                   </div>
                 </button>
 
-                {isExpanded && (
-                  <div className="px-5 pb-5 pt-2 border-t border-slate-700/30 space-y-4 animate-slideUp">
+                {isExpanded && (() => {
+                  const hasScenario = row.q.question.includes('\n\n');
+                  const [scenarioPart, questionPart] = hasScenario
+                    ? row.q.question.split('\n\n')
+                    : [null, row.q.question];
+                  const hasRationales = row.q.options.some((o) => o.rationale);
+                  return (
+                  <div className="px-5 pb-5 pt-3 border-t border-slate-700/30 space-y-4 animate-slideUp">
+                    {/* Full question with scenario break */}
+                    {hasScenario && scenarioPart && (
+                      <p className="text-sm text-slate-300 leading-relaxed p-3 rounded-lg bg-slate-800/40 border border-slate-700/40 whitespace-pre-line">
+                        {scenarioPart}
+                      </p>
+                    )}
+                    {hasScenario && (
+                      <p className="text-sm font-semibold text-slate-100 leading-snug">{questionPart}</p>
+                    )}
+
                     <div className="space-y-2.5">
                       {row.q.options.map((opt) => {
                         const sel = row.selected.includes(opt.id);
                         const ok = row.q.correctAnswers.includes(opt.id);
                         const showIncorrect = sel && !ok;
                         return (
-                          <OptionButton
-                            key={opt.id}
-                            letter={opt.id}
-                            text={opt.text}
-                            selected={sel}
-                            showGrading
-                            isCorrect={ok}
-                            isIncorrectSelection={showIncorrect}
-                            onClick={() => {}}
-                            disabled
-                          />
+                          <div key={opt.id}>
+                            <OptionButton
+                              letter={opt.id}
+                              text={opt.text}
+                              selected={sel}
+                              showGrading
+                              isCorrect={ok}
+                              isIncorrectSelection={showIncorrect}
+                              onClick={() => {}}
+                              disabled
+                            />
+                            {/* Rationale (SOA-C03) */}
+                            {hasRationales && opt.rationale && (
+                              <p className={`mt-1.5 ml-10 text-xs leading-relaxed ${ok ? 'text-slate-300' : 'text-slate-500'}`}>
+                                {opt.rationale}
+                              </p>
+                            )}
+                          </div>
                         );
                       })}
                     </div>
@@ -487,7 +512,8 @@ export function Results() {
                       </div>
                     </dl>
                   </div>
-                )}
+                  );
+                })()}
               </li>
             );
           })}

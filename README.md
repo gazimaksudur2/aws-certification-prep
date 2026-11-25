@@ -216,6 +216,7 @@ Exams are defined in [`src/data/exams/catalog.json`](src/data/exams/catalog.json
 | --- | --- | --- | --- |
 | CLF-C02 | AWS Certified Cloud Practitioner | `aws-clf-c02.json` | Per bank metadata |
 | SAA-C03 | AWS Certified Solutions Architect – Associate | `aws-saa-c03.json` | Per bank metadata |
+| SOA-C03 | AWS Certified SysOps Administrator – Associate | `aws-soa-c03.json` | 72% (per bank metadata) |
 
 Each bank file includes `passThresholdPercent` (defaults to 70% if omitted). The results screen compares your score against that value.
 
@@ -304,6 +305,8 @@ Question banks follow a consistent JSON envelope (see [`src/types/index.ts`](src
 }
 ```
 
+The optional `rationale` field on each option is present in the SOA-C03 bank (one explanation paragraph per option). It is omitted from CLF-C02 and SAA-C03. When present, rationales appear after the answer is revealed in guided practice, results review, and the question bank.
+
 Banks are registered in [`src/utils/exams.ts`](src/utils/exams.ts) via a static `BANK_MAP` and surfaced through `listCatalog()`, `getQuestionsForExam()`, and `getTopicsForExam()`.
 
 Learning content is loaded at runtime from [`public/data/aws-learning-roadmap.json`](public/data/aws-learning-roadmap.json). Types live in [`src/types/learning.ts`](src/types/learning.ts); progress is tracked by [`src/hooks/useLearningProgress.ts`](src/hooks/useLearningProgress.ts).
@@ -348,6 +351,7 @@ aws-certification-quiz-app/
 | `npm run parse` | Regenerate `aws-clf-c02.json` from source markdown |
 | `npm run ingest:saa` | Regenerate `aws-saa-c03.json` from `public/aws-saa-practice-exam.md` |
 | `npm run ingest:saa:paired` | Alternative SAA ingestion from paired source files |
+| `npm run ingest:soa` | Regenerate `aws-soa-c03.json` from `scripts/ingest-soa-from-js.mjs` (source JS files required) |
 | `npm run wrap-clf` | One-off wrapper: legacy `questions.json` → exam bank format |
 | `npm run convert:roadmap` | Regenerate `aws-learning-roadmap.json` from roadmap HTML (one-time; HTML can be deleted after) |
 | `npm run generate:learning` | Legacy: regenerate `aws-clf-c02-study-guide.json` (superseded by roadmap JSON) |

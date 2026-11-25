@@ -14,6 +14,7 @@
     "parse": "node scripts/parse-questions.js",
     "ingest:saa": "node scripts/ingest-saa-from-md.mjs",
     "ingest:saa:paired": "node scripts/ingest-saa-from-paired-files.mjs",
+    "ingest:soa": "node scripts/ingest-soa-from-js.mjs",
     "wrap-clf": "node scripts/wrap-clf-bank.mjs"
   },
   "dependencies": {
