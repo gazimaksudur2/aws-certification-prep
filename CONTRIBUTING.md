@@ -1,117 +1,108 @@
-# Contributing to AWS Certification Practice Hub
+# Contributing
 
-Thank you for helping make this free AWS learning resource more accurate and useful. Contributions from learners, AWS practitioners, educators, and developers are welcome.
+The standard for this project — what to contribute, what will be declined, how to report an issue, and how pull requests are reviewed — is the [contribution guide in the README](README.md#contributing). Read that first.
 
-## What you can contribute
+This file is the working reference for people editing question banks, learning paths, or the application from a local checkout.
 
-- Add well-written practice questions for supported exams.
-- Add support for another AWS certification exam.
-- Improve study guides, explanations, service references, or learning-roadmap content.
-- Correct inaccurate, outdated, ambiguous, or misleading information.
-- Fix bugs, broken links, accessibility issues, or usability problems.
-- Improve tests, scripts, documentation, or developer experience.
+## Content rules
 
-## Content and accuracy standards
+Accuracy matters more than quantity.
 
-Accuracy matters more than quantity. Before contributing exam or learning content:
+1. Check technical claims against current AWS documentation or the official exam guide.
+2. Write original practice questions for this project. Real AWS exam items, memorized dumps, and copyrighted course material will be declined.
+3. Explain the correct answer and why the other options fail, especially when a distractor matches a common misconception.
+4. Use official AWS service and certification names. Prefer codes such as **AIF-C01** over informal aliases.
+5. Mark facts that drift: service limits, pricing, regional availability, and console paths.
+6. Keep credentials, personal data, and unverifiable claims out of the repository.
 
-1. Verify technical claims against current AWS documentation and other authoritative sources.
-2. Prefer original questions written for this project. Do not copy real AWS exam questions, memorized exam dumps, or copyrighted material.
-3. Include a clear explanation for every answer, especially when distractors represent common AWS misconceptions.
-4. Use the official AWS service and certification names consistently.
-5. Flag information that may change over time, such as service features, limits, pricing, or exam objectives.
-6. Do not include credentials, private information, restricted content, or unverifiable claims.
+For a correction, say what is wrong, why, and which source supports the replacement.
 
-For corrections, explain what is wrong, why it is wrong, and provide a reliable source or suggested replacement where possible.
+## Checking a local checkout
 
-## Local development
-
-### Prerequisites
-
-- Node.js 20 or later
-- npm
-
-### Setup
+From your checkout of the repository:
 
 ```bash
-git clone https://github.com/gazimaksudur2/aws-certification-prep.git
-cd aws-certification-prep
 npm install
-npm run dev
-```
-
-### Validate changes
-
-Run the production build before opening a pull request:
-
-```bash
 npm run build
 ```
 
-The build generates learning data, type-checks the application, and creates the Vite production bundle.
+`npm run build` validates learning JSON, type-checks the app, and produces the production bundle in `dist/`. Learning-only edits can be checked with:
 
-## Adding or updating questions
+```bash
+npm run build:learning
+```
 
-Question banks are stored in [`src/data/exams/`](src/data/exams/). Follow the existing JSON envelope and field names:
+Node.js 20 or later is required. Source markdown under `public/` is gitignored; those files are local ingestion inputs and are not shipped.
+
+## Questions
+
+Banks live in [`src/data/exams/`](src/data/exams/) and are registered in [`src/utils/exams.ts`](src/utils/exams.ts). Each bank uses this envelope:
 
 ```json
 {
-  "id": 1,
-  "question": "Question stem text?",
-  "options": [
-    { "id": "A", "text": "Option A" },
-    { "id": "B", "text": "Option B" }
-  ],
-  "correctAnswers": ["A"],
-  "isMultiple": false,
-  "topic": "Cloud Concepts"
+  "examId": "aws-clf-c02",
+  "code": "CLF-C02",
+  "title": "AWS Certified Cloud Practitioner",
+  "passThresholdPercent": 70,
+  "questions": [
+    {
+      "id": 1,
+      "question": "Question stem text?",
+      "options": [
+        { "id": "A", "text": "Option A" },
+        { "id": "B", "text": "Option B", "rationale": "Optional. Used on SOA-C03." }
+      ],
+      "correctAnswers": ["A"],
+      "isMultiple": false,
+      "topic": "Cloud Concepts"
+    }
+  ]
 }
 ```
 
-When adding or changing a question:
+When you add or change a question:
 
-- Keep IDs unique within the exam bank.
-- Ensure `correctAnswers` contains only option IDs that exist in `options`.
-- Set `isMultiple` consistently with the number of correct answers.
-- Use an existing topic where appropriate.
-- Review the question in the Question Bank and Guided Practice views.
-- Update generated or source data using the existing npm script when the bank is script-generated.
+- Keep `id` unique within the bank.
+- Put only existing option ids in `correctAnswers`.
+- Set `isMultiple` to match the number of correct answers.
+- Reuse an existing topic name when the question belongs to one.
+- Read the item in the question bank and in guided practice.
+- If the bank is produced by a script, update the source and regenerate it instead of hand-editing the output. `npm run ingest:saa` rebuilds SAA-C03. `npm run ingest:soa` rebuilds SOA-C03. `npm run parse` rebuilds CLF-C02.
 
-For a new exam, follow the [Adding a new exam](README.md#adding-a-new-exam) instructions in the README.
+`rationale` on an option is optional. The SysOps bank includes one paragraph per option. Cloud Practitioner and Solutions Architect banks omit it. When it is present, the app shows it after the answer is revealed.
 
-## Adding or updating learning content
+## Learning paths
 
-Learning JSON lives under [`public/data/learning/`](public/data/learning/). Prefer editing those files (or notes under `content/learning/<examId>/`) and keep claims sourced from AWS docs / Skill Builder / the official exam guide.
+Learning JSON lives in [`public/data/learning/`](public/data/learning/). Notes for a path can live under `content/learning/<examId>/`.
 
-- Use official certification codes (e.g. **AIF-C01**, not informal aliases).
-- Align domain names and `quizTopic` values with the exam guide where possible.
-- Do not paste copyrighted course dumps into learning JSON.
-- Run `npm run build:learning` (or full `npm run build`) before opening a PR.
-- Cite sources in the PR description for new or corrected study material.
+- Keep `schemaVersion`, `examId`, `code`, `domains`, `strategy`, `checklist`, and `phases` consistent with the existing files.
+- Align domain names and `quizTopic` values with the exam guide where the practice bank uses those topics.
+- Cite AWS docs, Skill Builder, or the official exam guide in the pull request for new or corrected study material.
+- Run `npm run build:learning` before opening the pull request.
 
-## Making a pull request
+## Adding an exam
 
-1. Create a focused branch from the default branch.
-2. Make the smallest complete change that addresses the issue.
-3. Run `npm run build`.
-4. Review the diff and remove unrelated changes.
-5. Open a pull request with:
-   - a concise summary of the change;
-   - the exam, topic, or application area affected;
-   - sources for new or corrected learning content;
-   - validation steps and results;
-   - screenshots for visible UI changes, when useful.
+### Practice bank
 
-Please use a clear title such as `Add SAA-C03 networking questions` or `Correct IAM explanation in learning guide`.
+1. Add `src/data/exams/<examId>.json` using the envelope above.
+2. Import it in [`src/utils/exams.ts`](src/utils/exams.ts) and register it on `BANK_MAP`.
+3. Append a catalog entry in [`src/data/exams/catalog.json`](src/data/exams/catalog.json) with `practice.enabled` set to `true`. Add a `learning` block when a path exists.
+4. Run `npm run build`. Practice and the question bank pick the exam up from the catalog.
 
-## Reporting an issue
+### Learning path only
 
-When reporting incorrect information, include the exam or page, the question or section, the issue you found, and a source or proposed correction. For bugs, include reproduction steps, expected behavior, actual behavior, and browser details when relevant.
+1. Add `public/data/learning/<examId>.json`.
+2. Append a catalog entry with `learning.enabled` set to `true`, `dataPath` pointing at that file, and `practice.enabled` set to `false` until a bank exists.
+3. Run `npm run build:learning`.
 
-Please do not report or publish sensitive information in issues or pull requests.
+The catalog drives both the practice picker and the learning picker. Two exams may share one learning file, as Cloud Practitioner and Solutions Architect do with the combined pack. Give that shared path its own catalog entry with `packOf` when learners should open it as one roadmap.
 
-## Community expectations
+## Pull request checklist
 
-Be respectful, constructive, and welcoming. Review feedback is intended to improve the learning resource. Maintainers may request clarification, sources, or revisions before accepting a contribution.
+- The change matches one concern, and the title names the exam or area.
+- The description includes sources for new or corrected material and the command you used to check it.
+- Question ids, keys, and `isMultiple` are consistent.
+- `npm run build` passes when code or banks changed. `npm run build:learning` passes when learning JSON changed.
+- The diff contains no unrelated files, secrets, or copied exam content.
 
-Thank you for helping other AWS learners prepare with confidence.
+Maintainers may ask for a source or a smaller change before merging. See the [README contribution guide](README.md#contributing) for how review works.

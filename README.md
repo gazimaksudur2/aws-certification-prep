@@ -1,420 +1,134 @@
 # AWS Certification Practice Hub
 
-> A free, community-focused resource for AWS certification learners.
+A free, public study room for AWS certification practice. Open the site, choose an exam, and start. No account, no payment, no install.
 
-[![Live Demo](https://img.shields.io/badge/Live-aws--certification--prep.netlify.app-FF9900?style=for-the-badge&logo=netlify&logoColor=white)](https://aws-certification-prep.netlify.app/)
-[![Made by](https://img.shields.io/badge/Portfolio-gazimaksudur.dev-0088cc?style=for-the-badge&logo=google-chrome&logoColor=white)](https://gazimaksudur.dev)
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Netlify Status](https://img.shields.io/badge/Netlify-Deployed-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://app.netlify.com/sites/aws-certification-prep/deploys)
+[![Live](https://img.shields.io/badge/Practice%20free-aws--certification--prep.netlify.app-FF9900?style=for-the-badge&logo=netlify&logoColor=white)](https://aws-certification-prep.netlify.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![Maintainer](https://img.shields.io/badge/Maintainer-gazimaksudur.dev-0088cc?style=for-the-badge)](https://gazimaksudur.dev)
 
-A browser-based study app for AWS certification exams. Take timed practice quizzes that mirror exam pressure, use untimed guided practice with instant feedback, browse the full question bank, and review AWS services in a structured reference — all without signing in. Progress from timed quizzes is stored locally in your browser.
-
-[![Live](https://img.shields.io/badge/Live_-aws--certification--prep.netlify.app-0088cc?style=for-the-badge&logo=netlify)](https://aws-certification-prep.netlify.app/)
-
-This project is maintained as a free learning resource for the AWS learning community. If it helps you prepare, please [give the repository a star](https://github.com/gazimaksudur2/aws-certification-prep) and share it with other learners. Contributions that improve the accuracy and usefulness of the material are welcome.
-
-**Project owner:** [Gazi Maksudur Rahman](https://gazimaksudur.dev)
-
-**Repository:** [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
-
-Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **Tailwind CSS 3**.
+**Start here:** [aws-certification-prep.netlify.app](https://aws-certification-prep.netlify.app/)
 
 ---
 
-## Table of contents
+## A public place to practice
 
-- [Features](#features)
-- [Getting started](#getting-started)
-- [User guide](#user-guide)
-  - [Home](#home)
-  - [Timed quiz](#timed-quiz)
-  - [Guided practice](#guided-practice)
-  - [Results and review](#results-and-review)
-  - [Question bank](#question-bank)
-  - [Learning reference](#learning-reference)
-- [Available exams](#available-exams)
-- [How it works](#how-it-works)
-  - [Routing and pages](#routing-and-pages)
-  - [Quiz session state](#quiz-session-state)
-  - [Scoring and pass threshold](#scoring-and-pass-threshold)
-  - [Attempt history](#attempt-history)
-  - [Question data model](#question-data-model)
-- [Project structure](#project-structure)
-- [Scripts](#scripts)
-- [Adding a new exam](#adding-a-new-exam)
-- [Contributing](#contributing)
-- [Acknowledgement](#acknowledgement)
-- [Deployment](#deployment)
+Certification is one of the clearer ways an engineer can show cloud skill. The exams are public. The cost of preparing for them is not. Official courses, paid simulators, and commercial question packs are useful, and they are priced for people who can already spend. Students, career-switchers, and engineers in places where those products are hard to buy are left choosing between skipping deliberate practice and trusting leaked exam content.
+
+Practice is part of the learning, and it should be available to anyone who wants to sit the exam. This hub exists for that reason. It is a free service: timed quizzes that resemble exam pressure, untimed guided practice with immediate feedback, a searchable question bank, and certification roadmaps. Anyone with a browser can use it. Progress stays on the device. Nothing is sold, and nothing is gated behind a login.
+
+The material is original practice written for study. It is a companion to the official exam guides and AWS documentation, and it stays useful only while the people who use it help keep it accurate. That work is described in [Contributing](#contributing).
+
+This project is independent. It is not affiliated with, endorsed by, or sponsored by Amazon Web Services.
 
 ---
 
-## Features
+## What you can do
 
-| Feature | What it does |
+| | |
 | --- | --- |
-| **Multi-certification support** | Catalog-driven practice and learning for multiple AWS certs (CLF-C02, SAA-C03, AIF-C01, SOA-C03, plus a combined CLF+SAA study pack). |
-| **Timed quiz** | Exam-style run with a countdown of **120 seconds × number of questions**. Answers are hidden until the quiz ends. |
-| **Guided practice** | Untimed mode with instant correct/incorrect feedback after each question and a **Learn more** link to Google for deeper explanation. |
-| **Topic filtering** | Narrow a run to one domain/topic or use the full pool. |
-| **Configurable length** | Choose 5 to all available questions in the filtered pool. |
-| **Results summary** | Score, pass/fail against the exam threshold, time spent, topic breakdown, and per-question review. |
-| **Attempt history** | Timed quiz attempts are saved in `localStorage` (up to 10 per exam). Guided practice runs are not recorded. |
-| **Question bank** | Search, filter, and expand any question to reveal the keyed answer — for study only. |
-| **Learning study hub** | Per-cert roadmaps (pick AIF-C01, SOA-C03, or the CLF+SAA pack) with priority badges, exam topics, comparisons, traps, strategy, and checklists with progress namespaced per exam. |
-| **No account required** | Everything runs client-side; no backend or authentication. |
+| **Timed quiz** | Exam-style run. The clock is **120 seconds × the number of questions**. Answers stay hidden until you finish. |
+| **Guided practice** | Untimed. Check each answer as you go, read which options are correct, and open **Learn more** for a deeper search. |
+| **Question bank** | Search and filter the full pool. Expand any item to study the keyed answer. This mode is for review. |
+| **Learning hub** | Per-cert roadmaps, service reference, exam strategy, and a checklist. Progress is saved per exam on your device. |
+| **Your history** | The last 10 timed attempts per exam are stored locally, with score and topic breakdown. Guided runs are for learning and are not recorded. |
 
----
+You need at least **5 questions** in the filtered pool to start a run. Filter by topic or use the full set, and choose a length from 5 up to every question available.
 
-## Getting started
+### Certifications
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) 20 or later
-- npm (included with Node.js)
-
-### Install and run
-
-```bash
-git clone https://github.com/gazimaksudur2/aws-certification-prep.git
-cd aws-certification-prep
-npm install
-npm run dev
-```
-
-The dev server starts at [http://localhost:5173](http://localhost:5173) and opens in your browser automatically.
-
-### Production build
-
-```bash
-npm run build    # type-check + generate learning JSON + Vite bundle
-npm run preview  # serve the dist/ output locally
-```
-
-Build output is written to `dist/`.
-
----
-
-## User guide
-
-### Home
-
-**Route:** `/`
-
-The landing page introduces the app and links to **Practice** and **Learning**. It shows how many exams and questions are loaded and notes that progress is stored locally.
-
-### Practice hub
-
-**Route:** `/practice`
-
-This is where you configure and start a quiz.
-
-1. **Choose a certification** — pick an exam with a practice bank (CLF-C02, SAA-C03, or SOA-C03). AIF-C01 is a learning path until a practice bank ships.
-2. **Set the topic** — filter to a single domain or keep **All**.
-3. **Set the question count** — use the slider, quick presets (10 / 20 / 50 / 100), or **All**.
-4. **Start a mode:**
-   - **Start timed quiz** — exam-style run with a countdown.
-   - **Start guided practice** — untimed run with instant feedback per question.
-5. **Browse** — open the question bank for the selected exam without starting a run.
-
-The page also shows stats for the selected exam (pool size, your attempts, average score) and recent timed attempts.
-
-> Minimum run size is **5 questions**. You need at least 5 questions in the filtered pool to start.
-
-### Timed quiz
-
-**Route:** `/quiz`
-
-Simulates exam conditions:
-
-- A countdown timer shows remaining time (allotted time = **120 seconds × questions in the run**).
-- Select one or more options (multi-select questions are labeled).
-- Use **Save · next** to record your answer and advance, **Skip question** to leave it blank, or **End quiz now** to submit early.
-- When time reaches zero, the quiz auto-submits and sends you to results.
-- Correctness is **not** shown during the quiz — only after you finish.
-
-Navigation: **Prev** lets you revisit earlier questions within the same session.
-
-### Guided practice
-
-**Route:** `/guided`
-
-Designed for learning rather than testing:
-
-- **No timer** — take as long as you need.
-- Select your answer, then click **Check answer** to reveal whether you were right.
-- Correct options are highlighted in green; wrong selections in red.
-- A verdict banner shows **Correct** or **Incorrect** and lists the authoritative answer(s).
-- **Learn more** opens a new browser tab with a Google search built from the question stem, all options, and a prompt asking for justification.
-- Use **Next question** to continue, **Skip question** to move on without answering, or **End practice now** to finish early.
-
-At the end you see the same results summary as a timed quiz, but the run is **not saved** to attempt history.
-
-### Results and review
-
-**Route:** `/results`
-
-After any completed run (timed or guided):
-
-- **Score badge** — correct count, percentage, and pass/fail against the exam's threshold.
-- **Stats** — time spent, correct/incorrect/skipped counts, pass bar.
-- **Strength by topic** — bar chart when the run spans multiple topics.
-- **Detailed review** — every question with your selections, correct answers, and option-level grading.
-
-For timed quizzes, the attempt is persisted to `localStorage`. Guided practice shows a note that the run was not saved.
-
-### Question bank
-
-**Route:** `/practice/browse?exam=<examId>`
-
-A read-only study view of the full question pool:
-
-- Switch exams from the dropdown.
-- Search question text and option text.
-- Filter by topic and question type (all / single-select / multi-select).
-- Click a row to expand and see which options are correct.
-
-Answers are visible immediately — this mode is for review, not assessment.
-
-### Learning study hub
-
-**Route:** `/learning` (optional `?exam=<examId>`)
-
-Pick a learning path, then use the same four tabs for every certification:
-
-**Roadmap tab** — domain/service counts, priority legend, multi-week plan, progress rings
-**Service reference tab** — searchable domains/services, priority filters, comparisons, traps, mark reviewed; Practice deep-links when a bank exists (otherwise “coming soon”)
-**Exam strategy tab** — traps and high-ROI techniques for that cert
-**Checklist tab** — interactive mastery list
-
-| Path | `examId` | Data file |
-| --- | --- | --- |
-| CLF+SAA combined pack | `aws-clf-saa-combined` | `public/data/learning/aws-clf-saa-combined.json` |
-| AI Practitioner | `aws-aif-c01` | `public/data/learning/aws-aif-c01.json` |
-| SysOps Administrator | `aws-soa-c03` | `public/data/learning/aws-soa-c03.json` |
-
-Progress is stored per exam in `localStorage` key `learning-progress-v2` (legacy CLF+SAA checklist keys migrate into the combined pack automatically).
-
-Validate learning artifacts with `npm run build:learning` (also runs during `npm run build`).
-
----
-
-## Available exams
-
-Exams are defined in [`src/data/exams/catalog.json`](src/data/exams/catalog.json). Practice requires a bank under [`src/data/exams/`](src/data/exams/); learning requires a JSON file under [`public/data/learning/`](public/data/learning/).
-
-| Code | Exam | Practice bank | Learning | Pass threshold |
+| Code | Exam | Practice | Learning path | Pass mark |
 | --- | --- | --- | --- | --- |
-| CLF-C02 | AWS Certified Cloud Practitioner | `aws-clf-c02.json` | Combined pack | Per bank metadata |
-| SAA-C03 | AWS Certified Solutions Architect – Associate | `aws-saa-c03.json` | Combined pack | Per bank metadata |
-| CLF+SAA | CLF-C02 + SAA-C03 combined study pack | — | `aws-clf-saa-combined.json` | — |
-| AIF-C01 | AWS Certified AI Practitioner | Coming soon | `aws-aif-c01.json` | — |
-| SOA-C03 | AWS Certified SysOps Administrator – Associate | `aws-soa-c03.json` | `aws-soa-c03.json` | 72% |
+| CLF-C02 | AWS Certified Cloud Practitioner | Question bank | Combined CLF + SAA pack | In the bank (70% if unset) |
+| SAA-C03 | AWS Certified Solutions Architect – Associate | Question bank | Combined CLF + SAA pack | In the bank (70% if unset) |
+| CLF+SAA | Combined Cloud Practitioner and Solutions Architect study pack | — | `aws-clf-saa-combined` | — |
+| AIF-C01 | AWS Certified AI Practitioner | Coming soon | Learning path available | — |
+| SOA-C03 | AWS Certified SysOps Administrator – Associate | Question bank | Learning path available | 72% |
 
-Each bank file includes `passThresholdPercent` (defaults to 70% if omitted). The results screen compares your score against that value. SOA-C03 sets it to 72%.
+On SysOps items, each option can include a short rationale. Those explanations appear after you reveal the answer in guided practice, results review, and the question bank.
 
----
+### How a session works
 
-## How it works
+1. Open **Practice** and choose a certification that has a question bank: Cloud Practitioner, Solutions Architect Associate, or SysOps Administrator Associate. AI Practitioner currently offers a learning path until a bank is ready.
+2. Set a topic, or keep **All**, and set the number of questions.
+3. Start a **timed quiz** or **guided practice**. **Browse** opens the bank for the selected exam without starting a run.
+4. Finish on the results screen: score, pass or fail against that exam's threshold, time, topic strength, and a question-by-question review.
 
-### Routing and pages
+**Learning** is separate from the quiz. Pick a path — the combined Cloud Practitioner and Solutions Architect pack, AI Practitioner, or SysOps — then use the roadmap, service reference, exam strategy, and checklist. Where a practice bank exists, a domain can deep-link into practice. Where it does not, the link says the bank is still coming.
 
-React Router drives a single-page app. All routes are declared in [`src/App.tsx`](src/App.tsx):
-
-| Route | Page | Purpose |
-| --- | --- | --- |
-| `/` | `Landing` | App overview and navigation |
-| `/practice` | `Home` | Exam selection and quiz configuration |
-| `/quiz` | `Quiz` | Timed quiz session |
-| `/guided` | `GuidedPractice` | Untimed guided practice session |
-| `/results` | `Results` | Score summary and detailed review |
-| `/practice/browse` | `Browse` | Searchable question bank |
-| `/learning` | `Learning` | Per-cert study hub picker + roadmap / reference / strategy / checklist |
-
-The global navbar ([`src/components/Navbar.tsx`](src/components/Navbar.tsx)) links Home, Practice, Question Bank, and Learning.
-
-### Quiz session state
-
-Quiz state lives in a React context provided by [`src/hooks/useQuiz.ts`](src/hooks/useQuiz.ts) and wraps the app in [`src/main.tsx`](src/main.tsx).
-
-When you start a run, `startQuiz(examId, count, topic?, mode?)` creates a `QuizSession`:
-
-- Randomly samples `count` questions from the pool (optionally filtered by topic).
-- Sets `mode` to `'timed'` or `'guided'`.
-- For timed runs, computes `timeLimitSeconds` via [`src/utils/timeLimit.ts`](src/utils/timeLimit.ts).
-- For guided runs, sets `timeLimitSeconds` to `0` (no timer).
-
-The session holds questions, your answers, and the current index. It exists only in memory for the duration of the browser tab — refreshing mid-quiz returns you to Practice.
-
-Timed and guided sessions share the same context but render on different routes. [`src/pages/Quiz.tsx`](src/pages/Quiz.tsx) redirects guided sessions to `/guided`; [`src/pages/GuidedPractice.tsx`](src/pages/GuidedPractice.tsx) redirects timed sessions to `/quiz`.
-
-### Scoring and pass threshold
-
-Grading logic is in [`src/utils/scoring.ts`](src/utils/scoring.ts):
-
-- Single- and multi-select answers are compared as unordered sets (`isAnswerCorrect`).
-- During a timed quiz, answers are stored without grading.
-- On the results screen, each question is marked correct, incorrect, skipped, or unanswered.
-- Pass/fail uses the exam bank's `passThresholdPercent`.
-
-Guided practice grades immediately after **Check answer** using the same `isAnswerCorrect` helper, and reuses [`QuestionCard`](src/components/QuestionCard.tsx) / [`OptionButton`](src/components/OptionButton.tsx) with `showSolution` enabled.
-
-The **Learn more** action is implemented in [`src/utils/learnMore.ts`](src/utils/learnMore.ts): it builds a Google search URL from the question and options and opens it with `window.open(..., '_blank', 'noopener,noreferrer')`.
-
-### Attempt history
-
-Timed quiz results are persisted by [`src/hooks/useHistory.ts`](src/hooks/useHistory.ts):
-
-- Storage key: `cert-quiz-history-v2`
-- Schema: `{ schemaVersion: 2, attempts: AttemptHistoryEntry[] }`
-- Keeps the **10 most recent** attempts per exam.
-- Migrates legacy data from the older `aws-quiz-history` key automatically.
-
-Guided practice results are intentionally excluded — the save effect in [`src/pages/Results.tsx`](src/pages/Results.tsx) checks `session.mode === 'guided'` and skips persistence.
-
-### Question data model
-
-Question banks follow a consistent JSON envelope (see [`src/types/index.ts`](src/types/index.ts)):
-
-```json
-{
-  "examId": "aws-clf-c02",
-  "code": "CLF-C02",
-  "title": "AWS Certified Cloud Practitioner",
-  "passThresholdPercent": 70,
-  "questions": [
-    {
-      "id": 1,
-      "question": "Question stem text?",
-      "options": [
-        { "id": "A", "text": "Option A" },
-        { "id": "B", "text": "Option B" }
-      ],
-      "correctAnswers": ["A"],
-      "isMultiple": false,
-      "topic": "Cloud Concepts"
-    }
-  ]
-}
-```
-
-The optional `rationale` field on each option is present in the SOA-C03 bank (one explanation paragraph per option). It is omitted from CLF-C02 and SAA-C03. When present, rationales appear after the answer is revealed in guided practice, results review, and the question bank.
-
-Banks are registered in [`src/utils/exams.ts`](src/utils/exams.ts) via a static `BANK_MAP` and surfaced through `listCatalog()`, `listPracticeCatalog()`, `getQuestionsForExam()`, and `getTopicsForExam()`. Learning paths use `listLearningCatalog()` + `getLearningDataPath()`.
-
-Learning content is loaded per exam from [`public/data/learning/`](public/data/learning/). Types live in [`src/types/learning.ts`](src/types/learning.ts); progress is tracked by [`src/hooks/useLearningProgress.ts`](src/hooks/useLearningProgress.ts).
-
----
-
-## Project structure
-
-```
-aws-certification-quiz-app/
-├── public/
-│   ├── data/
-│   │   ├── learning/          # Per-exam learning JSON (served statically)
-│   │   └── aws-learning-roadmap.json  # Legacy alias of CLF+SAA pack
-│   └── aws-icon.svg
-├── scripts/
-│   ├── build.js               # Cross-platform build (tsc + Vite)
-│   ├── generate-learning-json.mjs
-│   ├── parse-questions.js     # CLF bank ingestion
-│   ├── ingest-saa-from-md.mjs # SAA bank ingestion
-│   └── ...
-├── src/
-│   ├── components/            # Shared UI (QuestionCard, Navbar, Modal, …)
-│   ├── data/exams/            # Question banks + catalog.json
-│   ├── hooks/                 # useQuiz, useHistory, useLearningClusters
-│   ├── pages/                 # Route-level views
-│   ├── types/                 # Shared TypeScript interfaces
-│   ├── utils/                 # exams, scoring, shuffle, timeLimit, learnMore
-│   ├── App.tsx                # Router setup
-│   └── main.tsx               # App bootstrap + QuizProvider
-├── netlify.toml               # SPA deploy config
-└── vite.config.ts
-```
-
----
-
-## Scripts
-
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start Vite dev server on port 5173 |
-| `npm run build` | Generate learning JSON, type-check, and produce `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run parse` | Regenerate `aws-clf-c02.json` from source markdown |
-| `npm run ingest:saa` | Regenerate `aws-saa-c03.json` from `public/aws-saa-practice-exam.md` |
-| `npm run ingest:saa:paired` | Alternative SAA ingestion from paired source files |
-| `npm run ingest:soa` | Regenerate `aws-soa-c03.json` from `scripts/ingest-soa-from-js.mjs` (source JS files required) |
-| `npm run wrap-clf` | One-off wrapper: legacy `questions.json` → exam bank format |
-| `npm run convert:roadmap` | Regenerate `aws-learning-roadmap.json` from roadmap HTML (one-time; HTML can be deleted after) |
-| `npm run build:learning` | Validate per-exam learning JSON under `public/data/learning/` and sync legacy roadmap alias |
-| `npm run ingest:exam` | Stub for markdown → bank ingest (`--exam=aws-aif-c01` or `aws-soa-c03`). The shipped SOA-C03 bank is built with `ingest:soa`. |
-| `npm run generate:learning` | Legacy: regenerate `aws-clf-c02-study-guide.json` (superseded by roadmap JSON) |
-
-Source markdown and text files under `public/` are gitignored — they are local ingestion inputs, not shipped assets.
-
----
-
-## Adding a new exam
-
-### Practice bank
-
-1. Create **`src/data/exams/<examId>.json`** using the schema above.
-2. Import the bank in [`src/utils/exams.ts`](src/utils/exams.ts) and add it to `BANK_MAP`.
-3. Append a catalog entry with `practice.enabled: true` (and optional `learning` block).
-4. Run `npm run build` — Practice and Question Bank pick it up automatically.
-
-### Learning path only
-
-1. Add **`public/data/learning/<examId>.json`** (`schemaVersion: 3` with `examId`, `code`, `domains`, `strategy`, `checklist`, `phases`).
-2. Append a catalog entry with `learning.enabled: true` and `dataPath` pointing at that file; set `practice.enabled: false` until a bank exists.
-3. Run `npm run build:learning` (or full `npm run build`).
-
-Banks are statically imported today for simplicity. If bundle size becomes an issue, switching to dynamic `import()` per exam is a straightforward follow-on.
+Refreshing the tab during a quiz ends that session. History and learning progress survive because they are stored in the browser, under keys that never leave the machine. There is no server account to recover them on another device.
 
 ---
 
 ## Contributing
 
-Contributions are encouraged from learners, AWS practitioners, educators, and developers. You can help by adding carefully sourced exam questions, improving learning materials, correcting inaccurate information, fixing bugs, or improving the app experience.
+This service stays free and trustworthy because contributors treat it as a public utility. Accuracy matters more than volume. A wrong explanation, repeated across thousands of practice sessions, teaches the wrong lesson. Review is strict for that reason, and it is applied the same way to everyone, including maintainers.
 
-Please read the [contribution guide](CONTRIBUTING.md) before opening an issue or pull request. Every contribution should prioritize accuracy, clarity, and respect for AWS exam-content policies.
+Contributions are licensed under the [MIT License](LICENSE), the same terms as the rest of the project. By opening a pull request you agree that your contribution may be used, modified, and redistributed under that license.
+
+File formats, catalog entries, and the checks to run from a local checkout are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### What helps
+
+- Original practice questions, with a clear stem, plausible options, a correct key, and an explanation of why the other options fail.
+- Corrections to outdated service behavior, ambiguous wording, or a wrong key, with a source.
+- Learning-path improvements: domain notes, comparisons, traps, checklists, and links to current AWS documentation or the official exam guide.
+- Support for another AWS certification, once the content meets the standard below.
+- Bug fixes, accessibility improvements, and clearer study flows.
+- Reports of a wrong answer or a confusing explanation. A precise report is a contribution.
+
+### What we will decline
+
+- Real AWS exam items, memorized dumps, or questions copied from commercial banks and paid courses.
+- Copyrighted course material, documentation pasted in bulk, or content you do not have the right to contribute.
+- Questions with no explanation, trick wording that depends on a stale console label, or claims about pricing, quotas, and feature availability that are not sourced.
+- Credentials, personal data, or anything that does not belong in a public repository.
+- Drive-by rewrites that mix an unrelated change into a content fix.
+
+Prefer questions written for this project. When a fact can change — a default limit, a regional service, a console path — say so, and point at the AWS page you checked.
+
+### Reporting an issue
+
+Open an issue when a question, explanation, or page is wrong or unclear. Include:
+
+- The exam code and, for a question, the id and topic.
+- The sentence or option you believe is wrong.
+- What you expected, and why.
+- A link to current AWS documentation, the official exam guide, or another primary source.
+- For a bug: the steps, what you expected, what happened, and the browser.
+
+Search existing issues first. A duplicate report still helps if you add a source the original lacks.
+
+### Pull requests
+
+1. Start from the default branch and keep the change to one concern.
+2. Use a title that names the exam and the change, for example `Correct SOA-C03 EBS snapshot explanation` or `Add AIF-C01 domain traps to the learning path`.
+3. In the description, state what changed, which exam or screen it affects, the sources you used, and how you checked it.
+4. For question or learning JSON, confirm ids are unique, every correct answer id exists on the question, and `isMultiple` matches the key.
+5. When you change application code or generated content, run `npm run build` from your checkout. Learning-only edits can be checked with `npm run build:learning`.
+6. Read the diff before you open the request and drop unrelated files.
+
+Screenshots help when the change is visible. They are optional for a wording or data fix.
+
+Maintainers may ask for a source, a smaller diff, or a rewrite of an explanation before merging. That review protects learners; it is not a judgment of the contributor. If a change cannot be verified, it waits.
+
+### Community
+
+Be direct, specific, and respectful. Disagree about the technical claim and cite the document. Assume the other person is trying to make the resource more reliable. Harassment, sneering review, and unsolicited dumping of exam content are out of place here.
+
+Maintainers may edit contributions for clarity, close issues that lack enough detail to act on, and remove material that conflicts with the content standard.
 
 ---
 
-## Acknowledgement
+## Maintainer
 
-AWS Certification Practice Hub is designed, built, and maintained by [**Gazi Maksudur Rahman**](https://gazimaksudur.dev) — a software developer passionate about developer tooling and AWS cloud technology.
+Designed, built, and maintained by [Gazi Maksudur Rahman](https://gazimaksudur.dev).
 
-- 🌐 **Portfolio:** [gazimaksudur.dev](https://gazimaksudur.dev)
-- 💻 **GitHub:** [gazimaksudur2](https://github.com/gazimaksudur2)
-- 📦 **Repository:** [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
+- Portfolio: [gazimaksudur.dev](https://gazimaksudur.dev)
+- GitHub: [gazimaksudur2](https://github.com/gazimaksudur2)
+- Repository: [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
 
-This project is offered as a free resource for the AWS learning community. If it helps you prepare:
-- ⭐ [Star the repository](https://github.com/gazimaksudur2/aws-certification-prep) to help others discover it
-- 🔀 [Contribute](CONTRIBUTING.md) improvements through pull requests
-- 📢 Share it with other AWS learners
-
-> This project is independent and is not affiliated with, endorsed by, or sponsored by Amazon Web Services.
-
----
-
-## Deployment
-
-The app is a static SPA. [`netlify.toml`](netlify.toml) configures:
-
-- **Build:** `npm run build`
-- **Publish directory:** `dist`
-- **SPA fallback:** all unknown paths rewrite to `index.html` so direct navigation to `/quiz`, `/guided`, `/results`, and `/practice/browse` works on reload.
-
-No server-side runtime is required. All quiz state and history remain in the user's browser.
-
----
+If the hub helps you prepare, star the repository so other learners can find it, and send a correction when you spot one. Sharing the live site is as useful as sharing the source.
 
 ## License
 
-This project is provided free of charge for learning and community use. See the repository's licensing terms for permissions and conditions before redistributing or reusing the source.
+MIT. See [LICENSE](LICENSE). You may use, modify, and redistribute this project under those terms. The software is provided as-is, without warranty. AWS, the AWS certification names, and related marks are trademarks of Amazon.com, Inc. or its affiliates; use of those names here is for identification of the exams learners are preparing for.
