@@ -17,13 +17,54 @@
       "examId": "aws-saa-c03",
       "code": "SAA-C03",
       "title": "AWS Certified Solutions Architect – Associate",
-      "description": "Architecture-focused scenario questions (practice set)."
+      "level": "Associate",
+      "description": "Architecture-focused scenario questions (practice set).",
+      "status": "both",
+      "learning": {
+        "enabled": true,
+        "dataPath": "/data/learning/aws-clf-saa-combined.json"
+      },
+      "practice": { "enabled": true }
+    },
+    {
+      "examId": "aws-clf-saa-combined",
+      "code": "CLF+SAA",
+      "title": "CLF-C02 + SAA-C03 combined study pack",
+      "level": "Foundational",
+      "description": "Combined service roadmap covering Cloud Practitioner and Solutions Architect Associate.",
+      "status": "learning",
+      "learning": {
+        "enabled": true,
+        "dataPath": "/data/learning/aws-clf-saa-combined.json",
+        "packOf": ["aws-clf-c02", "aws-saa-c03"]
+      },
+      "practice": { "enabled": false }
+    },
+    {
+      "examId": "aws-aif-c01",
+      "code": "AIF-C01",
+      "title": "AWS Certified AI Practitioner",
+      "level": "Foundational",
+      "description": "AI/ML and generative AI fundamentals on AWS — learning path first; practice bank coming later.",
+      "status": "learning",
+      "learning": {
+        "enabled": true,
+        "dataPath": "/data/learning/aws-aif-c01.json"
+      },
+      "practice": { "enabled": false }
     },
     {
       "examId": "aws-soa-c03",
       "code": "SOA-C03",
       "title": "AWS Certified SysOps Administrator – Associate",
-      "description": "Scenario-based questions across all five SysOps administrator exam domains."
+      "level": "Associate",
+      "description": "Scenario-based questions across all five SysOps administrator exam domains.",
+      "status": "both",
+      "learning": {
+        "enabled": true,
+        "dataPath": "/data/learning/aws-soa-c03.json"
+      },
+      "practice": { "enabled": true }
     }
   ]
 }
