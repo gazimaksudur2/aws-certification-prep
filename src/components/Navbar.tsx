@@ -65,14 +65,14 @@ export function Navbar() {
             </NavLink>
           ))}
           <a
-            href="https://gazimaksudur.me"
+            href="https://gazimaksudur.dev"
             target="_blank"
             rel="noreferrer"
             className="ml-2 pl-3 border-l border-slate-700/60 inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-aws-orange transition-colors"
             title="Visit developer portfolio"
           >
             <span>🌐</span>
-            <span className="hidden lg:inline">gazimaksudur.me</span>
+            <span className="hidden lg:inline">gazimaksudur.dev</span>
           </a>
         </nav>
 

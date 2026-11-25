@@ -55,13 +55,13 @@ export default function App() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               {/* Portfolio link */}
               <a
-                href="https://gazimaksudur.me"
+                href="https://gazimaksudur.dev"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/70 border border-slate-700/60 text-slate-300 hover:text-aws-orange hover:border-aws-orange/40 hover:bg-slate-800 transition-all duration-200 text-xs font-medium group"
               >
                 <span className="text-base">🌐</span>
-                <span>gazimaksudur.me</span>
+                <span>gazimaksudur.dev</span>
               </a>
 
               {/* GitHub repo link */}
@@ -100,7 +100,7 @@ export default function App() {
             <span className="text-slate-600">
               Crafted by{' '}
               <a
-                href="https://gazimaksudur.me"
+                href="https://gazimaksudur.dev"
                 target="_blank"
                 rel="noreferrer"
                 className="text-slate-400 hover:text-aws-orange transition-colors font-medium"

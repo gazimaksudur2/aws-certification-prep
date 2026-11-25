@@ -3,7 +3,7 @@
 > A free, community-focused resource for AWS certification learners.
 
 [![Live Demo](https://img.shields.io/badge/Live-aws--certification--prep.netlify.app-FF9900?style=for-the-badge&logo=netlify&logoColor=white)](https://aws-certification-prep.netlify.app/)
-[![Made by](https://img.shields.io/badge/Portfolio-gazimaksudur.me-0088cc?style=for-the-badge&logo=google-chrome&logoColor=white)](https://gazimaksudur.me)
+[![Made by](https://img.shields.io/badge/Portfolio-gazimaksudur.dev-0088cc?style=for-the-badge&logo=google-chrome&logoColor=white)](https://gazimaksudur.dev)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
@@ -16,7 +16,7 @@ A browser-based study app for AWS certification exams. Take timed practice quizz
 
 This project is maintained as a free learning resource for the AWS learning community. If it helps you prepare, please [give the repository a star](https://github.com/gazimaksudur2/aws-certification-prep) and share it with other learners. Contributions that improve the accuracy and usefulness of the material are welcome.
 
-**Project owner:** [Gazi Maksudur Rahman](https://gazimaksudur.me)
+**Project owner:** [Gazi Maksudur Rahman](https://gazimaksudur.dev)
 
 **Repository:** [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
 
@@ -381,9 +381,9 @@ Please read the [contribution guide](CONTRIBUTING.md) before opening an issue or
 
 ## Acknowledgement
 
-AWS Certification Practice Hub is designed, built, and maintained by [**Gazi Maksudur Rahman**](https://gazimaksudur.me) — a software developer passionate about developer tooling and AWS cloud technology.
+AWS Certification Practice Hub is designed, built, and maintained by [**Gazi Maksudur Rahman**](https://gazimaksudur.dev) — a software developer passionate about developer tooling and AWS cloud technology.
 
-- 🌐 **Portfolio:** [gazimaksudur.me](https://gazimaksudur.me)
+- 🌐 **Portfolio:** [gazimaksudur.dev](https://gazimaksudur.dev)
 - 💻 **GitHub:** [gazimaksudur2](https://github.com/gazimaksudur2)
 - 📦 **Repository:** [gazimaksudur2/aws-certification-prep](https://github.com/gazimaksudur2/aws-certification-prep)
 
