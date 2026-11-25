@@ -34,7 +34,7 @@
  *   id, question, options[{id,text,rationale}], correctAnswers, isMultiple, topic
  */
 
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import vm from 'vm';
@@ -59,6 +59,14 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E'];
 // ── load source files ─────────────────────────────────────────────────────────
 function loadAllSourceFiles() {
   const srcDir = resolve(root, 'src', 'data', 'aifc01');
+
+  if (!existsSync(srcDir) || readdirSync(srcDir).filter((f) => f.endsWith('.js')).length === 0) {
+    console.error('Source files not found: src/data/aifc01/qb-*.js');
+    console.error('These local ingestion inputs are not committed to the repository.');
+    console.error('Place the original qb-*.js source files into src/data/aifc01/ and re-run.');
+    process.exit(1);
+  }
+
   const files = readdirSync(srcDir)
     .filter((f) => f.endsWith('.js'))
     .sort();

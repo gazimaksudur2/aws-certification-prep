@@ -20,7 +20,7 @@
  *   id, question, options[{id,text,rationale}], correctAnswers, isMultiple, topic
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { createRequire } from 'module';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -46,6 +46,12 @@ const MULTI_COUNT = 23;
 // ── load source files ─────────────────────────────────────────────────────────
 function loadDomainFile(meta) {
   const filePath = resolve(root, 'src', 'data', 'soac03', meta.file);
+  if (!existsSync(filePath)) {
+    console.error(`Source file not found: src/data/soac03/${meta.file}`);
+    console.error('These local ingestion inputs are not committed to the repository.');
+    console.error('Place the original d1.js–d5.js source files into src/data/soac03/ and re-run.');
+    process.exit(1);
+  }
   const code = readFileSync(filePath, 'utf8');
 
   const sandbox = { window: { QUESTIONS: [] } };

@@ -68,6 +68,7 @@ When you add or change a question:
 - Reuse an existing topic name when the question belongs to one.
 - Read the item in the question bank and in guided practice.
 - If the bank is produced by a script, update the source and regenerate it instead of hand-editing the output. `npm run ingest:aif` rebuilds AIF-C01. `npm run ingest:soa` rebuilds SOA-C03. `npm run ingest:saa` rebuilds SAA-C03. `npm run parse` rebuilds CLF-C02.
+- The JS source files for AIF-C01 (`src/data/aifc01/`) and SOA-C03 (`src/data/soac03/`) are local-only ingestion inputs — they are gitignored and not committed to the repository. Place them in those directories before running the ingest scripts. The generated exam bank JSON files (`src/data/exams/aws-aif-c01.json`, `aws-soa-c03.json`) are committed and do not require the source files to run the app.
 
 `rationale` on an option is optional. The SysOps bank includes one paragraph per option. Cloud Practitioner and Solutions Architect banks omit it. When it is present, the app shows it after the answer is revealed.
 

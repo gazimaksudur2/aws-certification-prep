@@ -62,3 +62,7 @@ public/**/*.html
 
 # Raw study-guide HTML used to generate public/data/*.json at build time
 public/**/*study-guide*.html
+
+# Exam dump source files (local ingestion inputs — generated banks are committed)
+src/data/aifc01/
+src/data/soac03/
