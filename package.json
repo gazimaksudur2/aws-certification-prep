@@ -15,6 +15,7 @@
     "parse": "node scripts/parse-questions.js",
     "ingest:saa": "node scripts/ingest-saa-from-md.mjs",
     "ingest:saa:paired": "node scripts/ingest-saa-from-paired-files.mjs",
+    "ingest:aif": "node scripts/ingest-aif-from-js.mjs",
     "ingest:soa": "node scripts/ingest-soa-from-js.mjs",
     "ingest:exam": "node scripts/ingest-exam-from-md.mjs",
     "wrap-clf": "node scripts/wrap-clf-bank.mjs"

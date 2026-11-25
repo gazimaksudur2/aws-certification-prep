@@ -45,13 +45,13 @@
       "code": "AIF-C01",
       "title": "AWS Certified AI Practitioner",
       "level": "Foundational",
-      "description": "AI/ML and generative AI fundamentals on AWS — learning path first; practice bank coming later.",
-      "status": "learning",
+      "description": "AI/ML concepts, generative AI, foundation model applications, responsible AI, and security governance on AWS.",
+      "status": "both",
       "learning": {
         "enabled": true,
         "dataPath": "/data/learning/aws-aif-c01.json"
       },
-      "practice": { "enabled": false }
+      "practice": { "enabled": true }
     },
     {
       "examId": "aws-soa-c03",

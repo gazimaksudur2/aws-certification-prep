@@ -1,11 +1,13 @@
 /**
- * Phase 2 stub: ingest a markdown question dump into an exam bank JSON.
+ * Stub: ingest a markdown question dump into an exam bank JSON.
  *
- * Usage (when ready):
- *   node scripts/ingest-exam-from-md.mjs --exam=aws-aif-c01 --input=content/banks/aif.md
- *   node scripts/ingest-exam-from-md.mjs --exam=aws-soa-c03 --input=content/banks/soa.md
+ * AIF-C01 and SOA-C03 are both live. Their banks are built from the JS source
+ * files in src/data/aifc01/ and src/data/soac03/ using dedicated scripts:
+ *   npm run ingest:aif   → scripts/ingest-aif-from-js.mjs
+ *   npm run ingest:soa   → scripts/ingest-soa-from-js.mjs
  *
- * Expected markdown shape (same spirit as SAA ingest):
+ * This stub is kept for future markdown-based ingestion of additional exams.
+ * Expected markdown shape:
  *   ## Q1
  *   Question stem?
  *   A. option
@@ -13,7 +15,7 @@
  *   Answer: A
  *   Topic: Fundamentals of GenAI
  *
- * This stub validates args and refuses to overwrite banks until implemented.
+ * Refuses to overwrite live banks until the parsing logic is implemented.
  * Prefer original practice questions — do not paste real AWS exam content.
  */
 import { resolve, dirname } from 'node:path';
@@ -67,7 +69,7 @@ console.log(`  input : ${resolve(projectRoot, input)}`);
 console.log(`  output: ${resolve(projectRoot, meta.out)}`);
 console.log('');
 console.log(
-  'Not implemented yet — learning paths ship first. When implementing:',
+  'Markdown ingest not yet implemented for this exam. When implementing:',
 );
 console.log('  1. Parse MD into the ExamBankJson envelope (see src/types/index.ts)');
 console.log('  2. Align topic strings with learning domain quizTopic values');

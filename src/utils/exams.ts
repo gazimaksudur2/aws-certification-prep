@@ -1,6 +1,7 @@
 import catalogJson from '../data/exams/catalog.json';
 import clfBank from '../data/exams/aws-clf-c02.json';
 import saaBank from '../data/exams/aws-saa-c03.json';
+import aifBank from '../data/exams/aws-aif-c01.json';
 import soaBank from '../data/exams/aws-soa-c03.json';
 
 import type { ExamBankJson, ExamCatalogEntry, Question } from '../types';
@@ -8,6 +9,7 @@ import type { ExamBankJson, ExamCatalogEntry, Question } from '../types';
 const BANK_MAP = {
   [clfBank.examId]: clfBank as ExamBankJson,
   [saaBank.examId]: saaBank as ExamBankJson,
+  [aifBank.examId]: aifBank as ExamBankJson,
   [soaBank.examId]: soaBank as ExamBankJson,
 } as Record<string, ExamBankJson>;
 

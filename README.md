@@ -41,14 +41,14 @@ You need at least **5 questions** in the filtered pool to start a run. Filter by
 | CLF-C02 | AWS Certified Cloud Practitioner | Question bank | Combined CLF + SAA pack | In the bank (70% if unset) |
 | SAA-C03 | AWS Certified Solutions Architect – Associate | Question bank | Combined CLF + SAA pack | In the bank (70% if unset) |
 | CLF+SAA | Combined Cloud Practitioner and Solutions Architect study pack | — | `aws-clf-saa-combined` | — |
-| AIF-C01 | AWS Certified AI Practitioner | Coming soon | Learning path available | — |
+| AIF-C01 | AWS Certified AI Practitioner | Question bank | Learning path available | 70% |
 | SOA-C03 | AWS Certified SysOps Administrator – Associate | Question bank | Learning path available | 72% |
 
-On SysOps items, each option can include a short rationale. Those explanations appear after you reveal the answer in guided practice, results review, and the question bank.
+On AI Practitioner and SysOps items, each option carries a short rationale. Those explanations appear after you reveal the answer in guided practice, results review, and the question bank.
 
 ### How a session works
 
-1. Open **Practice** and choose a certification that has a question bank: Cloud Practitioner, Solutions Architect Associate, or SysOps Administrator Associate. AI Practitioner currently offers a learning path until a bank is ready.
+1. Open **Practice** and choose a certification: Cloud Practitioner, Solutions Architect Associate, AI Practitioner, or SysOps Administrator Associate all have question banks.
 2. Set a topic, or keep **All**, and set the number of questions.
 3. Start a **timed quiz** or **guided practice**. **Browse** opens the bank for the selected exam without starting a run.
 4. Finish on the results screen: score, pass or fail against that exam's threshold, time, topic strength, and a question-by-question review.
