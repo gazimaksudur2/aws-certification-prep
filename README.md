@@ -55,7 +55,7 @@ Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **T
 
 | Feature | What it does |
 | --- | --- |
-| **Multi-certification support** | Practice CLF-C02 and SAA-C03 from a single app; the catalog drives the UI automatically. |
+| **Multi-certification support** | Catalog-driven practice and learning for multiple AWS certs (CLF-C02, SAA-C03, AIF-C01, SOA-C03, plus a combined CLF+SAA study pack). |
 | **Timed quiz** | Exam-style run with a countdown of **120 seconds × number of questions**. Answers are hidden until the quiz ends. |
 | **Guided practice** | Untimed mode with instant correct/incorrect feedback after each question and a **Learn more** link to Google for deeper explanation. |
 | **Topic filtering** | Narrow a run to one domain/topic or use the full pool. |
@@ -63,7 +63,7 @@ Built with **React 18**, **TypeScript**, **Vite 5**, **React Router 6**, and **T
 | **Results summary** | Score, pass/fail against the exam threshold, time spent, topic breakdown, and per-question review. |
 | **Attempt history** | Timed quiz attempts are saved in `localStorage` (up to 10 per exam). Guided practice runs are not recorded. |
 | **Question bank** | Search, filter, and expand any question to reveal the keyed answer — for study only. |
-| **Learning study hub** | Combined CLF-C02 + SAA-C03 roadmap with priority badges, exam topics, comparisons, traps, strategy, and a Top-50 checklist with saved progress. |
+| **Learning study hub** | Per-cert roadmaps (pick AIF-C01, SOA-C03, or the CLF+SAA pack) with priority badges, exam topics, comparisons, traps, strategy, and checklists with progress namespaced per exam. |
 | **No account required** | Everything runs client-side; no backend or authentication. |
 
 ---
@@ -111,7 +111,7 @@ The landing page introduces the app and links to **Practice** and **Learning**. 
 
 This is where you configure and start a quiz.
 
-1. **Choose a certification** — pick CLF-C02 or SAA-C03 from the grid.
+1. **Choose a certification** — pick an exam with a practice bank (CLF-C02 or SAA-C03 today). Learning-only certs (AIF-C01, SOA-C03) link to their study paths until banks ship.
 2. **Set the topic** — filter to a single domain or keep **All**.
 3. **Set the question count** — use the slider, quick presets (10 / 20 / 50 / 100), or **All**.
 4. **Start a mode:**
@@ -180,39 +180,32 @@ Answers are visible immediately — this mode is for review, not assessment.
 
 ### Learning study hub
 
-**Route:** `/learning`
+**Route:** `/learning` (optional `?exam=<examId>`)
 
-A guided certification prep experience covering **both CLF-C02 and SAA-C03**:
+Pick a learning path, then use the same four tabs for every certification:
 
-**Roadmap tab**
-- Overview hero with domain/service counts
-- Priority legend (Critical → Low)
-- 4-week study plan with links into each domain
-- Progress rings for domains reviewed and checklist items mastered
+**Roadmap tab** — domain/service counts, priority legend, multi-week plan, progress rings  
+**Service reference tab** — searchable domains/services, priority filters, comparisons, traps, mark reviewed; Practice deep-links when a bank exists (otherwise “coming soon”)  
+**Exam strategy tab** — traps and high-ROI techniques for that cert  
+**Checklist tab** — interactive mastery list
 
-**Service reference tab**
-- 17 domains, 76+ services with **priority badges** and expandable **key exam topics**
-- Search plus filters for exam (CLF / SAA / both) and priority level
-- Per-domain comparison tables, exam-trap callouts, and security/architecture info cards
-- **Mark reviewed** per domain; **Practice this domain** deep-links to `/practice?exam=…&topic=…`
+| Path | `examId` | Data file |
+| --- | --- | --- |
+| CLF+SAA combined pack | `aws-clf-saa-combined` | `public/data/learning/aws-clf-saa-combined.json` |
+| AI Practitioner | `aws-aif-c01` | `public/data/learning/aws-aif-c01.json` |
+| SysOps Administrator | `aws-soa-c03` | `public/data/learning/aws-soa-c03.json` |
 
-**Exam strategy tab**
-- Common traps, scenario-solving technique, 30-day plan, exam-day tips, confused services, high-ROI topics
+Progress is stored per exam in `localStorage` key `learning-progress-v2` (legacy CLF+SAA checklist keys migrate into the combined pack automatically).
 
-**Top 50 checklist tab**
-- Interactive checklist — click to mark mastered; progress saved in `localStorage`
-
-Progress keys: `learning-domains-reviewed-v1`, `learning-checklist-v1`, `learning-active-tab-v1`.
-
-Data source: [`public/data/aws-learning-roadmap.json`](public/data/aws-learning-roadmap.json) (`schemaVersion: 2`). Regenerate from the legacy HTML (if you still have it) via `npm run convert:roadmap`.
+Validate learning artifacts with `npm run build:learning` (also runs during `npm run build`).
 
 ---
 
 ## Available exams
 
-Exams are defined in [`src/data/exams/catalog.json`](src/data/exams/catalog.json) and backed by JSON question banks in [`src/data/exams/`](src/data/exams/).
+Exams are defined in [`src/data/exams/catalog.json`](src/data/exams/catalog.json). Practice requires a bank under [`src/data/exams/`](src/data/exams/); learning requires a JSON file under [`public/data/learning/`](public/data/learning/).
 
-| Code | Exam | Question bank | Pass threshold |
+| Code | Exam | Practice bank | Learning |
 | --- | --- | --- | --- |
 | CLF-C02 | AWS Certified Cloud Practitioner | `aws-clf-c02.json` | Per bank metadata |
 | SAA-C03 | AWS Certified Solutions Architect – Associate | `aws-saa-c03.json` | Per bank metadata |
@@ -236,7 +229,7 @@ React Router drives a single-page app. All routes are declared in [`src/App.tsx`
 | `/guided` | `GuidedPractice` | Untimed guided practice session |
 | `/results` | `Results` | Score summary and detailed review |
 | `/practice/browse` | `Browse` | Searchable question bank |
-| `/learning` | `Learning` | CLF + SAA study hub (roadmap, reference, strategy, checklist) |
+| `/learning` | `Learning` | Per-cert study hub picker + roadmap / reference / strategy / checklist |
 
 The global navbar ([`src/components/Navbar.tsx`](src/components/Navbar.tsx)) links Home, Practice, Question Bank, and Learning.
 
@@ -309,7 +302,7 @@ The optional `rationale` field on each option is present in the SOA-C03 bank (on
 
 Banks are registered in [`src/utils/exams.ts`](src/utils/exams.ts) via a static `BANK_MAP` and surfaced through `listCatalog()`, `getQuestionsForExam()`, and `getTopicsForExam()`.
 
-Learning content is loaded at runtime from [`public/data/aws-learning-roadmap.json`](public/data/aws-learning-roadmap.json). Types live in [`src/types/learning.ts`](src/types/learning.ts); progress is tracked by [`src/hooks/useLearningProgress.ts`](src/hooks/useLearningProgress.ts).
+Learning content is loaded per exam from [`public/data/learning/`](public/data/learning/). Types live in [`src/types/learning.ts`](src/types/learning.ts); progress is tracked by [`src/hooks/useLearningProgress.ts`](src/hooks/useLearningProgress.ts).
 
 ---
 
@@ -318,7 +311,9 @@ Learning content is loaded at runtime from [`public/data/aws-learning-roadmap.js
 ```
 aws-certification-quiz-app/
 ├── public/
-│   ├── data/                  # Generated learning JSON (served statically)
+│   ├── data/
+│   │   ├── learning/          # Per-exam learning JSON (served statically)
+│   │   └── aws-learning-roadmap.json  # Legacy alias of CLF+SAA pack
 │   └── aws-icon.svg
 ├── scripts/
 │   ├── build.js               # Cross-platform build (tsc + Vite)
@@ -354,6 +349,8 @@ aws-certification-quiz-app/
 | `npm run ingest:soa` | Regenerate `aws-soa-c03.json` from `scripts/ingest-soa-from-js.mjs` (source JS files required) |
 | `npm run wrap-clf` | One-off wrapper: legacy `questions.json` → exam bank format |
 | `npm run convert:roadmap` | Regenerate `aws-learning-roadmap.json` from roadmap HTML (one-time; HTML can be deleted after) |
+| `npm run build:learning` | Validate per-exam learning JSON under `public/data/learning/` and sync legacy roadmap alias |
+| `npm run ingest:exam` | Stub for future AIF/SOA markdown → bank ingest (`--exam=aws-aif-c01\|aws-soa-c03`) |
 | `npm run generate:learning` | Legacy: regenerate `aws-clf-c02-study-guide.json` (superseded by roadmap JSON) |
 
 Source markdown and text files under `public/` are gitignored — they are local ingestion inputs, not shipped assets.
@@ -362,10 +359,18 @@ Source markdown and text files under `public/` are gitignored — they are local
 
 ## Adding a new exam
 
+### Practice bank
+
 1. Create **`src/data/exams/<examId>.json`** using the schema above.
 2. Import the bank in [`src/utils/exams.ts`](src/utils/exams.ts) and add it to `BANK_MAP`.
-3. Append an entry to [`src/data/exams/catalog.json`](src/data/exams/catalog.json).
-4. Run `npm run build` — the Practice hub and Question Bank will pick up the new exam automatically.
+3. Append a catalog entry with `practice.enabled: true` (and optional `learning` block).
+4. Run `npm run build` — Practice and Question Bank pick it up automatically.
+
+### Learning path only
+
+1. Add **`public/data/learning/<examId>.json`** (`schemaVersion: 3` with `examId`, `code`, `domains`, `strategy`, `checklist`, `phases`).
+2. Append a catalog entry with `learning.enabled: true` and `dataPath` pointing at that file; set `practice.enabled: false` until a bank exists.
+3. Run `npm run build:learning` (or full `npm run build`).
 
 Banks are statically imported today for simplicity. If bundle size becomes an issue, switching to dynamic `import()` per exam is a straightforward follow-on.
 

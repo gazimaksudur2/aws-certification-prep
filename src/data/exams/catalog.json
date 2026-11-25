@@ -4,7 +4,14 @@
       "examId": "aws-clf-c02",
       "code": "CLF-C02",
       "title": "AWS Certified Cloud Practitioner",
-      "description": "Practice for the foundational cloud certification."
+      "level": "Foundational",
+      "description": "Practice for the foundational cloud certification.",
+      "status": "both",
+      "learning": {
+        "enabled": true,
+        "dataPath": "/data/learning/aws-clf-saa-combined.json"
+      },
+      "practice": { "enabled": true }
     },
     {
       "examId": "aws-saa-c03",

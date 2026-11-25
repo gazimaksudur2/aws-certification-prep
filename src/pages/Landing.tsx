@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getQuestionsForExam, listCatalog } from '../utils/exams';
+import {
+  getQuestionsForExam,
+  listCatalog,
+  listLearningCatalog,
+  listPracticeCatalog,
+} from '../utils/exams';
 import { 
   BookOpen, 
   Clock, 
@@ -21,15 +26,20 @@ import {
 export function Landing() {
   const navigate = useNavigate();
   const catalog = useMemo(() => listCatalog(), []);
+  const practiceCatalog = useMemo(() => listPracticeCatalog(), []);
+  const learningCatalog = useMemo(() => listLearningCatalog(), []);
 
   const totalQuestions = useMemo(() => {
-    return catalog.reduce((acc, e) => acc + getQuestionsForExam(e.examId).length, 0);
-  }, [catalog]);
+    return practiceCatalog.reduce(
+      (acc, e) => acc + getQuestionsForExam(e.examId).length,
+      0,
+    );
+  }, [practiceCatalog]);
 
   const stats = [
-    { label: 'Certifications', value: catalog.length, icon: Award, color: 'text-aws-orange' },
+    { label: 'Catalog entries', value: catalog.length, icon: Award, color: 'text-aws-orange' },
     { label: 'Practice Questions', value: totalQuestions, icon: Database, color: 'text-blue-400' },
-    { label: 'Service Clusters', value: '6+', icon: LayoutDashboard, color: 'text-emerald-400' },
+    { label: 'Learning paths', value: learningCatalog.length, icon: LayoutDashboard, color: 'text-emerald-400' },
     { label: 'Local Progress', value: 'Auto-saved', icon: Shield, color: 'text-purple-400' },
   ];
 
@@ -62,7 +72,7 @@ export function Landing() {
           <div className="mt-6 flex flex-wrap gap-3">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-700/50 bg-slate-800/30 text-xs text-slate-400">
               <Award className="w-3.5 h-3.5" />
-              {catalog.length} exams
+              {practiceCatalog.length} practice exams · {learningCatalog.length} learning paths
             </div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-700/50 bg-slate-800/30 text-xs text-slate-400">
               <Database className="w-3.5 h-3.5" />
