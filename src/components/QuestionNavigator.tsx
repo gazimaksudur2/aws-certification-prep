@@ -52,7 +52,7 @@ export function QuestionNavigator({
       className="space-y-3"
       aria-label="Question navigator"
     >
-      <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+      <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2.5">
         {questionIds.map((id, index) => {
           const answered = isQuestionAnswered(answers, id);
           const isFlagged = Boolean(flagged[id]);
