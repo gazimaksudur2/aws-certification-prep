@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Flag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../components/Modal';
 import { ProgressBar } from '../components/ProgressBar';
@@ -253,26 +252,21 @@ export function Quiz() {
         total={session.questions.length}
       />
 
+      <QuestionCard
+        question={current}
+        selected={selected}
+        showSolution={false}
+        onToggleOption={toggleOption}
+        isFlagged={isFlagged}
+        onToggleFlag={() => toggleFlag(current.id)}
+      />
+
       <QuestionNavigator
         questionIds={questionIds}
         currentIndex={session.currentIndex}
         answers={session.answers}
         flagged={session.flagged}
         onGoTo={navigateTo}
-      />
-
-      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-        <span>
-          {liveCounts.answered} answered · {liveCounts.unanswered} unanswered
-          {liveCounts.flagged > 0 ? ` · ${liveCounts.flagged} flagged` : ''}
-        </span>
-      </div>
-
-      <QuestionCard
-        question={current}
-        selected={selected}
-        showSolution={false}
-        onToggleOption={toggleOption}
       />
 
       <div className="flex flex-wrap items-center gap-3">
@@ -283,21 +277,6 @@ export function Quiz() {
           className="btn-ghost"
         >
           ← Prev
-        </button>
-
-        <button
-          type="button"
-          onClick={() => toggleFlag(current.id)}
-          className={`btn-secondary ${
-            isFlagged
-              ? 'border-amber-400/50 text-amber-200 bg-amber-500/10'
-              : ''
-          }`}
-          aria-pressed={isFlagged}
-          aria-label={isFlagged ? 'Remove flag for review' : 'Flag for review'}
-        >
-          <Flag className="w-4 h-4" aria-hidden="true" />
-          {isFlagged ? 'Flagged' : 'Flag for review'}
         </button>
 
         <button type="button" onClick={handleSkip} className="btn-secondary">

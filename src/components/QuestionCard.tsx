@@ -1,3 +1,4 @@
+import { Flag } from 'lucide-react';
 import type { Question } from '../types';
 import { OptionButton } from './OptionButton';
 
@@ -7,6 +8,9 @@ interface Props {
   /** When true, reveal which options are correct / incorrect. */
   showSolution: boolean;
   onToggleOption: (id: string) => void;
+  /** When set with `onToggleFlag`, shows a flag control in the card header. */
+  isFlagged?: boolean;
+  onToggleFlag?: () => void;
 }
 
 export function QuestionCard({
@@ -14,6 +18,8 @@ export function QuestionCard({
   selected,
   showSolution,
   onToggleOption,
+  isFlagged = false,
+  onToggleFlag,
 }: Props) {
   // Questions with a double newline have a scenario prefix (e.g. SOA-C03).
   // Split it so the scenario renders as a distinct paragraph.
@@ -39,7 +45,27 @@ export function QuestionCard({
             Multi-select · choose all that apply
           </span>
         )}
-        <span className="ml-auto text-xs text-slate-500">#{question.id}</span>
+        <div className="ml-auto flex items-center gap-2 shrink-0">
+          <span className="text-xs text-slate-500">#{question.id}</span>
+          {onToggleFlag && (
+            <button
+              type="button"
+              onClick={onToggleFlag}
+              className={`btn-secondary inline-flex items-center justify-center gap-1.5 min-h-11 min-w-11 px-2.5 sm:px-3 ${
+                isFlagged
+                  ? 'border-amber-400/50 text-amber-200 bg-amber-500/10'
+                  : ''
+              }`}
+              aria-pressed={isFlagged}
+              aria-label={isFlagged ? 'Remove flag for review' : 'Flag for review'}
+            >
+              <Flag className="w-4 h-4" aria-hidden="true" />
+              <span className="hidden sm:inline">
+                {isFlagged ? 'Flagged' : 'Flag for review'}
+              </span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Scenario prefix (SOA-C03 and similar multi-paragraph stems) */}

@@ -26,8 +26,8 @@ This project is independent. It is not affiliated with, endorsed by, or sponsore
 
 | | |
 | --- | --- |
-| **Timed quiz** | Exam-style run. The clock is **120 seconds × the number of questions**. Answers stay hidden until you finish. Use the numbered question palette to jump freely, see answered vs unanswered at a glance, and **flag for review**. |
-| **Guided practice** | Untimed. Check each answer as you go, read which options are correct, and open **Learn more** for a deeper search. The same question palette and flag-for-review controls are available. |
+| **Timed quiz** | Exam-style run. The clock is **120 seconds × the number of questions**. Answers stay hidden until you finish. **Flag for review** lives in the question card header; the numbered palette sits below the card so you can jump and see answered vs unanswered at a glance. |
+| **Guided practice** | Untimed. Check each answer as you go, read which options are correct, and open **Learn more** for a deeper search. Same card-header flag and below-card palette as timed. |
 | **Question bank** | Search and filter the full pool. Expand any item to study the keyed answer. This mode is for review. |
 | **Learning hub** | Per-cert roadmaps, service reference, exam strategy, and a checklist. Progress is saved per exam on your device. |
 | **Your history** | The last 10 attempts per exam (timed and guided) are stored locally with full question review — stems, your selections, and correct answers. Click a prior attempt on Practice to reopen it. |
