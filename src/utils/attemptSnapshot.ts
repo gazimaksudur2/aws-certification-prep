@@ -38,6 +38,7 @@ export function buildRichAttemptFromSession(
     const ans = session.answers[q.id];
     const skipped = Boolean(ans?.skipped);
     const selectedAnswers = ans && !ans.skipped ? [...ans.selectedAnswers] : [];
+    const flagged = Boolean(session.flagged?.[q.id]);
     return {
       questionId: q.id,
       topic: q.topic,
@@ -51,6 +52,7 @@ export function buildRichAttemptFromSession(
       correctAnswers: [...q.correctAnswers],
       selectedAnswers,
       skipped,
+      ...(flagged ? { flagged: true } : {}),
     };
   });
 

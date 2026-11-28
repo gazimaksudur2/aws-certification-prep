@@ -39,6 +39,8 @@ export interface QuizSession {
   mode: QuizMode;
   questions: Question[];
   answers: Record<number, AnsweredQuestion>;
+  /** questionId → flagged for review (session-only until finish snapshot). */
+  flagged: Record<number, boolean>;
   currentIndex: number;
   startedAt: number;
   finishedAt?: number;
@@ -88,6 +90,8 @@ export interface AttemptQuestionSnapshot {
   correctAnswers: string[];
   selectedAnswers: string[];
   skipped: boolean;
+  /** Present when the learner flagged the item during the run. Older rows omit it. */
+  flagged?: boolean;
 }
 
 /**

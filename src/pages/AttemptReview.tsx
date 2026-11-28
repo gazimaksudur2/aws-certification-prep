@@ -23,6 +23,7 @@ import {
   PieChart,
   ListChecks,
   Zap,
+  Flag,
 } from 'lucide-react';
 
 function rowBadge(status: RowStatus) {
@@ -410,6 +411,12 @@ function QuestionReviewRow({
             >
               {rowLabel(status)}
             </span>
+            {q.flagged && (
+              <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-amber-400/40 bg-amber-500/10 text-amber-200 font-semibold uppercase tracking-wide">
+                <Flag className="w-3 h-3" aria-hidden="true" />
+                Flagged
+              </span>
+            )}
             <span className="text-[11px] px-2 py-0.5 rounded-full bg-aws-orange/15 text-aws-orange font-semibold">
               {q.topic}
             </span>

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Flag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from '../components/ProgressBar';
 import { QuestionCard } from '../components/QuestionCard';
+import { QuestionNavigator } from '../components/QuestionNavigator';
 import { ToastContainer } from '../components/ToastContainer';
 import { useQuiz } from '../hooks/useQuiz';
 import { useToast } from '../hooks/useToast';
@@ -10,7 +12,17 @@ import { isAnswerCorrect } from '../utils/scoring';
 
 export function GuidedPractice() {
   const navigate = useNavigate();
-  const { session, recordAnswer, skip, next, prev, finish } = useQuiz();
+  const {
+    session,
+    recordAnswer,
+    skip,
+    toggleFlag,
+    next,
+    prev,
+    goTo,
+    finish,
+    progress,
+  } = useQuiz();
   const { toasts, show } = useToast();
 
   const current = session?.questions[session.currentIndex] ?? null;
@@ -49,10 +61,48 @@ export function GuidedPractice() {
     return isAnswerCorrect(selected, current.correctAnswers);
   }, [current, checked, selected]);
 
+  const isFlagged = Boolean(current && session?.flagged[current.id]);
+
   const completeAndGoToResults = useCallback(() => {
     finish('manual');
     queueMicrotask(() => navigate('/results', { replace: true }));
   }, [finish, navigate]);
+
+  const navigateTo = useCallback(
+    (index: number) => {
+      if (!session) return;
+      if (index === session.currentIndex) return;
+      goTo(index);
+    },
+    [session, goTo],
+  );
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      if (!current || !session) return;
+      const key = e.key.toLowerCase();
+      if (key === 'f') {
+        e.preventDefault();
+        toggleFlag(current.id);
+      }
+      if (e.key === 'ArrowLeft' && session.currentIndex > 0) {
+        e.preventDefault();
+        prev();
+      }
+      if (
+        e.key === 'ArrowRight' &&
+        session.currentIndex < session.questions.length - 1
+      ) {
+        e.preventDefault();
+        next();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [current, session, toggleFlag, prev, next]);
 
   if (!session || !current || session.mode !== 'guided') return null;
 
@@ -87,6 +137,8 @@ export function GuidedPractice() {
     else next();
   };
 
+  const questionIds = session.questions.map((q) => q.id);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -104,6 +156,21 @@ export function GuidedPractice() {
         current={session.currentIndex + 1}
         total={session.questions.length}
       />
+
+      <QuestionNavigator
+        questionIds={questionIds}
+        currentIndex={session.currentIndex}
+        answers={session.answers}
+        flagged={session.flagged}
+        onGoTo={navigateTo}
+      />
+
+      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+        <span>
+          {progress.answered} answered · {progress.unanswered} unanswered
+          {progress.flagged > 0 ? ` · ${progress.flagged} flagged` : ''}
+        </span>
+      </div>
 
       <QuestionCard
         question={current}
@@ -155,6 +222,21 @@ export function GuidedPractice() {
           ← Prev
         </button>
 
+        <button
+          type="button"
+          onClick={() => toggleFlag(current.id)}
+          className={`btn-secondary ${
+            isFlagged
+              ? 'border-amber-400/50 text-amber-200 bg-amber-500/10'
+              : ''
+          }`}
+          aria-pressed={isFlagged}
+          aria-label={isFlagged ? 'Remove flag for review' : 'Flag for review'}
+        >
+          <Flag className="w-4 h-4" aria-hidden="true" />
+          {isFlagged ? 'Flagged' : 'Flag for review'}
+        </button>
+
         {!checked ? (
           <>
             <button type="button" onClick={handleSkip} className="btn-secondary">
@@ -188,6 +270,15 @@ export function GuidedPractice() {
           End practice now
         </button>
       </div>
+
+      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 select-none">
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">F</kbd>
+        <span>flag</span>
+        <span className="text-slate-700">·</span>
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">← →</kbd>
+        <span>navigate</span>
+      </div>
+
       <ToastContainer toasts={toasts} />
     </div>
   );

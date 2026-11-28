@@ -28,6 +28,7 @@ import {
   AlertCircle,
   PieChart,
   ListChecks,
+  Flag,
 } from 'lucide-react';
 
 type RowStatus =
@@ -91,6 +92,7 @@ export function Results() {
       q: Question;
       status: RowStatus;
       selected: string[];
+      flagged: boolean;
     }> = [];
 
     for (const q of session.questions) {
@@ -113,7 +115,12 @@ export function Results() {
 
       if (status === 'correct') correctCount += 1;
 
-      rows.push({ q, status, selected });
+      rows.push({
+        q,
+        status,
+        selected,
+        flagged: Boolean(session.flagged?.[q.id]),
+      });
     }
 
     const total = session.questions.length;
@@ -429,6 +436,12 @@ export function Results() {
                       <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${rowBadge(status)}`}>
                         {rowLabel(status)}
                       </span>
+                      {row.flagged && (
+                        <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border border-amber-400/40 bg-amber-500/10 text-amber-200 font-semibold uppercase tracking-wide">
+                          <Flag className="w-3 h-3" aria-hidden="true" />
+                          Flagged
+                        </span>
+                      )}
                       <span className="text-[11px] px-2 py-0.5 rounded-full bg-aws-orange/15 text-aws-orange font-semibold">
                         {row.q.topic}
                       </span>

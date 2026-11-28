@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Flag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from '../components/Modal';
 import { ProgressBar } from '../components/ProgressBar';
 import { QuestionCard } from '../components/QuestionCard';
+import { QuestionNavigator } from '../components/QuestionNavigator';
 import { useQuiz } from '../hooks/useQuiz';
 
 function formatCountdown(seconds: number): string {
@@ -13,11 +16,21 @@ function formatCountdown(seconds: number): string {
 
 export function Quiz() {
   const navigate = useNavigate();
-  const { session, recordAnswer, skip, next, prev, finish } = useQuiz();
+  const {
+    session,
+    recordAnswer,
+    skip,
+    toggleFlag,
+    next,
+    prev,
+    goTo,
+    finish,
+  } = useQuiz();
 
   const current = session?.questions[session.currentIndex] ?? null;
   const [selected, setSelected] = useState<string[]>([]);
   const [remainingSec, setRemainingSec] = useState(0);
+  const [submitOpen, setSubmitOpen] = useState(false);
   const expiryFiredRef = useRef(false);
 
   useEffect(() => {
@@ -75,6 +88,32 @@ export function Quiz() {
     [session],
   );
 
+  const isFlagged = Boolean(current && session?.flagged[current.id]);
+
+  /** Counts as of now, treating the current in-progress selection as saved. */
+  const liveCounts = useMemo(() => {
+    if (!session) {
+      return { answered: 0, unanswered: 0, flagged: 0, total: 0 };
+    }
+    const total = session.questions.length;
+    let answered = 0;
+    for (const q of session.questions) {
+      if (current && q.id === current.id && selected.length > 0) {
+        answered += 1;
+        continue;
+      }
+      const a = session.answers[q.id];
+      if (a && !a.skipped && a.selectedAnswers.length > 0) answered += 1;
+    }
+    const flagged = Object.values(session.flagged).filter(Boolean).length;
+    return {
+      answered,
+      unanswered: total - answered,
+      flagged,
+      total,
+    };
+  }, [session, current, selected]);
+
   const completeAndGoToResults = useCallback(
     (reason: 'manual' | 'time_expired') => {
       finish(reason);
@@ -82,6 +121,25 @@ export function Quiz() {
     },
     [finish, navigate],
   );
+
+  const persistSelection = useCallback(() => {
+    if (!current || selected.length === 0) return;
+    recordAnswer(current.id, selected);
+  }, [current, selected, recordAnswer]);
+
+  const requestSubmit = useCallback(() => {
+    persistSelection();
+    if (liveCounts.unanswered > 0 || liveCounts.flagged > 0) {
+      setSubmitOpen(true);
+      return;
+    }
+    completeAndGoToResults('manual');
+  }, [
+    persistSelection,
+    liveCounts.unanswered,
+    liveCounts.flagged,
+    completeAndGoToResults,
+  ]);
 
   const toggleOption = useCallback((optId: string) => {
     setSelected((prev) => {
@@ -97,34 +155,79 @@ export function Quiz() {
   const saveAndAdvance = useCallback(() => {
     if (!current || selected.length === 0) return;
     recordAnswer(current.id, selected);
-    if (isLast) completeAndGoToResults('manual');
+    if (isLast) requestSubmit();
     else next();
-  }, [current, selected, isLast, recordAnswer, completeAndGoToResults, next]);
+  }, [current, selected, isLast, recordAnswer, requestSubmit, next]);
 
   const handleSkip = useCallback(() => {
     if (!current) return;
     skip(current.id);
-    if (isLast) completeAndGoToResults('manual');
+    if (isLast) requestSubmit();
     else next();
-  }, [current, isLast, skip, completeAndGoToResults, next]);
+  }, [current, isLast, skip, requestSubmit, next]);
+
+  const navigateTo = useCallback(
+    (index: number) => {
+      if (!session) return;
+      if (index === session.currentIndex) return;
+      persistSelection();
+      goTo(index);
+    },
+    [session, persistSelection, goTo],
+  );
+
+  const goPrev = useCallback(() => {
+    persistSelection();
+    prev();
+  }, [persistSelection, prev]);
+
+  const goNext = useCallback(() => {
+    if (!session) return;
+    if (session.currentIndex >= session.questions.length - 1) return;
+    persistSelection();
+    next();
+  }, [session, persistSelection, next]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       const key = e.key.toLowerCase();
-      if (['a','b','c','d','e'].includes(key)) {
-        const idx = ['a','b','c','d','e'].indexOf(key);
+      if (['a', 'b', 'c', 'd', 'e'].includes(key)) {
+        const idx = ['a', 'b', 'c', 'd', 'e'].indexOf(key);
         const opt = current?.options[idx];
         if (opt) toggleOption(opt.id);
       }
       if (key === 'enter' && selected.length > 0) saveAndAdvance();
       if (key === 's') handleSkip();
+      if (key === 'f' && current) {
+        e.preventDefault();
+        toggleFlag(current.id);
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goPrev();
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goNext();
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [current, selected, toggleOption, saveAndAdvance, handleSkip]);
+  }, [
+    current,
+    selected,
+    toggleOption,
+    saveAndAdvance,
+    handleSkip,
+    toggleFlag,
+    goPrev,
+    goNext,
+  ]);
 
   if (!session || !current) return null;
+
+  const questionIds = session.questions.map((q) => q.id);
 
   return (
     <div className="space-y-6">
@@ -150,6 +253,21 @@ export function Quiz() {
         total={session.questions.length}
       />
 
+      <QuestionNavigator
+        questionIds={questionIds}
+        currentIndex={session.currentIndex}
+        answers={session.answers}
+        flagged={session.flagged}
+        onGoTo={navigateTo}
+      />
+
+      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+        <span>
+          {liveCounts.answered} answered · {liveCounts.unanswered} unanswered
+          {liveCounts.flagged > 0 ? ` · ${liveCounts.flagged} flagged` : ''}
+        </span>
+      </div>
+
       <QuestionCard
         question={current}
         selected={selected}
@@ -160,11 +278,26 @@ export function Quiz() {
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          onClick={() => prev()}
+          onClick={goPrev}
           disabled={session.currentIndex === 0}
           className="btn-ghost"
         >
           ← Prev
+        </button>
+
+        <button
+          type="button"
+          onClick={() => toggleFlag(current.id)}
+          className={`btn-secondary ${
+            isFlagged
+              ? 'border-amber-400/50 text-amber-200 bg-amber-500/10'
+              : ''
+          }`}
+          aria-pressed={isFlagged}
+          aria-label={isFlagged ? 'Remove flag for review' : 'Flag for review'}
+        >
+          <Flag className="w-4 h-4" aria-hidden="true" />
+          {isFlagged ? 'Flagged' : 'Flag for review'}
         </button>
 
         <button type="button" onClick={handleSkip} className="btn-secondary">
@@ -177,12 +310,12 @@ export function Quiz() {
           disabled={selected.length === 0}
           className="btn-primary ml-auto"
         >
-          {isLast ? 'Finish quiz →' : 'Save · next →'}
+          {isLast ? 'Review & finish →' : 'Save · next →'}
         </button>
 
         <button
           type="button"
-          onClick={() => completeAndGoToResults('manual')}
+          onClick={requestSubmit}
           className="btn-ghost text-xs"
           title="Submit what you answered so far and view results."
         >
@@ -190,7 +323,7 @@ export function Quiz() {
         </button>
       </div>
 
-      <div className="flex items-center gap-2 text-xs text-slate-600 select-none">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 select-none">
         <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">A–D</kbd>
         <span>select option</span>
         <span className="text-slate-700">·</span>
@@ -199,7 +332,70 @@ export function Quiz() {
         <span className="text-slate-700">·</span>
         <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">S</kbd>
         <span>skip</span>
+        <span className="text-slate-700">·</span>
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">F</kbd>
+        <span>flag</span>
+        <span className="text-slate-700">·</span>
+        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-slate-500">← →</kbd>
+        <span>navigate</span>
       </div>
+
+      <Modal
+        open={submitOpen}
+        title="Submit quiz?"
+        onClose={() => setSubmitOpen(false)}
+      >
+        <div className="space-y-4 text-sm text-slate-300">
+          <p>
+            You have answered{' '}
+            <span className="font-semibold text-slate-100">
+              {liveCounts.answered}
+            </span>{' '}
+            of {liveCounts.total} questions.
+          </p>
+          <ul className="space-y-1 text-slate-400">
+            {liveCounts.unanswered > 0 && (
+              <li>
+                <span className="text-slate-200 font-medium">
+                  {liveCounts.unanswered}
+                </span>{' '}
+                unanswered
+              </li>
+            )}
+            {liveCounts.flagged > 0 && (
+              <li>
+                <span className="text-amber-200 font-medium">
+                  {liveCounts.flagged}
+                </span>{' '}
+                flagged for review
+              </li>
+            )}
+          </ul>
+          <p className="text-slate-500 text-xs">
+            You can cancel and jump to any question from the palette, or submit
+            now.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setSubmitOpen(false)}
+            >
+              Keep reviewing
+            </button>
+            <button
+              type="button"
+              className="btn-primary ml-auto"
+              onClick={() => {
+                setSubmitOpen(false);
+                completeAndGoToResults('manual');
+              }}
+            >
+              Submit answers
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
