@@ -30,6 +30,7 @@ interface QuizContextValue {
   ) => void;
   recordAnswer: (questionId: number, selected: string[]) => void;
   skip: (questionId: number) => void;
+  toggleFlag: (questionId: number) => void;
   /**
    * Finishes quiz; returns finalized session snapshot (for navigation),
    * or null if none.
@@ -41,7 +42,7 @@ interface QuizContextValue {
   next: () => void;
   prev: () => void;
   goTo: (index: number) => void;
-  progress: { answered: number; total: number };
+  progress: { answered: number; total: number; flagged: number; unanswered: number };
 }
 
 const QuizContext = createContext<QuizContextValue | null>(null);
@@ -76,6 +77,7 @@ export function QuizProvider({ children }: { children: ReactNode }) {
         mode,
         questions: picked,
         answers: {},
+        flagged: {},
         currentIndex: 0,
         startedAt: Date.now(),
         timeLimitSeconds,
@@ -112,6 +114,19 @@ export function QuizProvider({ children }: { children: ReactNode }) {
           }
         : s,
     );
+  }, []);
+
+  const toggleFlag = useCallback((questionId: number) => {
+    setSession((s) => {
+      if (!s) return s;
+      const nextFlagged = { ...s.flagged };
+      if (nextFlagged[questionId]) {
+        delete nextFlagged[questionId];
+      } else {
+        nextFlagged[questionId] = true;
+      }
+      return { ...s, flagged: nextFlagged };
+    });
   }, []);
 
   const next = useCallback(() => {
@@ -165,10 +180,21 @@ export function QuizProvider({ children }: { children: ReactNode }) {
   const reset = useCallback(() => setSession(null), []);
 
   const progress = useMemo(() => {
-    if (!session) return { answered: 0, total: 0 };
-    const answered = Object.values(session.answers).filter((a) => !a.skipped)
-      .length;
-    return { answered, total: session.questions.length };
+    if (!session) {
+      return { answered: 0, total: 0, flagged: 0, unanswered: 0 };
+    }
+    const total = session.questions.length;
+    const answered = session.questions.filter((q) => {
+      const a = session.answers[q.id];
+      return Boolean(a && !a.skipped && a.selectedAnswers.length > 0);
+    }).length;
+    const flagged = Object.values(session.flagged).filter(Boolean).length;
+    return {
+      answered,
+      total,
+      flagged,
+      unanswered: total - answered,
+    };
   }, [session]);
 
   const value: QuizContextValue = {
@@ -176,6 +202,7 @@ export function QuizProvider({ children }: { children: ReactNode }) {
     startQuiz,
     recordAnswer,
     skip,
+    toggleFlag,
     next,
     prev,
     goTo,

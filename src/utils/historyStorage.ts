@@ -79,6 +79,7 @@ export function isAttemptQuestionSnapshot(
   if (!isStringArray(o.correctAnswers)) return false;
   if (!isStringArray(o.selectedAnswers)) return false;
   if (typeof o.skipped !== 'boolean') return false;
+  if (o.flagged !== undefined && typeof o.flagged !== 'boolean') return false;
   return true;
 }
 

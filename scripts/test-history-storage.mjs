@@ -48,6 +48,22 @@ function trimAttemptsPerExam(entries, maxPerExam = MAX_ATTEMPTS_PER_EXAM) {
   return summarizeAttempts(kept);
 }
 
+function isAttemptQuestionSnapshot(x) {
+  if (x === null || typeof x !== 'object') return false;
+  if (typeof x.questionId !== 'number' || !Number.isFinite(x.questionId)) {
+    return false;
+  }
+  if (typeof x.topic !== 'string' || !x.topic) return false;
+  if (typeof x.stem !== 'string') return false;
+  if (typeof x.isMultiple !== 'boolean') return false;
+  if (!Array.isArray(x.options)) return false;
+  if (!Array.isArray(x.correctAnswers)) return false;
+  if (!Array.isArray(x.selectedAnswers)) return false;
+  if (typeof x.skipped !== 'boolean') return false;
+  if (x.flagged !== undefined && typeof x.flagged !== 'boolean') return false;
+  return true;
+}
+
 function isRichAttempt(x) {
   if (x === null || typeof x !== 'object') return false;
   if (typeof x.id !== 'string' || !x.id) return false;
@@ -56,6 +72,7 @@ function isRichAttempt(x) {
   if (!Array.isArray(x.questions) || x.questions.length === 0) return false;
   if (x.questions.length !== x.totalQuestions) return false;
   if (x.mode !== 'timed' && x.mode !== 'guided') return false;
+  if (!x.questions.every(isAttemptQuestionSnapshot)) return false;
   return true;
 }
 
@@ -262,6 +279,45 @@ function makeAttempt(overrides = {}) {
   assert.equal(loaded.length, 1);
   assert.equal(loaded[0].mode, 'guided');
   assert.equal(loaded[0].questions[0].correctAnswers[0], 'A');
+}
+
+{
+  // Older rich rows without flagged remain valid.
+  assert.equal(isAttemptQuestionSnapshot(makeAttempt().questions[0]), true);
+  assert.equal(
+    isAttemptQuestionSnapshot({
+      ...makeAttempt().questions[0],
+      flagged: true,
+    }),
+    true,
+  );
+  assert.equal(
+    isAttemptQuestionSnapshot({
+      ...makeAttempt().questions[0],
+      flagged: 'yes',
+    }),
+    false,
+  );
+
+  const withFlag = makeAttempt({
+    questions: [
+      {
+        ...makeAttempt().questions[0],
+        flagged: true,
+      },
+    ],
+  });
+  assert.equal(isRichAttempt(withFlag), true);
+  assert.equal(withFlag.questions[0].flagged, true);
+
+  const storage = createMemoryStorage();
+  storage.setItem(
+    HISTORY_KEY_V3,
+    JSON.stringify({ schemaVersion: 3, attempts: [withFlag] }),
+  );
+  const loaded = loadHistoryStore(storage);
+  assert.equal(loaded.length, 1);
+  assert.equal(loaded[0].questions[0].flagged, true);
 }
 
 console.log('✓ history storage contract tests passed');

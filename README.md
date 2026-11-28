@@ -26,8 +26,8 @@ This project is independent. It is not affiliated with, endorsed by, or sponsore
 
 | | |
 | --- | --- |
-| **Timed quiz** | Exam-style run. The clock is **120 seconds × the number of questions**. Answers stay hidden until you finish. |
-| **Guided practice** | Untimed. Check each answer as you go, read which options are correct, and open **Learn more** for a deeper search. |
+| **Timed quiz** | Exam-style run. The clock is **120 seconds × the number of questions**. Answers stay hidden until you finish. Use the numbered question palette to jump freely, see answered vs unanswered at a glance, and **flag for review**. |
+| **Guided practice** | Untimed. Check each answer as you go, read which options are correct, and open **Learn more** for a deeper search. The same question palette and flag-for-review controls are available. |
 | **Question bank** | Search and filter the full pool. Expand any item to study the keyed answer. This mode is for review. |
 | **Learning hub** | Per-cert roadmaps, service reference, exam strategy, and a checklist. Progress is saved per exam on your device. |
 | **Your history** | The last 10 attempts per exam (timed and guided) are stored locally with full question review — stems, your selections, and correct answers. Click a prior attempt on Practice to reopen it. |
@@ -51,7 +51,8 @@ On AI Practitioner and SysOps items, each option carries a short rationale. Thos
 1. Open **Practice** and choose a certification: Cloud Practitioner, Solutions Architect Associate, AI Practitioner, or SysOps Administrator Associate all have question banks.
 2. Set a topic, or keep **All**, and set the number of questions.
 3. Start a **timed quiz** or **guided practice**. **Browse** opens the bank for the selected exam without starting a run.
-4. Finish on the results screen: score, pass or fail against that exam's threshold, time, topic strength, and a question-by-question review.
+4. During a run, jump with the palette or ←/→, press **F** to flag a question, and (timed) confirm submit when unanswered or flagged items remain.
+5. Finish on the results screen: score, pass or fail against that exam's threshold, time, topic strength, and a question-by-question review (flagged items are marked when you used flag-for-review).
 
 **Learning** is separate from the quiz. Pick a path — the combined Cloud Practitioner and Solutions Architect pack, AI Practitioner, or SysOps — then use the roadmap, service reference, exam strategy, and checklist. Where a practice bank exists, a domain can deep-link into practice. Where it does not, the link says the bank is still coming.
 
