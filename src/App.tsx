@@ -9,6 +9,7 @@ import { Quiz } from './pages/Quiz';
 import { GuidedPractice } from './pages/GuidedPractice';
 import { Results } from './pages/Results';
 import { Browse } from './pages/Browse';
+import { AttemptReview } from './pages/AttemptReview';
 
 export default function App() {
   const location = useLocation();
@@ -20,6 +21,7 @@ export default function App() {
           <Routes location={location} key={location.key}>
             <Route path="/" element={<PageTransition><Landing /></PageTransition>} />
             <Route path="/practice" element={<PageTransition><Home /></PageTransition>} />
+            <Route path="/practice/attempts/:attemptId" element={<PageTransition><AttemptReview /></PageTransition>} />
             <Route path="/quiz" element={<PageTransition><Quiz /></PageTransition>} />
             <Route path="/guided" element={<PageTransition><GuidedPractice /></PageTransition>} />
             <Route path="/results" element={<PageTransition><Results /></PageTransition>} />

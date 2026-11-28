@@ -13,10 +13,13 @@ export function ToastContainer({ toasts }: Props) {
           className={`px-4 py-3 rounded-xl border text-sm font-semibold shadow-2xl animate-slide-up backdrop-blur-sm pointer-events-auto transition-all ${
             t.kind === 'correct'
               ? 'bg-emerald-900/90 border-emerald-500/50 text-emerald-200'
-              : 'bg-rose-900/90 border-rose-500/50 text-rose-200'
+              : t.kind === 'incorrect' || t.kind === 'error'
+                ? 'bg-rose-900/90 border-rose-500/50 text-rose-200'
+                : 'bg-slate-900/90 border-slate-500/50 text-slate-200'
           }`}
         >
-          {t.kind === 'correct' ? '✓ ' : '✗ '}{t.message}
+          {t.kind === 'correct' ? '✓ ' : t.kind === 'incorrect' || t.kind === 'error' ? '✗ ' : 'ℹ '}
+          {t.message}
         </div>
       ))}
     </div>

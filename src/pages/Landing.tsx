@@ -277,8 +277,8 @@ export function Landing() {
               </h3>
             </div>
             <p className="mt-2 text-sm text-slate-400 leading-relaxed">
-              Attempt history stays in your browser via localStorage — no sign-in
-              required.
+              Timed and guided attempts (with answer review) stay in your browser
+              via localStorage — no sign-in required.
             </p>
           </div>
         </div>

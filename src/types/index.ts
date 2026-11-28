@@ -78,6 +78,22 @@ export interface ExamBankJson {
   questions: Array<Omit<Question, 'examId' | 'examCode'> & { examId?: string }>;
 }
 
+/** Snapshot of one question inside a persisted rich attempt. */
+export interface AttemptQuestionSnapshot {
+  questionId: number;
+  topic: string;
+  stem: string;
+  isMultiple: boolean;
+  options: Array<{ id: string; text: string; rationale?: string }>;
+  correctAnswers: string[];
+  selectedAnswers: string[];
+  skipped: boolean;
+}
+
+/**
+ * Persisted attempt. New finishes are always rich (`detailLevel: 'full'`).
+ * Thin summary-only rows from older schemas are not migrated into the list.
+ */
 export interface AttemptHistoryEntry {
   id: string;
   examId: string;
@@ -91,10 +107,20 @@ export interface AttemptHistoryEntry {
   correctCount: number;
   scorePercent: number;
   durationSeconds: number;
+  mode: QuizMode;
+  passThresholdPercent: number;
+  detailLevel: 'full';
+  questions: AttemptQuestionSnapshot[];
 }
 
-/** Persisted envelope for localStorage. */
+/** @deprecated Thin v2 envelope — cleared on upgrade to v3. */
 export interface HistoryStoreV2 {
   schemaVersion: 2;
+  attempts: unknown[];
+}
+
+/** Persisted envelope for localStorage (`cert-quiz-history-v3`). */
+export interface HistoryStoreV3 {
+  schemaVersion: 3;
   attempts: AttemptHistoryEntry[];
 }

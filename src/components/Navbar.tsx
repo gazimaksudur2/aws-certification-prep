@@ -77,10 +77,14 @@ export function Navbar() {
         </nav>
 
         {statsGlobal.totalAttempts > 0 && (
-          <div className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-xs text-slate-400">
+          <Link
+            to="/practice"
+            className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-xs text-slate-400 hover:text-aws-orange hover:border-aws-orange/40 transition-colors"
+            title="Open practice to review attempts"
+          >
             <span>📊</span>
             <span>{statsGlobal.totalAttempts} attempt{statsGlobal.totalAttempts !== 1 ? 's' : ''}</span>
-          </div>
+          </Link>
         )}
 
         {/* Mobile hamburger */}

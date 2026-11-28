@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
     "build": "node scripts/build.js",
+    "test:history": "node scripts/test-history-storage.mjs",
     "preview": "node node_modules/vite/bin/vite.js preview",
     "generate:learning": "node scripts/generate-learning-json.mjs",
     "build:learning": "node scripts/build-learning.mjs",

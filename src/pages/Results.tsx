@@ -2,13 +2,15 @@ import { useMemo, useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ScoreBadge } from '../components/ScoreBadge';
 import { OptionButton } from '../components/OptionButton';
+import { ToastContainer } from '../components/ToastContainer';
 import { useQuiz } from '../hooks/useQuiz';
 import { useHistory } from '../hooks/useHistory';
+import { useToast } from '../hooks/useToast';
 import type {
-  AttemptHistoryEntry,
   Question,
   SubmissionReason,
 } from '../types';
+import { buildRichAttemptFromSession } from '../utils/attemptSnapshot';
 import { PASS_THRESHOLD_PERCENT, isAnswerCorrect } from '../utils/scoring';
 import {
   Award,
@@ -77,6 +79,7 @@ export function Results() {
   const navigate = useNavigate();
   const { session, reset } = useQuiz();
   const { add } = useHistory();
+  const { toasts, show } = useToast();
   const savedRef = useRef(false);
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
 
@@ -162,25 +165,33 @@ export function Results() {
 
   useEffect(() => {
     if (!session || !summary || savedRef.current) return;
-    if (session.mode === 'guided') return;
     savedRef.current = true;
 
-    const entry: AttemptHistoryEntry = {
-      id: `${session.examId}-${summary.startedAt}-${summary.finishedAt}`,
-      examId: session.examId,
-      examCode: session.examCode,
-      examTitle: session.examTitle,
+    const entry = buildRichAttemptFromSession(session, {
       startedAt: summary.startedAt,
       finishedAt: summary.finishedAt,
-      timeLimitSeconds: summary.timeLimitSeconds,
-      submittedReason: summary.submittedReason,
-      totalQuestions: summary.total,
+      durationSeconds: summary.durationSeconds,
       correctCount: summary.correctCount,
       scorePercent: summary.scorePercent,
-      durationSeconds: summary.durationSeconds,
-    };
-    add(entry);
-  }, [session, summary, add]);
+      total: summary.total,
+      submittedReason: summary.submittedReason,
+      timeLimitSeconds: summary.timeLimitSeconds,
+    });
+    const result = add(entry);
+    if (!result.ok && result.reason !== 'duplicate') {
+      show(
+        'error',
+        result.reason === 'quota'
+          ? 'Could not save this attempt — browser storage is full.'
+          : 'Could not save this attempt to local history.',
+      );
+    } else if (result.ok && result.trimmed) {
+      show(
+        'info',
+        'Storage was nearly full — older attempts were removed to save this one.',
+      );
+    }
+  }, [session, summary, add, show]);
 
   useEffect(() => {
     if (!session) navigate('/practice', { replace: true });
@@ -213,13 +224,14 @@ export function Results() {
     : 'from-rose-500/20 to-rose-500/5 border-rose-500/30';
 
   const submitNote = isGuided
-    ? 'Guided practice summary — instant feedback was shown after each question. This run was not saved to attempt history.'
+    ? 'Guided practice summary — instant feedback was shown after each question. This run is saved locally so you can review it later.'
     : summary.submittedReason === 'time_expired'
       ? 'Auto-submitted when the allotted time elapsed.'
       : 'You chose to submit (or answered through the final question without running out of time).';
 
   return (
     <div className="space-y-8 pb-12 animate-fadeIn">
+      <ToastContainer toasts={toasts} />
       {/* Header */}
       <section className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 md:p-10 border ${statusColors} shadow-xl animate-slideUp`}>
         <div className="absolute inset-0 bg-gradient-to-br from-aws-orange/5 via-transparent to-aws-blue/5" />
