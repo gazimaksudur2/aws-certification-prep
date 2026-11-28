@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuiz } from '../hooks/useQuiz';
 import { useHistory } from '../hooks/useHistory';
 import type { AttemptHistoryEntry, QuizMode } from '../types';
@@ -50,6 +50,7 @@ export function Home() {
     statsForExam,
     recentForExam,
     clear,
+    clearExam,
   } = useHistory();
 
   const [examId, setExamId] = useState<string | null>(null);
@@ -522,18 +523,43 @@ export function Home() {
                 transition={{ delay: 0.3 }}
                 className="card p-6 md:p-8 border-slate-700/50"
               >
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
                   <h2 className="text-xl font-bold flex items-center gap-2">
                     <Clock className="w-5 h-5 text-aws-orange" />
                     Recent attempts · this exam
                   </h2>
-                  <button
-                    type="button"
-                    onClick={clear}
-                    className="text-xs text-slate-500 hover:text-rose-400 transition-colors"
-                  >
-                    Clear all history
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            `Clear saved attempts for ${selectedExam.code}? This cannot be undone.`,
+                          )
+                        ) {
+                          clearExam(examId);
+                        }
+                      }}
+                      className="text-xs text-slate-500 hover:text-rose-400 transition-colors"
+                    >
+                      Clear this exam
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            'Clear ALL attempt history for every certification? This cannot be undone.',
+                          )
+                        ) {
+                          clear();
+                        }
+                      }}
+                      className="text-xs text-slate-600 hover:text-rose-400 transition-colors"
+                    >
+                      Clear all
+                    </button>
+                  </div>
                 </div>
                 <AttemptList
                   attempts={recentThis}
@@ -585,51 +611,62 @@ function AttemptList({
   return (
     <ul className="divide-y divide-slate-800/50">
       {attempts.map((h, index) => {
-        const thr = thresholdResolver(h);
+        const thr = h.passThresholdPercent ?? thresholdResolver(h);
         const passed = h.scorePercent >= thr;
+        const modeLabel = h.mode === 'guided' ? 'Guided' : 'Timed';
         return (
           <motion.li
             key={h.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
-            className="py-4 flex items-center justify-between gap-4 hover:bg-slate-800/30 px-3 rounded-lg transition-colors -mx-3"
           >
-            <div className="flex items-center gap-4 min-w-0">
-              <div className={`p-1.5 rounded-full flex-shrink-0 ${passed ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
-                {passed ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                ) : (
-                  <XCircle className="w-4 h-4 text-rose-400" />
-                )}
-              </div>
-              <div className="min-w-0">
-                <div className="font-semibold text-sm flex items-center gap-2">
-                  {h.examCode}
-                  {!compact && (
-                    <span className="text-xs font-normal text-slate-400">
-                      · {h.correctCount} / {h.totalQuestions} correct
+            <Link
+              to={`/practice/attempts/${encodeURIComponent(h.id)}`}
+              className="py-4 flex items-center justify-between gap-4 hover:bg-slate-800/30 px-3 rounded-lg transition-colors -mx-3 group"
+            >
+              <div className="flex items-center gap-4 min-w-0">
+                <div className={`p-1.5 rounded-full flex-shrink-0 ${passed ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
+                  {passed ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <XCircle className="w-4 h-4 text-rose-400" />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-sm flex items-center gap-2 flex-wrap">
+                    {h.examCode}
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
+                      {modeLabel}
                     </span>
-                  )}
-                </div>
-                <div className="text-xs text-slate-500 flex items-center gap-2 flex-wrap">
-                  <span>{new Date(h.finishedAt).toLocaleDateString()}</span>
-                  <span>·</span>
-                  <span>{Math.round(h.durationSeconds / 60)} min</span>
-                  {!compact && (
-                    <>
-                      <span>·</span>
-                      <span className={h.submittedReason === 'time_expired' ? 'text-amber-400' : 'text-slate-400'}>
-                        {h.submittedReason === 'time_expired' ? '⏱ Auto-submit' : '✓ Submitted'}
+                    {!compact && (
+                      <span className="text-xs font-normal text-slate-400">
+                        · {h.correctCount} / {h.totalQuestions} correct
                       </span>
-                    </>
-                  )}
+                    )}
+                  </div>
+                  <div className="text-xs text-slate-500 flex items-center gap-2 flex-wrap">
+                    <span>{new Date(h.finishedAt).toLocaleDateString()}</span>
+                    <span>·</span>
+                    <span>{Math.round(h.durationSeconds / 60)} min</span>
+                    {!compact && (
+                      <>
+                        <span>·</span>
+                        <span className={h.submittedReason === 'time_expired' ? 'text-amber-400' : 'text-slate-400'}>
+                          {h.submittedReason === 'time_expired' ? '⏱ Auto-submit' : '✓ Submitted'}
+                        </span>
+                      </>
+                    )}
+                    <span className="text-aws-orange/80 opacity-0 group-hover:opacity-100 transition-opacity">
+                      · Review →
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={`text-xl font-bold flex-shrink-0 ${passed ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {h.scorePercent}%
-            </div>
+              <div className={`text-xl font-bold flex-shrink-0 ${passed ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {h.scorePercent}%
+              </div>
+            </Link>
           </motion.li>
         );
       })}

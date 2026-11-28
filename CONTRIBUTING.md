@@ -98,6 +98,14 @@ Learning JSON lives in [`public/data/learning/`](public/data/learning/). Notes f
 
 The catalog drives both the practice picker and the learning picker. Two exams may share one learning file, as Cloud Practitioner and Solutions Architect do with the combined pack. Give that shared path its own catalog entry with `packOf` when learners should open it as one roadmap.
 
+## Attempt history (localStorage)
+
+Practice history is client-only. The durable key is `cert-quiz-history-v3` (rich snapshots: questions, selections, correct answers; timed and guided; max 10 per exam). Invalid values for expected history keys are removed on load. Thin `cert-quiz-history-v2` / legacy `aws-quiz-history` data is cleared on upgrade and is not kept listable. Shared state lives in `HistoryProvider` (`src/hooks/useHistory.ts`); validators live in `src/utils/historyStorage.ts`. Smoke-test the storage contract with:
+
+```bash
+npm run test:history
+```
+
 ## Pull request checklist
 
 - The change matches one concern, and the title names the exam or area.

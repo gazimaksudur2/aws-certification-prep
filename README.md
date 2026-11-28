@@ -30,7 +30,7 @@ This project is independent. It is not affiliated with, endorsed by, or sponsore
 | **Guided practice** | Untimed. Check each answer as you go, read which options are correct, and open **Learn more** for a deeper search. |
 | **Question bank** | Search and filter the full pool. Expand any item to study the keyed answer. This mode is for review. |
 | **Learning hub** | Per-cert roadmaps, service reference, exam strategy, and a checklist. Progress is saved per exam on your device. |
-| **Your history** | The last 10 timed attempts per exam are stored locally, with score and topic breakdown. Guided runs are for learning and are not recorded. |
+| **Your history** | The last 10 attempts per exam (timed and guided) are stored locally with full question review — stems, your selections, and correct answers. Click a prior attempt on Practice to reopen it. |
 
 You need at least **5 questions** in the filtered pool to start a run. Filter by topic or use the full set, and choose a length from 5 up to every question available.
 
@@ -55,7 +55,7 @@ On AI Practitioner and SysOps items, each option carries a short rationale. Thos
 
 **Learning** is separate from the quiz. Pick a path — the combined Cloud Practitioner and Solutions Architect pack, AI Practitioner, or SysOps — then use the roadmap, service reference, exam strategy, and checklist. Where a practice bank exists, a domain can deep-link into practice. Where it does not, the link says the bank is still coming.
 
-Refreshing the tab during a quiz ends that session. History and learning progress survive because they are stored in the browser, under keys that never leave the machine. There is no server account to recover them on another device.
+Refreshing the tab during a quiz ends that session. History and learning progress survive because they are stored in the browser, under keys that never leave the machine. Attempt snapshots include question text, your selections, and correct answers so you can review offline; nothing is uploaded. There is no server account to recover them on another device. Older thin history (`cert-quiz-history-v2`) is cleared when the app upgrades to the rich history schema.
 
 ---
 

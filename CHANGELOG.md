@@ -7,6 +7,10 @@ All notable changes to this project are documented here.
 ## [Unreleased]
 
 ### Added
+- Rich attempt history (v3): up to 10 timed **and guided** runs per exam with question snapshots, selections, and correct answers for later review
+- Shared `HistoryProvider` so Navbar / Practice / Results stay in sync without a hard refresh
+- Prior-attempt review route at `/practice/attempts/:attemptId`
+- localStorage validators that remove invalid history (and related) keys instead of leaving poison data
 - Animated page transitions (framer-motion `AnimatePresence`)
 - Keyboard shortcuts in timed quiz: `A–D` to select options, `Enter` to confirm, `S` to skip
 - Toast notifications in guided practice mode showing correct/incorrect feedback
@@ -16,6 +20,8 @@ All notable changes to this project are documented here.
 - MIT License
 
 ### Changed
+- Practice Home clears history per exam by default (with optional clear-all); attempt rows open review
+- Thin `cert-quiz-history-v2` rows are cleared on upgrade to rich `cert-quiz-history-v3` (not kept listable)
 - Improved README with badge row, enriched Acknowledgement section, and portfolio link
 - Navbar now shows portfolio link on desktop (subtle chip)
 
